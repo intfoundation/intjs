@@ -1,0 +1,37 @@
+{
+  "name": "intjs",
+  "version": "1.0.0",
+  "description": "INT JavaScript API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intfoundation/inttools.js.git"
+  },
+  "keywords": [
+    "INT",
+    "BlockChain",
+    "API"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/intfoundation/inttools.js/issues"
+  },
+  "homepage": "https://github.com/intfoundation/inttools.js#readme",
+  "dependencies": {
+    "bignumber.js": "^7.2.1",
+    "express": "^4.16.3",
+    "fs-extra": "^7.0.0",
+    "http-errors": "^1.7.0",
+    "msgpack-lite": "^0.1.26",
+    "secp256k1": "^3.5.0",
+    "sqlite": "^2.9.2",
+    "sqlite3": "^4.0.0",
+    "sqlite3-transactions": "0.0.5",
+    "winston": "^2.4.3",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
