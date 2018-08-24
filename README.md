@@ -1,2 +1,2 @@
-# inttools.js
+# intjs
 INT JavaScript API
