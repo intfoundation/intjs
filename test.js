@@ -1,6 +1,6 @@
 const Intjs = require('./index');
-// const intjs = new Intjs('localhost', 18089);
-const intjs = new Intjs('40.73.33.203', 12202);
+const intjs = new Intjs('localhost', 18089);
+// const intjs = new Intjs('40.73.33.203', 12202);
 
 
 setTimeout(async () => {
@@ -12,8 +12,8 @@ setTimeout(async () => {
     // let balance2 = await intjs.getBalance('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ');
     // console.log(Number(balance2));
 
-    // let account = await intjs.create();
-    // console.log(account);
+    let account = await intjs.create();
+    console.log(account);
 
     // let pubkey = await intjs.privateKeyToPublicKey(account.serect);
     // console.log(pubkey);
@@ -24,8 +24,8 @@ setTimeout(async () => {
     // let block = await intjs.getBlock('d53cf2c62589c56b681b195b0f18a22c87a2678d0aa23c5f5f912e1eb3981224', true);
     // console.log(block);
 
-    let hash = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '100', '10', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
-    console.log(hash);
+    // let hash = await intjs.transferTo('1C8sQHNV7z16hf4hxamYC3ypynkyG1yzYK', '1000', '10', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
+    // console.log(hash);
 
     // let Receipt = await intjs.getTransactionReceipt('6e19650790fbd9f79c77e500ab905f82e7907dd335a4e7d7cf3e5b8352a2c543');
     // console.log(Receipt);
@@ -34,11 +34,11 @@ setTimeout(async () => {
     // console.log(morHash);
 
 
-    // let voteHash = await intjs.vote(['1LuwjNj8wkqo237N7Gh8nZSSvUa6TZ5ds4','13CS9dBwmaboedj2hPWx6Dgzt4cowWWoNZ'], '100', 'c07ad83d2c5627acece18312362271e22d7aeffb6e2a6e0ffe1107371514fdc2');
+    // let voteHash = await intjs.vote(['1C8sQHNV7z16hf4hxamYC3ypynkyG1yzYK'], '1000', 'c07ad83d2c5627acece18312362271e22d7aeffb6e2a6e0ffe1107371514fdc2');
     // console.log(voteHash);
 
 
-    // let vote = await intjs.getVote('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ');
+    // let vote = await intjs.getVote();
     // console.log(vote);
 
     // let candidate = await intjs.getCandidates();
@@ -47,7 +47,7 @@ setTimeout(async () => {
     // let stoke = await intjs.getStoke('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ');
     // console.log(stoke);
 
-    // let hash = await intjs.register('100', '9b55dea11fc216e768bf436d0efe9e734ec7bc9e575a935ae6203e5e99dae5ac');
+    // let hash = await intjs.register('100', 'a793c76436584dc734ebddfde836e6fc73888f72966e299011b70f380135aadb');
     // console.log(hash);
 
     // let tokenHash = await intjs.createToken('INT', [{address:'1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79',amount:'100000000'}], '1000000000', '10', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');

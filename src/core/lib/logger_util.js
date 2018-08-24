@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const winston_1 = require("winston");
 const path = require("path");
-const fs = require("fs-extra");
+// const fs = require("fs-extra");
 const { LogShim } = require('./log_shim');
 function initLogger(options) {
     if (options.logger) {
@@ -19,7 +19,7 @@ function initLogger(options) {
             }));
         }
         if (options.loggerOptions.file) {
-            fs.ensureDirSync(options.loggerOptions.file.root);
+            // fs.ensureDirSync(options.loggerOptions.file.root);
             loggerTransports.push(new winston_1.transports.File({
                 json: false,
                 level: 'info',

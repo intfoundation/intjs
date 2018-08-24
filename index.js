@@ -1,6 +1,6 @@
 /*!
 *  intjs - INT JavaScript API
-*  https://github.com/intfoundation/intjs.git
+*  https://github.com/intfoundation/inttools.js.git
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -18,7 +18,7 @@
 * SOFTWARE.
 *
 *
-* @file    intjs.js
+* @file    int.js
 * @author  Like(likeaixi@gmail.com)
 * @date    2018
 * */

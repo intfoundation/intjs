@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
-const fs = require("fs-extra");
+// const fs = require("fs-extra");
 const core_1 = require("../../core");
 const rpc_1 = require("./rpc");
 class ChainHost {
@@ -79,18 +79,18 @@ class ChainHost {
         if (!path.isAbsolute(dataDir)) {
             dataDir = path.join(process.cwd(), dataDir);
         }
-        if (!fs.existsSync(dataDir)) {
-            fs.ensureDirSync(dataDir);
-        }
-        else {
-            if (commandOptions.get('forceClean')) {
-                fs.removeSync(dataDir);
-            }
-            else {
-                console.error(`dataDir already exsits`);
-                return false;
-            }
-        }
+        // if (!fs.existsSync(dataDir)) {
+        //     fs.ensureDirSync(dataDir);
+        // }
+        // else {
+        //     if (commandOptions.get('forceClean')) {
+        //         fs.removeSync(dataDir);
+        //     }
+        //     else {
+        //         console.error(`dataDir already exsits`);
+        //         return false;
+        //     }
+        // }
         let logger = this._parseLogger(dataDir, commandOptions);
         let creator = core_1.initChainCreator({ logger });
         let genesisOptions;
@@ -99,7 +99,7 @@ class ChainHost {
             if (!path.isAbsolute(_path)) {
                 _path = path.join(process.cwd(), _path);
             }
-            genesisOptions = fs.readJsonSync(_path);
+            // genesisOptions = fs.readJsonSync(_path);
         }
         let cr = await creator.createGenesis(_package, dataDir, genesisOptions, commandOptions.get('externalHandler'));
         if (cr.err) {
@@ -118,7 +118,7 @@ class ChainHost {
             loggerOptions.level = commandOptions.get('loggerLevel');
         }
         let loggerPath = path.join(dataDir, 'log');
-        fs.ensureDir(loggerPath);
+        // fs.ensureDir(loggerPath);
         loggerOptions.file = { root: loggerPath };
         return core_1.initLogger({ loggerOptions });
     }
@@ -140,15 +140,15 @@ class ChainHost {
         if (!path.isAbsolute(dataDir)) {
             dataDir = path.join(process.cwd(), dataDir);
         }
-        if (commandOptions.has('forceClean')) {
-            fs.removeSync(dataDir);
-        }
-        if (fs.pathExistsSync(dataDir)) {
-            return dataDir;
-        }
-        else {
-            fs.ensureDirSync(dataDir);
-        }
+        // if (commandOptions.has('forceClean')) {
+        //     fs.removeSync(dataDir);
+        // }
+        // if (fs.pathExistsSync(dataDir)) {
+        //     return dataDir;
+        // }
+        // else {
+        //     fs.ensureDirSync(dataDir);
+        // }
         if (!commandOptions.get('genesis')) {
             console.error('no genesis');
             return undefined;
@@ -157,7 +157,7 @@ class ChainHost {
         if (!path.isAbsolute(_path)) {
             _path = path.join(process.cwd(), _path);
         }
-        fs.copySync(_path, dataDir);
+        // fs.copySync(_path, dataDir);
         return dataDir;
     }
     registerNet(net, instance) {
