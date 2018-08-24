@@ -8,13 +8,14 @@
 "use strict";
 const express = require('express');
 const router = express.Router();
-const IntTools = require('../index');
+const Intjs = require('../index');
+const rpcConfig = require('../config/rpcconfig');
 
 /**
  * host为peer节点的ip, port为peer节点启动的rpc端口
  * 如果启动的为本地 peer, host 则为 localhost
  * */
-const inttools = new IntTools('localhost', 18089);
+const intjs = new Intjs(rpcConfig.host, rpcConfig.port);
 
 
 router.get('/voteToPeer', async (req, res, next) => {
@@ -24,7 +25,7 @@ router.get('/voteToPeer', async (req, res, next) => {
         let fee = req.params.fee;
         let secret = req.params.secret;
 
-        let result = await inttools.vote(candidates, fee, secret);
+        let result = await intjs.vote(candidates, fee, secret);
 
         res.send(result);
     });
@@ -35,7 +36,7 @@ router.get('/mortgage/:mount/:fee/:secret', async (req, res, next) => {
     let fee = req.params.fee;
     let secret = req.params.secret;
 
-    let result = await inttools.mortgage(amount, fee, secret);
+    let result = await intjs.mortgage(amount, fee, secret);
 
     res.send(result);
 });
@@ -45,7 +46,7 @@ router.get('/unmortgage/:mount/:fee/:secret', async (req, res, next) => {
     let fee = req.params.fee;
     let secret = req.params.secret;
 
-    let result = await inttools.unmortgage(amount, fee, secret);
+    let result = await intjs.unmortgage(amount, fee, secret);
 
     res.send(result);
 });

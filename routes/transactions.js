@@ -8,13 +8,14 @@
 "use strict";
 const express = require('express');
 const router = express.Router();
-const IntTools = require('../index');
+const Intjs = require('../index');
+const rpcConfig = require('../config/rpcconfig');
 
 /**
  * host为peer节点的ip, port为peer节点启动的rpc端口
  * 如果启动的为本地 peer, host 则为 localhost
  * */
-const inttools = new IntTools('localhost', 18089);
+const intjs = new Intjs(rpcConfig.host, rpcConfig.port);
 
 
 router.get('/transferTo/:to/:amount/:fee/:secret', async (req, res, next) => {
@@ -23,7 +24,7 @@ router.get('/transferTo/:to/:amount/:fee/:secret', async (req, res, next) => {
     let fee = req.params.fee;
     let secret = req.params.secret;
 
-    let result = await inttools.transferTo(toAddress, amount, fee, secret);
+    let result = await intjs.transferTo(toAddress, amount, fee, secret);
 
     res.send(result);
 });
@@ -32,7 +33,7 @@ router.get('/register/:fee/:secret', async (req, res, next) => {
     let fee = req.params.fee;
     let secret = req.params.secret;
 
-    let result = await inttools.register(fee, secret);
+    let result = await intjs.register(fee, secret);
 
     res.send(result);
 });

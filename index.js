@@ -33,7 +33,7 @@ const errorCode = require('./src/core/error_code').ErrorCode;
 
 client.initUnhandledRejection();
 
-class IntTools {
+class Intjs {
     constructor (host, port) {
         assert(host, 'Host is required.');
         assert(port, 'Port is required.');
@@ -532,4 +532,4 @@ class IntTools {
     }
 }
 
-module.exports = IntTools;
+module.exports = Intjs;
