@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/intfoundation/inttools.js.git"
+    "url": "git+https://github.com/intfoundation/intjs.git"
   },
   "keywords": [
     "INT",
@@ -18,9 +18,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/intfoundation/inttools.js/issues"
+    "url": "https://github.com/intfoundation/intjs.js/issues"
   },
-  "homepage": "https://github.com/intfoundation/inttools.js#readme",
+  "homepage": "https://github.com/intfoundation/intjs.js#readme",
   "dependencies": {
     "bignumber.js": "^7.2.1",
     "express": "^4.16.3",
