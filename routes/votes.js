@@ -18,12 +18,15 @@ const rpcConfig = require('../config/rpcconfig');
 const intjs = new Intjs(rpcConfig.host, rpcConfig.port);
 
 
-router.get('/voteToPeer', async (req, res, next) => {
+/**
+ * 给节点投票
+ * */
+router.get('/vote', async (req, res, next) => {
     req.on('data', async (chunk) => {
         let chunkData = JSON.parse(chunk.toString());
         let candidates = chunkData.candidates;
-        let fee = req.params.fee;
-        let secret = req.params.secret;
+        let fee = chunkData.fee;
+        let secret = chunkData.secret;
 
         let result = await intjs.vote(candidates, fee, secret);
 
@@ -31,6 +34,30 @@ router.get('/voteToPeer', async (req, res, next) => {
     });
 });
 
+/**
+ * 获取所有节点的票数
+ * */
+router.get('/getVote', async (req, res, next) => {
+
+    let result = await intjs.getVote();
+
+    res.send(result);
+});
+
+/**
+ * 获取某个地址的选票
+ * */
+router.get('/getStoke/:address', async (req, res, next) => {
+    let address = req.params.address;
+
+    let result = await intjs.getStoke(address);
+
+    res.send(result);
+});
+
+/**
+ * 余额兑换成选票
+ * */
 router.get('/mortgage/:mount/:fee/:secret', async (req, res, next) => {
     let amount = req.params.amount;
     let fee = req.params.fee;
@@ -41,6 +68,9 @@ router.get('/mortgage/:mount/:fee/:secret', async (req, res, next) => {
     res.send(result);
 });
 
+/**
+ * 把选票兑换成余额
+ * */
 router.get('/unmortgage/:mount/:fee/:secret', async (req, res, next) => {
     let amount = req.params.amount;
     let fee = req.params.fee;
@@ -50,4 +80,15 @@ router.get('/unmortgage/:mount/:fee/:secret', async (req, res, next) => {
 
     res.send(result);
 });
+
+/**
+ * 获取所有的候选节点
+ * */
+router.get('/getCandidates', async (req, res, next) => {
+
+    let result = await intjs.getCandidates();
+
+    res.send(result);
+});
+
 module.exports = router;

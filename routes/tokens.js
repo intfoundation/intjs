@@ -44,4 +44,13 @@ router.get('/transferTokenTo/:tokenid/:to/:amount/:fee/:secret', async (req, res
     res.send(result);
 });
 
+router.get('/getTokenBalance/:tokenid/:address', async (req, res, next) => {
+    let tokenid = req.params.tokenid;
+    let address = req.params.address;
+
+    let result = await intjs.getTokenBalance(tokenid, address);
+
+    res.send(result);
+});
+
 module.exports = router;

@@ -6,6 +6,10 @@
  */
 
 "use strict";
+/**
+ * host为peer节点的ip, port为peer节点启动的rpc端口
+ * 如果启动的为本地 peer, host 则为 localhost
+ * */
 let rpcCoing = {
     host: 'localhost',
     port: '18089'

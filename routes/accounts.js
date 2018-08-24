@@ -25,4 +25,13 @@ router.get('/create', async (req, res, next) => {
     res.send(result);
 });
 
+router.get('/getBalance/:address', async (req, res, next) => {
+    let address = req.params.address;
+
+    let result = await intjs.getBalance(address);
+
+    res.send(result);
+});
+
+
 module.exports = router;

@@ -17,7 +17,9 @@ const rpcConfig = require('../config/rpcconfig');
  * */
 const intjs = new Intjs(rpcConfig.host, rpcConfig.port);
 
-
+/**
+ * 转帐
+ * */
 router.get('/transferTo/:to/:amount/:fee/:secret', async (req, res, next) => {
     let toAddress = req.params.to;
     let amount = req.params.amount;
@@ -29,6 +31,9 @@ router.get('/transferTo/:to/:amount/:fee/:secret', async (req, res, next) => {
     res.send(result);
 });
 
+/**
+ * 节点注册
+ * */
 router.get('/register/:fee/:secret', async (req, res, next) => {
     let fee = req.params.fee;
     let secret = req.params.secret;
