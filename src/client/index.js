@@ -35,7 +35,7 @@ host.registerNet('tcp', (commandOptions) => {
         peers = peers.split(';');
     }
     let nodeType = core_1.StaticOutNode(core_1.TcpNode);
-    return new nodeType({ host: _host, port }, peers);
+    return new nodeType(peers, { host: _host, port });
 });
 host.registerNet('bdt', (commandOptions) => {
     let _host = commandOptions.get('host');

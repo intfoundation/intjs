@@ -17,6 +17,10 @@ class BdtConnection extends net_1.IConnection {
         this.m_bdt_connection.on(P2P.Connection.EVENT.error, () => {
             this.emit('error', this, error_code_1.ErrorCode.RESULT_EXCEPTION);
         });
+        this.m_bdt_connection.on(P2P.Connection.EVENT.end, () => {
+            // 对端主动关闭了连接，这里先当break一样处理
+            // this.emit('error', this, ErrorCode.RESULT_EXCEPTION);
+        });
         this.m_bdt_connection.on(P2P.Connection.EVENT.close, () => {
             this.emit('close', this);
         });
@@ -31,6 +35,13 @@ class BdtConnection extends net_1.IConnection {
             delete this.m_bdt_connection;
         }
         return Promise.resolve(error_code_1.ErrorCode.RESULT_OK);
+    }
+    destroy() {
+        if (this.m_bdt_connection) {
+            this.m_bdt_connection.close(true);
+            delete this.m_bdt_connection;
+        }
+        return Promise.resolve();
     }
     getRemote() {
         return this.m_remote;

@@ -18,7 +18,7 @@ class StandaloneNode extends node_1.INode {
     async listen() {
         return error_code_1.ErrorCode.RESULT_OK;
     }
-    async randomPeers(count) {
+    async randomPeers(count, excludes) {
         return { err: error_code_1.ErrorCode.RESULT_SKIPPED, peers: [] };
     }
 }

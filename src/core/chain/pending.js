@@ -14,7 +14,7 @@ class PendingTransactions {
         this.m_pendingLock = new Lock_1.Lock();
     }
     async addTransaction(tx) {
-        this.m_logger.info(`addTransaction, txhash=${tx.hash}, nonce=${tx.nonce}`);
+        this.m_logger.debug(`addTransaction, txhash=${tx.hash}, nonce=${tx.nonce}, address=${tx.address}`);
         await this.m_pendingLock.enter();
         // this.m_logger.info('transactions length='+this.m_transactions.length.toString());
         // if (this.m_orphanTx.has(tx.address as string)) {
@@ -129,6 +129,7 @@ class PendingTransactions {
                     return _err;
                 }
             }
+            this.m_logger.info(`nonce exist address=${txTime.tx.address}, nonce=${txTime.tx.nonce}, existnonce=${nonce}`);
             return error_code_1.ErrorCode.RESULT_ERROR_NONCE_IN_TX;
         }
         await this.ScanOrphan(address);

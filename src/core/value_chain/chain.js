@@ -6,6 +6,7 @@ const block_1 = require("./block");
 const transaction_1 = require("./transaction");
 const executor_1 = require("./executor");
 const ValueContext = require("./context");
+const pending_1 = require("./pending");
 class ValueChain extends chain_1.Chain {
     constructor(options) {
         super(options);
@@ -39,6 +40,9 @@ class ValueChain extends chain_1.Chain {
     }
     _getTransactionType() {
         return transaction_1.ValueTransaction;
+    }
+    _createPending() {
+        return new pending_1.ValuePendingTransactions({ storageManager: this.m_storageManager, logger: this.logger, txlivetime: this.m_globalOptions.txlivetime });
     }
 }
 // 存储每个address的money，其中有一个默认的系统账户

@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const events_1 = require("events");
+const util_1 = require("util");
 const error_code_1 = require("../error_code");
-// const storage_1 = require("../storage");
+const storage_1 = require("../storage");
 const block_1 = require("../block");
 const reader_1 = require("../lib/reader");
 const writer_1 = require("../lib/writer");
@@ -282,9 +283,11 @@ class ChainNode extends events_1.EventEmitter {
     }
     requestHeaders(from, options) {
         let conn;
+        this.logger.debug(`request headers from ${util_1.isString(from) ? from : from.getRemote()} with options `, options);
         if (typeof from === 'string') {
             let connRequesting = this._getConnRequesting(from);
             if (!connRequesting) {
+                this.logger.debug(`request headers from ${from} skipped for connection not found with options `, options);
                 return error_code_1.ErrorCode.RESULT_NOT_FOUND;
             }
             conn = connRequesting.conn;
@@ -306,8 +309,10 @@ class ChainNode extends events_1.EventEmitter {
     }
     // 这里必须实现成同步的
     requestBlocks(options, from) {
+        this.logger.debug(`request blocks from ${from} with options `, options);
         let connRequesting = this._getConnRequesting(from);
         if (!connRequesting) {
+            this.logger.debug(`request blocks from ${from} skipped for connection not found with options `, options);
             return error_code_1.ErrorCode.RESULT_NOT_FOUND;
         }
         let requests = [];
@@ -522,6 +527,7 @@ class ChainNode extends events_1.EventEmitter {
         for (let remote of this.m_requestingHeaders.keys()) {
             let rh = this.m_requestingHeaders.get(remote);
             if (now - rh.time > this.m_headersTimeout) {
+                this.logger.debug(`header request timeout from ${remote} timeout with options `, rh.req);
                 this.m_node.banConnection(remote, block_1.BAN_LEVEL.hour);
             }
         }

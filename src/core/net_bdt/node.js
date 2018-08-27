@@ -3,9 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const error_code_1 = require("../error_code");
 const net_1 = require("../net");
 const connection_1 = require("./connection");
-const crypto_1 = require("crypto");
 const P2P = require('../../../bdt/p2p/p2p');
-const { NetHelper } = require('../../../bdt/base/util.js');
+const { NetHelper, HashDistance } = require('../../../bdt/base/util.js');
 class BdtNode extends net_1.INode {
     // 初始化传入tcp port和udp port，传入0就不监听对应协议
     // @param options { 
@@ -24,8 +23,12 @@ class BdtNode extends net_1.INode {
         Object.assign(this.m_options, options);
         this.m_skipList.push(options.peerid);
         this.m_skipList.push(this.m_options.snPeer.peerid);
+        this.m_bdtStack = undefined;
     }
     async init() {
+        if (this.m_bdtStack) {
+            return;
+        }
         // bdt 的log控制参数
         P2P.debug({
             level: this.m_options.bdtLoggerOptions.level,
@@ -61,7 +64,7 @@ class BdtNode extends net_1.INode {
         let { result, p2p, bdtStack } = await P2P.create4BDTStack(bdtInitParams);
         // 检查是否创建成功
         if (result !== 0) {
-            throw Error('init p2p peer error. please check the params');
+            throw Error(`init p2p peer error ${result}. please check the params`);
         }
         this.m_snPeerid = this.m_options.snPeer.peerid;
         this.m_dht = p2p.m_dht;
@@ -74,23 +77,33 @@ class BdtNode extends net_1.INode {
     }
     // 通过发现自身， 来找到一些peers, 然后尝试每个握手一下
     // 在测试阶段这种方法实现比较及时, 后面可能考虑用会dht中的randomPeers
-    async randomPeers(count) {
-        let dhtPeerid = this.m_snPeerid;
-        let res = await this.m_dht.findPeer(crypto_1.randomBytes(8).toString('hex'));
+    async randomPeers(count, excludes) {
+        let res = await this.m_dht.getRandomPeers(count, false);
+        this.m_logger.info(`first find ${res.peerlist.length} peers, ${JSON.stringify(res.peerlist.map((value) => value.peerid))}`);
+        const ignore0 = !res || !res.peerlist || res.peerlist.length === 0;
         // 过滤掉自己和种子peer
         let peers = res.peerlist.filter((val) => {
+            if (!val.peerid) {
+                this.m_logger.info(`exclude undefined peerid, ${JSON.stringify(val)}`);
+                return false;
+            }
             if (this.m_skipList.includes(val.peerid)) {
+                this.m_logger.info(`exclude ${val.peerid} from skipList`);
+                return false;
+            }
+            if (excludes.includes(val.peerid)) {
+                this.m_logger.info(`exclude ${val.peerid} from excludesList`);
                 return false;
             }
             let ready = val.getAdditionalInfo('ready');
-            // console.log(peer.peerid, 'ready', ready)
             if (ready !== 1) {
+                this.m_logger.info(`exclude ${val.peerid} not ready`);
                 return false;
             }
             return true;
         });
-        // 过滤 peers 中undefined(已经被剔除)
-        let peerids = peers.filter((val) => val).map((val) => val.peerid);
+        let peerids = peers.map((value) => value.peerid);
+        this.m_logger.info(`find ${peerids.length} peers after filter, count ${count}, ${JSON.stringify(peerids)}`);
         // 如果peer数量比传入的count多， 需要随机截取
         if (peerids.length > count) {
             let temp_peerids = [];
@@ -101,11 +114,10 @@ class BdtNode extends net_1.INode {
             }
             peerids = temp_peerids;
         }
-        let errCode = peerids.length ? error_code_1.ErrorCode.RESULT_OK : error_code_1.ErrorCode.RESULT_SKIPPED;
-        return { err: errCode, peers: peerids };
+        let errCode = peerids.length > 0 ? error_code_1.ErrorCode.RESULT_OK : error_code_1.ErrorCode.RESULT_SKIPPED;
+        return { err: errCode, peers: peerids, ignore0 };
     }
     _connectTo(peerid) {
-        // console.log('_connectTo', peerid)
         let vport = this.m_vport;
         let connection = this.m_bdtStack.newConnection();
         connection.bind(null);
@@ -130,6 +142,10 @@ class BdtNode extends net_1.INode {
     }
     _connectionType() {
         return connection_1.BdtConnection;
+    }
+    uninit() {
+        // TODO:
+        return super.uninit();
     }
     listen() {
         return new Promise((resolve, reject) => {

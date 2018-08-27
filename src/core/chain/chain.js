@@ -8,12 +8,11 @@ const sqlite3 = require("sqlite3");
 const error_code_1 = require("../error_code");
 const logger_util_1 = require("../lib/logger_util");
 const block_1 = require("../block");
-// const storage_1 = require("../storage");
-// const storage_2 = require("../storage_sqlite/storage");
+const storage_1 = require("../storage");
+const storage_2 = require("../storage_sqlite/storage");
 const pending_1 = require("./pending");
 const executor_1 = require("../executor");
 const chain_node_1 = require("./chain_node");
-const Lock_1 = require("../lib/Lock");
 const util_1 = require("util");
 var ChainState;
 (function (ChainState) {
@@ -38,7 +37,6 @@ class Chain extends events_1.EventEmitter {
             hashes: new Set(),
             sequence: new Array()
         };
-        this.m_callGetLock = new Lock_1.Lock();
         this.m_connSyncMap = new Map();
         this.m_logger = logger_util_1.initLogger(options);
     }
@@ -241,7 +239,7 @@ class Chain extends events_1.EventEmitter {
         _instanceOptions.confirmDepth = !util_1.isNullOrUndefined(instanceOptions.confirmDepth) ? instanceOptions.confirmDepth : 6;
         _instanceOptions.ignoreVerify = !util_1.isNullOrUndefined(instanceOptions.ignoreVerify) ? instanceOptions.ignoreVerify : 0;
         this.m_instanceOptions = _instanceOptions;
-        this.m_pending = new pending_1.PendingTransactions({ storageManager: this.m_storageManager, logger: this.logger, txlivetime: this.m_globalOptions.txlivetime });
+        this.m_pending = this._createPending();
         this.m_pending.init();
         let baseNode = this._createChainNode();
         let node = new chain_node_1.ChainNode({
@@ -307,6 +305,9 @@ class Chain extends events_1.EventEmitter {
             this.m_storageManager.releaseSnapshotView(s);
         }
         this.m_state = ChainState.init;
+    }
+    _createPending() {
+        return new pending_1.PendingTransactions({ storageManager: this.m_storageManager, logger: this.logger, txlivetime: this.m_globalOptions.txlivetime });
     }
     _createChainNode() {
         return new block_1.RandomOutNode({
@@ -1024,14 +1025,13 @@ class Chain extends events_1.EventEmitter {
         await this._onVerifiedBlock(genesis);
         return error_code_1.ErrorCode.RESULT_OK;
     }
-    async view(arg, methodname, param) {
+    async view(from, methodname, param) {
         let retInfo = { err: error_code_1.ErrorCode.RESULT_FAILED };
-        await this.m_callGetLock.enter();
         let storageView;
-        while (true) {
-            let hr = await this.getHeader(arg);
+        do {
+            let hr = await this.getHeader(from);
             if (hr.err !== error_code_1.ErrorCode.RESULT_OK) {
-                this.m_logger.error(`view ${methodname} failed for load header ${arg} failed for ${hr.err}`);
+                this.m_logger.error(`view ${methodname} failed for load header ${from} failed for ${hr.err}`);
                 retInfo = { err: hr.err };
                 break;
             }
@@ -1059,8 +1059,7 @@ class Chain extends events_1.EventEmitter {
             this.m_logger.error(`view ${methodname} failed for create view executor failed for ${ret1.err}`);
             retInfo = { err: ret1.err };
             break;
-        }
-        await this.m_callGetLock.leave();
+        } while (false);
         return retInfo;
     }
     async getNonce(s) {

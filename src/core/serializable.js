@@ -12,6 +12,48 @@ const encoding_1 = require("./lib/encoding");
 const digest = require("./lib/digest");
 const bignumber_js_1 = require("bignumber.js");
 const util_1 = require("util");
+function deepCopy(o) {
+    if (util_1.isUndefined(o) || util_1.isNull(o)) {
+        return o;
+    }
+    else if (util_1.isNumber(o) || util_1.isBoolean(o)) {
+        return o;
+    }
+    else if (util_1.isString(o)) {
+        return o;
+    }
+    else if (o instanceof bignumber_js_1.BigNumber) {
+        return new bignumber_js_1.BigNumber(o);
+    }
+    else if (util_1.isBuffer(o)) {
+        return Buffer.from(o);
+    }
+    else if (util_1.isArray(o) || o instanceof Array) {
+        let s = [];
+        for (let e of o) {
+            s.push(deepCopy(e));
+        }
+        return s;
+    }
+    else if (util_1.isObject(o)) {
+        let s = Object.create(null);
+        for (let k of Object.keys(o)) {
+            s[k] = deepCopy(o[k]);
+        }
+        return s;
+    }
+    else if (o instanceof Map) {
+        let s = new Map();
+        for (let k of o.keys()) {
+            s.set(k, deepCopy(o.get(k)));
+        }
+        return s;
+    }
+    else {
+        throw new Error('not JSONable');
+    }
+}
+exports.deepCopy = deepCopy;
 function toStringifiable(o, parsable = false) {
     if (util_1.isUndefined(o) || util_1.isNull(o)) {
         return o;

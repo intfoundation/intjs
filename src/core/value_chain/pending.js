@@ -21,10 +21,18 @@ class ValuePendingTransactions extends chain_1.PendingTransactions {
             return error_code_1.ErrorCode.RESULT_NOT_ENOUGH;
         }
         let err = await super.addTransaction(tx);
-        if (!err) {
+        if (err) {
             return err;
         }
         return this._updateBalance(tx.address, balance.minus(totalUse));
+    }
+    async updateTipBlock(header) {
+        let err = super.updateTipBlock(header);
+        if (err) {
+            return err;
+        }
+        this.m_balance = new Map();
+        return err;
     }
     async getStorageBalance(s) {
         try {

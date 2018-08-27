@@ -48,7 +48,7 @@ class Intjs {
             logger: client.initLogger({ loggerOptions: { console: true}})
         });
         this.chainClient.on('tipBlock', async (tipBlock) => {
-            console.log(`client onTipBlock, height ${tipBlock.number}`);
+            // console.log(`client onTipBlock, height ${tipBlock.number}`);
             for (let tx of this.watchingTx.slice()) {
                 let { err, block, receipt } = await this.chainClient.getTransactionReceipt({ tx });
                 if (!err) {
@@ -59,7 +59,7 @@ class Intjs {
                     else {
                         let confirm = tipBlock.number - block.number + 1;
                         if (confirm < 6) {
-                            console.log(`tx:${tx} ${confirm} confirm`);
+                            // console.log(`tx:${tx} ${confirm} confirm`);
                         }
                         else {
                             console.log(`tx:${tx} confirmed`);
@@ -117,7 +117,7 @@ class Intjs {
     /**
      * get a block matching the block hash or block number.
      * @param {String|Number} which
-     * @param {Boolean} isTransactions  default false, only contain txs hash,if true, the block will contain all txs.
+     * @param {Boolean} isTransactions  default false, only contain txs hashes,if true, the block will contain all txs.
      * @returns {Object}
      */
     async getBlock (which, isTransactions = false) {

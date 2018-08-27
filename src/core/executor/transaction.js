@@ -62,10 +62,12 @@ class TransactionExecutor extends BaseExecutor {
         await kvr.kv.set(tx.address, tx.nonce);
         return error_code_1.ErrorCode.RESULT_OK;
     }
-    async execute(blockHeader, storage, externContext) {
-        let nonceErr = await this._dealNonce(this.m_tx, storage);
-        if (nonceErr !== error_code_1.ErrorCode.RESULT_OK) {
-            return { err: nonceErr };
+    async execute(blockHeader, storage, externContext, flag) {
+        if (!(flag && flag.ignoreNoce)) {
+            let nonceErr = await this._dealNonce(this.m_tx, storage);
+            if (nonceErr !== error_code_1.ErrorCode.RESULT_OK) {
+                return { err: nonceErr };
+            }
         }
         let context = await this.prepareContext(blockHeader, storage, externContext);
         let receipt = new chain_1.Receipt();

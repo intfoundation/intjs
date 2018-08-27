@@ -12,8 +12,8 @@ setTimeout(async () => {
     // let balance2 = await intjs.getBalance('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ');
     // console.log(Number(balance2));
 
-    let account = await intjs.create();
-    console.log(account);
+    // let account = await intjs.create();
+    // console.log(account);
 
     // let pubkey = await intjs.privateKeyToPublicKey(account.serect);
     // console.log(pubkey);
@@ -21,8 +21,8 @@ setTimeout(async () => {
     // let addr = await intjs.publicKeyToAddress(pubkey.pubkey);
     // console.log(addr);
 
-    // let block = await intjs.getBlock('d53cf2c62589c56b681b195b0f18a22c87a2678d0aa23c5f5f912e1eb3981224', true);
-    // console.log(block);
+    let block = await intjs.getBlock('857bdeaf38aba364ee8656f268786f3aad3b0c792c726b8d932ce51664c0a83c', true);
+    console.log(block);
 
     // let hash = await intjs.transferTo('1C8sQHNV7z16hf4hxamYC3ypynkyG1yzYK', '1000', '10', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
     // console.log(hash);
@@ -61,6 +61,12 @@ setTimeout(async () => {
 },1000);
 
 // setInterval(async () => {
-//     let hash = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '100', '10', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
-//     console.log(hash);
+//     let hash1 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
+//     console.log(hash1);
+//     let hash2 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', 'c07ad83d2c5627acece18312362271e22d7aeffb6e2a6e0ffe1107371514fdc2');
+//     console.log(hash2);
+//     let hash3 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', '9b55dea11fc216e768bf436d0efe9e734ec7bc9e575a935ae6203e5e99dae5ac');
+//     console.log(hash3);
+//     let hash4 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', 'e109b61f011c9939ac51808fac542b66fcb358f69bf710f5d11eb5d1f3e82bc3');
+//     console.log(hash4);
 // }, 10000);
