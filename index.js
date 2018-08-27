@@ -117,22 +117,26 @@ class Intjs {
     /**
      * get a block matching the block hash or block number.
      * @param {String|Number} which
-     * @param {Boolean} isTransactions  default false, only contain txs hashes,if true, the block will contain all txs.
+     * @param {Boolean} transactions  default false, only contain txs hashes,if true, the block will contain all txs.
      * @returns {Object}
      */
-    async getBlock (which, isTransactions = false) {
+    async getBlock (which, transactions = false) {
         assert(which, 'block hash or block number is required');
-        assert(typeof isTransactions === 'boolean');
+        assert(typeof transactions === 'boolean');
 
-        let params = {which: which, isTransactions: isTransactions};
-        let {err, block} = await this.chainClient.getBlock(params);
+        let params = {which: which, transactions: transactions};
+        let {err, block, transaction} = await this.chainClient.getBlock(params);
 
         if (err) {
             console.error(`get block failed for ${err}`);
             return {err: errorCode[err].slice(7)}
         } else {
             console.log(`get block,the block hash: ${block.hash}`);
-            return block;
+            if (transactions) {
+                return {block, transaction}
+            } else {
+                return block;
+            }
         }
     }
 
