@@ -62,7 +62,7 @@ class HeaderStorage {
     }
     async getHeader(arg1, arg2) {
         let header;
-        if (arg2 === undefined || arg2 === undefined) {
+        if (arg2 === undefined) {
             if (arg1 instanceof block_1.BlockHeader) {
                 assert(false);
                 return { err: error_code_1.ErrorCode.RESULT_INVALID_PARAM };

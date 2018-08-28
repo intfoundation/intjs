@@ -21,7 +21,7 @@ setTimeout(async () => {
     // let addr = await intjs.publicKeyToAddress(pubkey.pubkey);
     // console.log(addr);
 
-    let block = await intjs.getBlock('0b59b0e7cd2d6396723ed4bb08c7208bc37f6e5336302ab5b9bf166461f64615', true);
+    let block = await intjs.getBlock('0c6a586c5372aaeaf079bc11518379b266565fa27729c81e013a8e2ce7a6fe5e', true);
     console.log(block);
 
     // let hash = await intjs.transferTo('1C8sQHNV7z16hf4hxamYC3ypynkyG1yzYK', '1000', '10', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
