@@ -389,7 +389,7 @@ class JsonDataBase {
             err = error_code_1.ErrorCode.RESULT_OK;
         }
         let tbl = new JsonStorageKeyValue(this.m_root, name, this.logger);
-        return { err: error_code_1.ErrorCode.RESULT_OK, kv: tbl };
+        return { err, kv: tbl };
     }
     async getReadWritableKeyValue(name) {
         let err = storage_1.Storage.checkTableName(name);
@@ -495,6 +495,10 @@ class JsonStorage extends storage_1.Storage {
         let transcation = new JsonStorageTransaction(this.m_root);
         await transcation.beginTransaction();
         return { err: error_code_1.ErrorCode.RESULT_OK, value: transcation };
+    }
+    async flush(root) {
+        this.m_root = root;
+        await fs.writeJSON(this.m_filePath, this.m_root);
     }
 }
 exports.JsonStorage = JsonStorage;

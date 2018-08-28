@@ -125,7 +125,7 @@ class Intjs {
         assert(typeof transactions === 'boolean');
 
         let params = {which: which, transactions: transactions};
-        let {err, block, transaction} = await this.chainClient.getBlock(params);
+        let {err, block, txs} = await this.chainClient.getBlock(params);
 
         if (err) {
             console.error(`get block failed for ${err}`);
@@ -133,7 +133,7 @@ class Intjs {
         } else {
             console.log(`get block,the block hash: ${block.hash}`);
             if (transactions) {
-                return {block, transaction}
+                return {block, txs}
             } else {
                 return block;
             }

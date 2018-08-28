@@ -26,7 +26,13 @@ class BlockStorage {
         return path.join(this.m_path, hash);
     }
     get(blockHash) {
-        let blockRaw = fs.readFileSync(this._pathOfBlock(blockHash));
+        let blockRaw;
+        try {
+            blockRaw = fs.readFileSync(this._pathOfBlock(blockHash));
+        }
+        catch (error) {
+            this.m_logger.warn(`readBlockFile ${this._pathOfBlock(blockHash)} failed.`);
+        }
         if (blockRaw) {
             let block = new block_1.Block({ headerType: this.m_blockHeaderType, transactionType: this.m_transactionType });
             let err = block.decode(new serializable_1.BufferReader(blockRaw));

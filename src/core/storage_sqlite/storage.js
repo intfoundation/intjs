@@ -9,6 +9,7 @@ const { TransactionDatabase } = require('sqlite3-transactions');
 const error_code_1 = require("../error_code");
 const serializable_1 = require("../serializable");
 const storage_1 = require("../storage");
+const util_1 = require("util");
 const { LogShim } = require('../lib/log_shim');
 class SqliteStorageKeyValue {
     constructor(db, fullName, logger) {
@@ -529,6 +530,72 @@ class SqliteStorage extends storage_1.Storage {
         let transcation = new SqliteStorageTransaction(this.m_db);
         await transcation.beginTransaction();
         return { err: error_code_1.ErrorCode.RESULT_OK, value: transcation };
+    }
+    async toJsonStorage(storage) {
+        let tableNames = new Map();
+        try {
+            const results = await this.m_db.all(`select name fromsqlite_master where type='table' order by name;`);
+            for (const { name } of results) {
+                const { dbName, kvName } = SqliteStorage.splitFullName(name);
+                if (!tableNames.has(dbName)) {
+                    tableNames.set(dbName, []);
+                }
+                tableNames.get(dbName).push(kvName);
+            }
+        }
+        catch (e) {
+            this.m_logger.error(`get all tables failed `, e);
+            return { err: error_code_1.ErrorCode.RESULT_EXCEPTION };
+        }
+        let root = Object.create(null);
+        for (let [dbName, kvNames] of tableNames.entries()) {
+            let dbRoot = Object.create(null);
+            root[dbName] = dbRoot;
+            for (let kvName of kvNames) {
+                let kvRoot = Object.create(null);
+                dbRoot[kvName] = kvRoot;
+                const tableName = SqliteStorage.getKeyValueFullName(dbName, kvName);
+                try {
+                    const elems = await this.m_db.all(`select * from ${tableName}`);
+                    for (const elem of elems) {
+                        if (util_1.isUndefined(elem.field)) {
+                            kvRoot[elem.name] = serializable_1.fromStringifiable(JSON.parse(elem.value));
+                        }
+                        else {
+                            const index = parseInt(elem.field);
+                            if (isNaN(index)) {
+                                if (util_1.isUndefined(kvRoot[elem.name])) {
+                                    kvRoot[elem.name] = Object.create(null);
+                                }
+                                kvRoot[elem.name][elem.filed] = serializable_1.fromStringifiable(JSON.parse(elem.value));
+                            }
+                            else {
+                                if (!util_1.isArray(kvRoot[elem.name])) {
+                                    kvRoot[elem.name] = [];
+                                }
+                                let arr = kvRoot[elem.name];
+                                if (arr.length > index) {
+                                    arr[index] = serializable_1.fromStringifiable(JSON.parse(elem.value));
+                                }
+                                else {
+                                    const offset = index - arr.length - 1;
+                                    for (let ix = 0; ix < offset; ++ix) {
+                                        arr.push(undefined);
+                                    }
+                                    arr.push(serializable_1.fromStringifiable(JSON.parse(elem.value)));
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (e) {
+                    this.m_logger.error(`database: ${dbName} kv: ${kvName} transfer error `, e);
+                    return { err: error_code_1.ErrorCode.RESULT_EXCEPTION };
+                }
+            }
+        }
+        await storage.flush(root);
+        return { err: error_code_1.ErrorCode.RESULT_OK };
     }
 }
 exports.SqliteStorage = SqliteStorage;
