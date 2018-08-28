@@ -4,7 +4,6 @@ const chain_1 = require("./chain");
 const error_code_1 = require("../error_code");
 const assert = require("assert");
 const events_1 = require("events");
-const util_1 = require("util");
 var MinerState;
 (function (MinerState) {
     MinerState[MinerState["none"] = 0] = "none";
@@ -92,8 +91,9 @@ class Miner extends events_1.EventEmitter {
             this.m_logger.error(`miner create failed hasn't initComponent`);
             return error_code_1.ErrorCode.RESULT_INVALID_STATE;
         }
-        if (!this.m_chain.onCheckGlobalOptions(globalOptions)) {
-            this.m_logger.error(`miner create failed for invalid globalOptions`, globalOptions);
+        let err = await this.chain.onPreCreateGenesis(globalOptions, genesisOptions);
+        if (err) {
+            return err;
         }
         let genesis = this.m_chain.newBlock();
         genesis.header.timestamp = Date.now() / 1000;
@@ -101,13 +101,12 @@ class Miner extends events_1.EventEmitter {
         if (sr.err) {
             return sr.err;
         }
-        let err;
         do {
             err = await this._decorateBlock(genesis);
             if (err) {
                 break;
             }
-            err = await this._createGenesisBlock(genesis, sr.storage, globalOptions, genesisOptions);
+            err = await this.chain.onCreateGenesisBlock(genesis, sr.storage, genesisOptions);
             if (err) {
                 break;
             }
@@ -126,48 +125,10 @@ class Miner extends events_1.EventEmitter {
                 break;
             }
             assert(ssr.snapshot);
-            err = await this.chain.create(genesis, ssr.snapshot);
+            err = await this.chain.onPostCreateGenesis(genesis, ssr.snapshot);
         } while (false);
         await sr.storage.remove();
         return err;
-    }
-    /**
-     * virtual
-     * @param block
-     */
-    async _createGenesisBlock(block, storage, globalOptions, genesisOptions) {
-        let dbr = await storage.createDatabase(chain_1.Chain.dbUser);
-        if (dbr.err) {
-            this.m_logger.error(`miner create genensis block failed for create user table to storage failed ${dbr.err}`);
-            return dbr.err;
-        }
-        dbr = await storage.createDatabase(chain_1.Chain.dbSystem);
-        if (dbr.err) {
-            return dbr.err;
-        }
-        let kvr = await dbr.value.createKeyValue(chain_1.Chain.kvNonce);
-        if (kvr.err) {
-            this.m_logger.error(`miner create genensis block failed for create nonce table to storage failed ${kvr.err}`);
-            return kvr.err;
-        }
-        kvr = await dbr.value.createKeyValue(chain_1.Chain.kvConfig);
-        if (kvr.err) {
-            this.m_logger.error(`miner create genensis block failed for create config table to storage failed ${kvr.err}`);
-            return kvr.err;
-        }
-        for (let [key, value] of Object.entries(globalOptions)) {
-            if (!(util_1.isString(value) || util_1.isNumber(value) || util_1.isBoolean(value))) {
-                assert(false, `invalid globalOptions ${key}`);
-                this.m_logger.error(`miner create genensis block failed for write global config to storage failed for invalid globalOptions ${key}`);
-                return error_code_1.ErrorCode.RESULT_INVALID_FORMAT;
-            }
-            let { err } = await kvr.kv.hset('global', key, value);
-            if (err) {
-                this.m_logger.error(`miner create genensis block failed for write global config to storage failed ${err}`);
-                return err;
-            }
-        }
-        return error_code_1.ErrorCode.RESULT_OK;
     }
     async _createBlock(header) {
         let block = this.chain.newBlock(header);

@@ -13,6 +13,10 @@ class JsonStorageKeyValue {
         this.logger = logger;
         this.m_root = dbRoot[name];
     }
+    get root() {
+        const r = this.m_root;
+        return r;
+    }
     async set(key, value) {
         try {
             assert(key);
@@ -27,6 +31,9 @@ class JsonStorageKeyValue {
     async get(key) {
         try {
             assert(key);
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return { err: error_code_1.ErrorCode.RESULT_OK, value: serializable_1.deepCopy(this.m_root[key]) };
         }
         catch (e) {
@@ -53,6 +60,9 @@ class JsonStorageKeyValue {
         try {
             assert(key);
             assert(field);
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return { err: error_code_1.ErrorCode.RESULT_OK, value: serializable_1.deepCopy(this.m_root[key][field]) };
         }
         catch (e) {
@@ -62,6 +72,9 @@ class JsonStorageKeyValue {
     }
     async hdel(key, field) {
         try {
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             delete this.m_root[key][field];
             return { err: error_code_1.ErrorCode.RESULT_OK };
         }
@@ -73,6 +86,9 @@ class JsonStorageKeyValue {
     async hlen(key) {
         try {
             assert(key);
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return { err: error_code_1.ErrorCode.RESULT_OK, value: Object.keys(this.m_root[key]).length };
         }
         catch (e) {
@@ -84,6 +100,9 @@ class JsonStorageKeyValue {
         try {
             assert(key);
             assert(field);
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return { err: error_code_1.ErrorCode.RESULT_OK, value: !util_1.isUndefined(this.m_root[key][field]) };
         }
         catch (e) {
@@ -111,6 +130,9 @@ class JsonStorageKeyValue {
     async hmget(key, fields) {
         try {
             assert(key);
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             let values = [];
             for (let f of fields) {
                 values.push(serializable_1.deepCopy(this.m_root[key][f]));
@@ -125,6 +147,9 @@ class JsonStorageKeyValue {
     async hkeys(key) {
         try {
             assert(key);
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return { err: error_code_1.ErrorCode.RESULT_OK, value: Object.keys(this.m_root[key]) };
         }
         catch (e) {
@@ -135,6 +160,9 @@ class JsonStorageKeyValue {
     async hvalues(key) {
         try {
             assert(key);
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return { err: error_code_1.ErrorCode.RESULT_OK, value: Object.values(this.m_root[key]).map((x) => serializable_1.deepCopy(x)) };
         }
         catch (e) {
@@ -144,6 +172,9 @@ class JsonStorageKeyValue {
     }
     async hgetall(key) {
         try {
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return {
                 err: error_code_1.ErrorCode.RESULT_OK, value: Object.keys(this.m_root[key]).map((x) => {
                     return { key: x, value: serializable_1.deepCopy(this.m_root[key][x]) };
@@ -167,6 +198,9 @@ class JsonStorageKeyValue {
     }
     async lindex(key, index) {
         try {
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return { err: error_code_1.ErrorCode.RESULT_OK, value: serializable_1.deepCopy(this.m_root[key][index]) };
         }
         catch (e) {
@@ -187,6 +221,9 @@ class JsonStorageKeyValue {
     }
     async llen(key) {
         try {
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             return { err: error_code_1.ErrorCode.RESULT_OK, value: this.m_root[key].length };
         }
         catch (e) {
@@ -197,6 +234,9 @@ class JsonStorageKeyValue {
     async lrange(key, start, stop) {
         try {
             assert(key);
+            if (util_1.isUndefined(this.m_root[key])) {
+                return { err: error_code_1.ErrorCode.RESULT_NOT_FOUND };
+            }
             const { err, value: len } = await this.llen(key);
             if (err) {
                 return { err };
@@ -324,6 +364,10 @@ class JsonDataBase {
         this.logger = logger;
         this.m_root = storageRoot[name];
     }
+    get root() {
+        const r = this.m_root;
+        return r;
+    }
     async getReadableKeyValue(name) {
         const err = storage_1.Storage.checkTableName(name);
         if (err) {
@@ -379,6 +423,10 @@ class JsonStorage extends storage_1.Storage {
     constructor() {
         super(...arguments);
         this.m_isInit = false;
+    }
+    get root() {
+        const r = this.m_root;
+        return r;
     }
     _createLogger() {
         return new storage_1.JStorageLogger();

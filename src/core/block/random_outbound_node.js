@@ -57,6 +57,10 @@ class RandomOutNode extends base_node_1.BaseNode {
                 excludes.push(ob.getRemote());
             }
             let result = await this.m_node.randomPeers(count, excludes);
+            if (result.peers.length === 0) {
+                result.peers = this.m_nodeStorage.staticNodes.filter((value) => !excludes.includes(value));
+                result.err = result.peers.length > 0 ? error_code_1.ErrorCode.RESULT_OK : error_code_1.ErrorCode.RESULT_SKIPPED;
+            }
             if (result.err === error_code_1.ErrorCode.RESULT_OK) {
                 this.logger.debug(`will connect to peers from random peers: `, result.peers);
                 for (let pid of result.peers) {

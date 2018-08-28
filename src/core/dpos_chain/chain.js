@@ -219,8 +219,8 @@ class DposChain extends value_chain_1.ValueChain {
             return error_code_1.ErrorCode.RESULT_EXCEPTION;
         }
     }
-    onCheckGlobalOptions(globalOptions) {
-        if (!super.onCheckGlobalOptions(globalOptions)) {
+    _onCheckGlobalOptions(globalOptions) {
+        if (!super._onCheckGlobalOptions(globalOptions)) {
             return false;
         }
         return consensus.onCheckGlobalOptions(globalOptions);
@@ -230,6 +230,35 @@ class DposChain extends value_chain_1.ValueChain {
     }
     _onCheckTypeOptions(typeOptions) {
         return typeOptions.consensus === 'dpos';
+    }
+    async onCreateGenesisBlock(block, storage, genesisOptions) {
+        let err = await super.onCreateGenesisBlock(block, storage, genesisOptions);
+        if (err) {
+            return err;
+        }
+        let gkvr = await storage.getKeyValue(value_chain_1.Chain.dbSystem, value_chain_1.Chain.kvConfig);
+        if (gkvr.err) {
+            return gkvr.err;
+        }
+        let rpr = await gkvr.kv.set('consensus', 'dpos');
+        if (rpr.err) {
+            return rpr.err;
+        }
+        let dbr = await storage.getReadWritableDatabase(value_chain_1.Chain.dbSystem);
+        if (dbr.err) {
+            return dbr.err;
+        }
+        // storage的键值对要在初始化的时候就建立好
+        let kvr = await dbr.value.createKeyValue(consensus.ViewContext.kvDPOS);
+        if (kvr.err) {
+            return kvr.err;
+        }
+        let denv = new consensus.Context(dbr.value, this.globalOptions, this.m_logger);
+        let ir = await denv.init(genesisOptions.candidates, genesisOptions.miners);
+        if (ir.err) {
+            return ir.err;
+        }
+        return error_code_1.ErrorCode.RESULT_OK;
     }
 }
 exports.DposChain = DposChain;

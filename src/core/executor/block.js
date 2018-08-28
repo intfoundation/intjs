@@ -82,7 +82,7 @@ class BlockExecutor {
         if (this.m_block.number === 0) {
             // call initialize
             if (this.m_handler.genesisListener) {
-                const err = this.executeBlockEvent(this.m_handler.genesisListener);
+                const err = await this.executeBlockEvent(this.m_handler.genesisListener);
                 if (err) {
                     this.m_logger.error(`handler's genesisListener execute failed`);
                     return error_code_1.ErrorCode.RESULT_EXCEPTION;
@@ -91,7 +91,7 @@ class BlockExecutor {
         }
         let listeners = await this.m_handler.getPreBlockListeners(this.m_block.number);
         for (let l of listeners) {
-            const err = this.executeBlockEvent(l);
+            const err = await this.executeBlockEvent(l);
             if (err) {
                 return err;
             }

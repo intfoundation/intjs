@@ -66,23 +66,6 @@ class DbftChain extends value_chain_1.ValueChain {
         };
         return nvex;
     }
-    async initComponents(dataDir, handler) {
-        let err = await super.initComponents(dataDir, handler);
-        if (err) {
-            return err;
-        }
-        this.m_dbftHeaderStorage = new header_storage_1.DbftHeaderStorage({
-            db: this.m_db,
-            headerStorage: this.m_headerStorage,
-            globalOptions: this.globalOptions,
-            logger: this.logger
-        });
-        err = await this.m_dbftHeaderStorage.init();
-        if (err) {
-            this.logger.error(`dbft header storage init err `, err);
-        }
-        return err;
-    }
     async uninitComponents() {
         if (this.m_dbftHeaderStorage) {
             this.m_dbftHeaderStorage.uninit();
@@ -96,8 +79,21 @@ class DbftChain extends value_chain_1.ValueChain {
     async _onVerifiedBlock(block) {
         return this.m_dbftHeaderStorage.addHeader(block.header, this.m_storageManager);
     }
-    onCheckGlobalOptions(globalOptions) {
-        if (!super.onCheckGlobalOptions(globalOptions)) {
+    async _onLoadGlobalOptions() {
+        this.m_dbftHeaderStorage = new header_storage_1.DbftHeaderStorage({
+            db: this.m_db,
+            headerStorage: this.m_headerStorage,
+            globalOptions: this.globalOptions,
+            logger: this.logger
+        });
+        const err = await this.m_dbftHeaderStorage.init();
+        if (err) {
+            this.logger.error(`dbft header storage init err `, err);
+        }
+        return err;
+    }
+    _onCheckGlobalOptions(globalOptions) {
+        if (!super._onCheckGlobalOptions(globalOptions)) {
             return false;
         }
         if (util_1.isNullOrUndefined(globalOptions.minValidator)) {
@@ -139,6 +135,35 @@ class DbftChain extends value_chain_1.ValueChain {
     }
     get dbftHeaderStorage() {
         return this.m_dbftHeaderStorage;
+    }
+    async onCreateGenesisBlock(block, storage, genesisOptions) {
+        let err = await super.onCreateGenesisBlock(block, storage, genesisOptions);
+        if (err) {
+            return err;
+        }
+        let gkvr = await storage.getKeyValue(value_chain_1.Chain.dbSystem, value_chain_1.Chain.kvConfig);
+        if (gkvr.err) {
+            return gkvr.err;
+        }
+        let rpr = await gkvr.kv.set('consensus', 'dbft');
+        if (rpr.err) {
+            return rpr.err;
+        }
+        let dbr = await storage.getReadWritableDatabase(value_chain_1.Chain.dbSystem);
+        if (dbr.err) {
+            return dbr.err;
+        }
+        // storage的键值对要在初始化的时候就建立好
+        let kvr = await dbr.value.createKeyValue(context_1.DbftContext.kvDBFT);
+        if (kvr.err) {
+            return kvr.err;
+        }
+        let denv = new context_1.DbftContext(storage, this.globalOptions, this.m_logger);
+        let ir = await denv.init(genesisOptions.miners);
+        if (ir.err) {
+            return ir.err;
+        }
+        return error_code_1.ErrorCode.RESULT_OK;
     }
 }
 exports.DbftChain = DbftChain;

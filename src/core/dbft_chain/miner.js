@@ -5,7 +5,6 @@ const error_code_1 = require("../error_code");
 const Lock_1 = require("../lib/Lock");
 const address_1 = require("../address");
 const value_chain_1 = require("../value_chain");
-const context_1 = require("./context");
 const chain_1 = require("./chain");
 const validators_node_1 = require("./validators_node");
 const consensus_node_1 = require("./consensus_node");
@@ -159,35 +158,6 @@ class DbftMiner extends value_chain_1.ValueMiner {
             }
             this.m_miningBlocks.set(block.hash, resolve);
         });
-    }
-    async _createGenesisBlock(block, storage, globalOptions, genesisOptions) {
-        let err = await super._createGenesisBlock(block, storage, globalOptions, genesisOptions);
-        if (err) {
-            return err;
-        }
-        let gkvr = await storage.getKeyValue(value_chain_1.Chain.dbSystem, value_chain_1.Chain.kvConfig);
-        if (gkvr.err) {
-            return gkvr.err;
-        }
-        let rpr = await gkvr.kv.set('consensus', 'dbft');
-        if (rpr.err) {
-            return rpr.err;
-        }
-        let dbr = await storage.getReadWritableDatabase(value_chain_1.Chain.dbSystem);
-        if (dbr.err) {
-            return dbr.err;
-        }
-        // storage的键值对要在初始化的时候就建立好
-        let kvr = await dbr.value.createKeyValue(context_1.DbftContext.kvDBFT);
-        if (kvr.err) {
-            return kvr.err;
-        }
-        let denv = new context_1.DbftContext(storage, this.m_chain.globalOptions, this.m_logger);
-        let ir = await denv.init(genesisOptions.miners);
-        if (ir.err) {
-            return ir.err;
-        }
-        return error_code_1.ErrorCode.RESULT_OK;
     }
 }
 exports.DbftMiner = DbftMiner;

@@ -101,22 +101,5 @@ class PowMiner extends value_chain_1.ValueMiner {
             });
         });
     }
-    async _createGenesisBlock(block, storage, globalOptions, genesisOptions) {
-        let err = await super._createGenesisBlock(block, storage, globalOptions, genesisOptions);
-        if (err) {
-            return err;
-        }
-        let gkvr = await storage.getKeyValue(value_chain_1.Chain.dbSystem, value_chain_1.Chain.kvConfig);
-        if (gkvr.err) {
-            return gkvr.err;
-        }
-        let rpr = await gkvr.kv.set('consensus', 'pow');
-        if (rpr.err) {
-            return rpr.err;
-        }
-        block.header.bits = globalOptions.basicBits;
-        block.header.updateHash();
-        return error_code_1.ErrorCode.RESULT_OK;
-    }
 }
 exports.PowMiner = PowMiner;

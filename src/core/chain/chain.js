@@ -5,6 +5,7 @@ const events_1 = require("events");
 const path = require("path");
 const sqlite = require("sqlite");
 const sqlite3 = require("sqlite3");
+const util_1 = require("util");
 const error_code_1 = require("../error_code");
 const logger_util_1 = require("../lib/logger_util");
 const block_1 = require("../block");
@@ -13,7 +14,7 @@ const storage_2 = require("../storage_sqlite/storage");
 const pending_1 = require("./pending");
 const executor_1 = require("../executor");
 const chain_node_1 = require("./chain_node");
-const util_1 = require("util");
+const util_2 = require("util");
 var ChainState;
 (function (ChainState) {
     ChainState[ChainState["none"] = 0] = "none";
@@ -99,6 +100,85 @@ class Chain extends events_1.EventEmitter {
     get headerStorage() {
         return this.m_headerStorage;
     }
+    async _onLoadGlobalOptions() {
+        return error_code_1.ErrorCode.RESULT_OK;
+    }
+    async setGlobalOptions(globalOptions) {
+        if (this.m_globalOptions) {
+            return error_code_1.ErrorCode.RESULT_OK;
+        }
+        this.m_globalOptions = Object.create(null);
+        Object.assign(this.m_globalOptions, globalOptions);
+        if (!this._onCheckGlobalOptions(globalOptions)) {
+            this.m_logger.error(`chain initialize failed for check global options failed`);
+            return error_code_1.ErrorCode.RESULT_INVALID_BLOCK;
+        }
+        this.m_globalOptions = globalOptions;
+        const err = await this._onLoadGlobalOptions();
+        return error_code_1.ErrorCode.RESULT_OK;
+    }
+    async _loadGenesis() {
+        if (this.m_globalOptions) {
+            return error_code_1.ErrorCode.RESULT_OK;
+        }
+        let genesis = await this.m_headerStorage.getHeader(0);
+        if (genesis.err) {
+            return genesis.err;
+        }
+        let gsv = await this.m_storageManager.getSnapshotView(genesis.header.hash);
+        if (gsv.err) {
+            this.m_logger.error(`chain initialize failed for load genesis snapshot failed ${gsv.err}`);
+            return gsv.err;
+        }
+        this.m_constSnapshots.push(genesis.header.hash);
+        let dbr = await gsv.storage.getReadableDataBase(Chain.dbSystem);
+        if (dbr.err) {
+            this.m_logger.error(`chain initialize failed for load system database failed ${dbr.err}`);
+            return dbr.err;
+        }
+        let kvr = await dbr.value.getReadableKeyValue(Chain.kvConfig);
+        if (kvr.err) {
+            this.m_logger.error(`chain initialize failed for load global config failed ${kvr.err}`);
+            return kvr.err;
+        }
+        let typeOptions = Object.create(null);
+        let kvgr = await kvr.kv.get('consensus');
+        if (kvgr.err) {
+            this.m_logger.error(`chain initialize failed for load global config consensus failed ${kvgr.err}`);
+            return kvgr.err;
+        }
+        typeOptions.consensus = kvgr.value;
+        kvgr = await kvr.kv.lrange('features', 1, -1);
+        if (kvgr.err === error_code_1.ErrorCode.RESULT_OK) {
+            typeOptions.features = kvgr.value;
+        }
+        else if (kvgr.err === error_code_1.ErrorCode.RESULT_NOT_FOUND) {
+            typeOptions.features = [];
+        }
+        else {
+            this.m_logger.error(`chain initialize failed for load global config features failed ${kvgr.err}`);
+            return kvgr.err;
+        }
+        if (!this._onCheckTypeOptions(typeOptions)) {
+            this.m_logger.error(`chain initialize failed for check type options failed`);
+            return error_code_1.ErrorCode.RESULT_INVALID_BLOCK;
+        }
+        kvgr = await kvr.kv.hgetall('global');
+        if (kvgr.err) {
+            this.m_logger.error(`chain initialize failed for load global config global failed ${kvgr.err}`);
+            return kvgr.err;
+        }
+        // 将hgetall返回的数组转换成对象
+        if (Array.isArray(kvgr.value)) {
+            kvgr.value = kvgr.value.reduce((obj, item) => {
+                const { key, value } = item;
+                obj[key] = value;
+                return obj;
+            }, {});
+        }
+        const err = await this.setGlobalOptions(kvgr.value);
+        return err;
+    }
     async initComponents(dataDir, handler) {
         // 上层保证await调用别重入了, 不加入中间状态了
         if (this.m_state >= ChainState.init) {
@@ -158,8 +238,8 @@ class Chain extends events_1.EventEmitter {
     _onCheckTypeOptions(typeOptions) {
         return true;
     }
-    onCheckGlobalOptions(globalOptions) {
-        if (util_1.isNullOrUndefined(globalOptions.txlivetime)) {
+    _onCheckGlobalOptions(globalOptions) {
+        if (util_2.isNullOrUndefined(globalOptions.txlivetime)) {
             globalOptions.txlivetime = 60 * 60;
         }
         return true;
@@ -175,69 +255,20 @@ class Chain extends events_1.EventEmitter {
             this.m_logger.error(`chain initialize failed for hasn't initComponent`);
             return error_code_1.ErrorCode.RESULT_INVALID_STATE;
         }
-        let genesis = await this.m_headerStorage.getHeader(0);
-        let gsv = await this.m_storageManager.getSnapshotView(genesis.header.hash);
-        if (gsv.err) {
-            this.m_logger.error(`chain initialize failed for load genesis snapshot failed ${gsv.err}`);
-            return gsv.err;
+        let err = await this._loadGenesis();
+        if (err) {
+            return err;
         }
-        this.m_constSnapshots.push(genesis.header.hash);
-        let dbr = await gsv.storage.getReadableDataBase(Chain.dbSystem);
-        if (dbr.err) {
-            this.m_logger.error(`chain initialize failed for load system database failed ${dbr.err}`);
-            return dbr.err;
-        }
-        let kvr = await dbr.value.getReadableKeyValue(Chain.kvConfig);
-        if (kvr.err) {
-            this.m_logger.error(`chain initialize failed for load global config failed ${kvr.err}`);
-            return kvr.err;
-        }
-        let typeOptions = Object.create(null);
-        let kvgr = await kvr.kv.get('consensus');
-        if (kvgr.err) {
-            this.m_logger.error(`chain initialize failed for load global config consensus failed ${kvgr.err}`);
-            return kvgr.err;
-        }
-        typeOptions.consensus = kvgr.value;
-        kvgr = await kvr.kv.lrange('features', 1, -1);
-        if (kvgr.err === error_code_1.ErrorCode.RESULT_OK) {
-            typeOptions.features = kvgr.value;
-        }
-        else if (kvgr.err === error_code_1.ErrorCode.RESULT_NOT_FOUND) {
-            typeOptions.features = [];
-        }
-        else {
-            this.m_logger.error(`chain initialize failed for load global config features failed ${kvgr.err}`);
-            return kvgr.err;
-        }
-        if (!this._onCheckTypeOptions(typeOptions)) {
-            this.m_logger.error(`chain initialize failed for check type options failed`);
-            return error_code_1.ErrorCode.RESULT_INVALID_BLOCK;
-        }
-        kvgr = await kvr.kv.hgetall('global');
-        if (kvgr.err) {
-            this.m_logger.error(`chain initialize failed for load global config global failed ${kvgr.err}`);
-            return kvgr.err;
-        }
-        let globalOptions = Object.create(null);
-        for (let e of kvgr.value) {
-            globalOptions[e.key] = e.value;
-        }
-        if (!this.onCheckGlobalOptions(globalOptions)) {
-            this.m_logger.error(`chain initialize failed for check global options failed`);
-            return error_code_1.ErrorCode.RESULT_INVALID_BLOCK;
-        }
-        this.m_globalOptions = globalOptions;
         this.m_state = ChainState.syncing;
         let _instanceOptions = Object.create(null);
         Object.assign(_instanceOptions, instanceOptions);
         // 初始化时，要同步的peer数目，与这个数目的peer完成同步之后，才开始接收tx，挖矿等等
-        _instanceOptions.initializePeerCount = !util_1.isNullOrUndefined(instanceOptions.initializePeerCount) ? instanceOptions.initializePeerCount : 1;
+        _instanceOptions.initializePeerCount = !util_2.isNullOrUndefined(instanceOptions.initializePeerCount) ? instanceOptions.initializePeerCount : 1;
         // 初始化时，一次请求的最大header数目
-        _instanceOptions.headerReqLimit = !util_1.isNullOrUndefined(instanceOptions.headerReqLimit) ? instanceOptions.headerReqLimit : 2000;
+        _instanceOptions.headerReqLimit = !util_2.isNullOrUndefined(instanceOptions.headerReqLimit) ? instanceOptions.headerReqLimit : 2000;
         // confirm数目，当块的depth超过这个值时，认为时绝对安全的；分叉超过这个depth的两个fork，无法自动合并回去
-        _instanceOptions.confirmDepth = !util_1.isNullOrUndefined(instanceOptions.confirmDepth) ? instanceOptions.confirmDepth : 6;
-        _instanceOptions.ignoreVerify = !util_1.isNullOrUndefined(instanceOptions.ignoreVerify) ? instanceOptions.ignoreVerify : 0;
+        _instanceOptions.confirmDepth = !util_2.isNullOrUndefined(instanceOptions.confirmDepth) ? instanceOptions.confirmDepth : 6;
+        _instanceOptions.ignoreVerify = !util_2.isNullOrUndefined(instanceOptions.ignoreVerify) ? instanceOptions.ignoreVerify : 0;
         this.m_instanceOptions = _instanceOptions;
         this.m_pending = this._createPending();
         this.m_pending.init();
@@ -265,7 +296,7 @@ class Chain extends events_1.EventEmitter {
         this.m_node.base.on('error', (connRemotePeer) => {
             this._onConnectionError(connRemotePeer);
         });
-        let err = await this._loadChain();
+        err = await this._loadChain();
         if (err) {
             return err;
         }
@@ -312,7 +343,7 @@ class Chain extends events_1.EventEmitter {
     _createChainNode() {
         return new block_1.RandomOutNode({
             node: this.m_instanceOptions.node,
-            minOutbound: !util_1.isNullOrUndefined(this.m_instanceOptions.minOutbound) ? this.m_instanceOptions.minOutbound : 8,
+            minOutbound: !util_2.isNullOrUndefined(this.m_instanceOptions.minOutbound) ? this.m_instanceOptions.minOutbound : 8,
             checkCycle: this.m_instanceOptions.connectionCheckCycle ? this.m_instanceOptions.connectionCheckCycle : 1000,
             dataDir: this.m_dataDir,
             logger: this.m_logger,
@@ -1010,7 +1041,49 @@ class Chain extends events_1.EventEmitter {
             this._addPendingBlocks({ block, storage });
         }
     }
-    async create(genesis, storage) {
+    async onPreCreateGenesis(globalOptions, genesisOptions) {
+        const err = await this.setGlobalOptions(globalOptions);
+        return err;
+    }
+    /**
+     * virtual
+     * @param block
+     */
+    async onCreateGenesisBlock(block, storage, genesisOptions) {
+        let dbr = await storage.createDatabase(Chain.dbUser);
+        if (dbr.err) {
+            this.m_logger.error(`miner create genensis block failed for create user table to storage failed ${dbr.err}`);
+            return dbr.err;
+        }
+        dbr = await storage.createDatabase(Chain.dbSystem);
+        if (dbr.err) {
+            return dbr.err;
+        }
+        let kvr = await dbr.value.createKeyValue(Chain.kvNonce);
+        if (kvr.err) {
+            this.m_logger.error(`miner create genensis block failed for create nonce table to storage failed ${kvr.err}`);
+            return kvr.err;
+        }
+        kvr = await dbr.value.createKeyValue(Chain.kvConfig);
+        if (kvr.err) {
+            this.m_logger.error(`miner create genensis block failed for create config table to storage failed ${kvr.err}`);
+            return kvr.err;
+        }
+        for (let [key, value] of Object.entries(this.globalOptions)) {
+            if (!(util_1.isString(value) || util_1.isNumber(value) || util_1.isBoolean(value))) {
+                assert(false, `invalid globalOptions ${key}`);
+                this.m_logger.error(`miner create genensis block failed for write global config to storage failed for invalid globalOptions ${key}`);
+                return error_code_1.ErrorCode.RESULT_INVALID_FORMAT;
+            }
+            let { err } = await kvr.kv.hset('global', key, value);
+            if (err) {
+                this.m_logger.error(`miner create genensis block failed for write global config to storage failed ${err}`);
+                return err;
+            }
+        }
+        return error_code_1.ErrorCode.RESULT_OK;
+    }
+    async onPostCreateGenesis(genesis, storage) {
         // assert(genesis.header.storageHash === (await storage.messageDigest()).value);
         assert(genesis.number === 0);
         if (genesis.number !== 0) {

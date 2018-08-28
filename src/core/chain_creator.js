@@ -144,7 +144,7 @@ class ChainCreator {
         if (err) {
             return { err };
         }
-        return { err: error_code_1.ErrorCode.RESULT_OK, miner };
+        return { err: error_code_1.ErrorCode.RESULT_OK, miner, globalOptions: lcr.config.globalOptions };
     }
     async createChainInstance(dataDir) {
         if (!path.isAbsolute(dataDir)) {
@@ -163,7 +163,7 @@ class ChainCreator {
         if (err) {
             return { err };
         }
-        return { err: error_code_1.ErrorCode.RESULT_OK, chain };
+        return { err: error_code_1.ErrorCode.RESULT_OK, chain, globalOptions: lcr.config.globalOptions };
     }
 }
 exports.ChainCreator = ChainCreator;

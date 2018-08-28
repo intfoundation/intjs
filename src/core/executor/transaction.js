@@ -10,7 +10,7 @@ class BaseExecutor {
         this.m_logger = logger;
     }
     async prepareContext(blockHeader, storage, externContext) {
-        let database = (await storage.getReadWritableDatabase(chain_1.Chain.dbUser));
+        let database = (await storage.getReadWritableDatabase(chain_1.Chain.dbUser)).value;
         let context = Object.create(externContext);
         // context.getNow = (): number => {
         //     return blockHeader.timestamp;

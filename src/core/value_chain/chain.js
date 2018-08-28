@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const bignumber_js_1 = require("bignumber.js");
 const error_code_1 = require("../error_code");
+const assert = require('assert');
+const address_1 = require("../address");
 const chain_1 = require("../chain");
 const block_1 = require("./block");
 const transaction_1 = require("./transaction");
@@ -43,6 +46,42 @@ class ValueChain extends chain_1.Chain {
     }
     _createPending() {
         return new pending_1.ValuePendingTransactions({ storageManager: this.m_storageManager, logger: this.logger, txlivetime: this.m_globalOptions.txlivetime });
+    }
+    async onCreateGenesisBlock(block, storage, genesisOptions) {
+        let err = await super.onCreateGenesisBlock(block, storage, genesisOptions);
+        if (err) {
+            return err;
+        }
+        let dbr = await storage.getReadWritableDatabase(chain_1.Chain.dbSystem);
+        if (dbr.err) {
+            assert(false, `value chain create genesis failed for no system database`);
+            return dbr.err;
+        }
+        const dbSystem = dbr.value;
+        let gkvr = await dbSystem.getReadWritableKeyValue(chain_1.Chain.kvConfig);
+        if (gkvr.err) {
+            return gkvr.err;
+        }
+        let rpr = await gkvr.kv.rpush('features', 'value');
+        if (rpr.err) {
+            return rpr.err;
+        }
+        if (!genesisOptions || !address_1.isValidAddress(genesisOptions.coinbase)) {
+            this.m_logger.error(`create genesis failed for genesisOptioins should has valid coinbase`);
+            return error_code_1.ErrorCode.RESULT_INVALID_PARAM;
+        }
+        block.header.coinbase = genesisOptions.coinbase;
+        let kvr = await dbSystem.createKeyValue(ValueChain.kvBalance);
+        // 在这里给用户加钱
+        if (genesisOptions && genesisOptions.preBalances) {
+            // 这里要给几个账户放钱
+            let kvBalance = kvr.kv;
+            for (let index = 0; index < genesisOptions.preBalances.length; index++) {
+                // 按照address和amount预先初始化钱数
+                await kvBalance.set(genesisOptions.preBalances[index].address, new bignumber_js_1.BigNumber(genesisOptions.preBalances[index].amount));
+            }
+        }
+        return kvr.err;
     }
 }
 // 存储每个address的money，其中有一个默认的系统账户
