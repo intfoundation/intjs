@@ -46,7 +46,13 @@ class StorageDumpSnapshotManager {
     }
     removeSnapshot(blockHash) {
         const snapshot = new dump_snapshot_1.StorageDumpSnapshot(blockHash, this.getSnapshotFilePath(blockHash));
-        fs.removeSync(snapshot.filePath);
+        try {
+            fs.removeSync(snapshot.filePath);
+        }
+        catch (e) {
+            this.m_logger.error(`removeSnapshot ${blockHash} `, e);
+            return error_code_1.ErrorCode.RESULT_EXCEPTION;
+        }
         return error_code_1.ErrorCode.RESULT_OK;
     }
 }

@@ -11,6 +11,7 @@ class BlockStorage {
         this.m_blockHeaderType = options.blockHeaderType;
         this.m_transactionType = options.transactionType;
         this.m_logger = options.logger;
+        this.m_readonly = !!options.readonly;
     }
     init() {
         fs.mkdirsSync(this.m_path);
@@ -50,6 +51,9 @@ class BlockStorage {
         fs.writeFileSync(this._pathOfBlock(hash), blockRaw);
     }
     add(block) {
+        if (this.m_readonly) {
+            return client_1.ErrorCode.RESULT_NOT_SUPPORT;
+        }
         let hash = block.hash;
         if (this.has(hash)) {
             return client_1.ErrorCode.RESULT_ALREADY_EXIST;

@@ -146,7 +146,7 @@ class ChainCreator {
         }
         return { err: error_code_1.ErrorCode.RESULT_OK, miner, globalOptions: lcr.config.globalOptions };
     }
-    async createChainInstance(dataDir) {
+    async createChainInstance(dataDir, options) {
         if (!path.isAbsolute(dataDir)) {
             dataDir = path.join(process.cwd(), dataDir);
         }
@@ -159,7 +159,7 @@ class ChainCreator {
             return { err: error_code_1.ErrorCode.RESULT_INVALID_TYPE };
         }
         let chain = instance.newChain(this, lcr.config.typeOptions);
-        let err = await chain.initComponents(dataDir, lcr.config.handler);
+        let err = await chain.initComponents(dataDir, lcr.config.handler, options);
         if (err) {
             return { err };
         }

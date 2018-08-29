@@ -16,11 +16,11 @@ async function main() {
     const dataDir = command.options.get('dataDir');
     const chainCreator = core_1.initChainCreator({ logger });
     if (command.command === 'memory') {
-        let { err, debuger } = await core_1.createValueMemoryDebuger(chainCreator, dataDir);
+        let { err, debuger } = await core_1.createValueDebuger(chainCreator, dataDir);
         if (err) {
             process.exit();
         }
-        const session = debuger.createSession();
+        const session = debuger.createIndependentSession();
         const height = parseInt(command.options.get('height'));
         const accounts = parseInt(command.options.get('accounts'));
         const coinbase = parseInt(command.options.get('coinbase'));

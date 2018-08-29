@@ -100,6 +100,7 @@ class PendingTransactions {
         let address = txTime.tx.address;
         let { err, nonce } = await this.getNonce(address);
         if (err) {
+            this.m_logger.error(`_addTx getNonce nonce error ${err}`);
             return err;
         }
         if (nonce + 1 === txTime.tx.nonce) {

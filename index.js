@@ -125,18 +125,14 @@ class Intjs {
         assert(typeof transactions === 'boolean');
 
         let params = {which: which, transactions: transactions};
-        let {err, block, txs} = await this.chainClient.getBlock(params);
+        let ret = await this.chainClient.getBlock(params);
 
-        if (err) {
-            console.error(`get block failed for ${err}`);
-            return {err: errorCode[err].slice(7)}
+        if (ret.err) {
+            console.error(`get block failed for ${ret.err}`);
+            return {err: errorCode[ret.err].slice(7)}
         } else {
-            console.log(`get block,the block hash: ${block.hash}`);
-            if (transactions) {
-                return {block, txs}
-            } else {
-                return block;
-            }
+            console.log(`get block,the block hash: ${ret.block.hash}`);
+            return ret;
         }
     }
 
@@ -404,6 +400,7 @@ class Intjs {
         assert(fee, 'fee is requied');
         assert(secret, 'secret is required');
 
+        let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
         tx.method = 'unmortgage';
         tx.fee = new client.BigNumber(fee);

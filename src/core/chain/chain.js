@@ -179,21 +179,30 @@ class Chain extends events_1.EventEmitter {
         const err = await this.setGlobalOptions(kvgr.value);
         return err;
     }
-    async initComponents(dataDir, handler) {
+    async initComponents(dataDir, handler, options) {
         // 上层保证await调用别重入了, 不加入中间状态了
         if (this.m_state >= ChainState.init) {
             return error_code_1.ErrorCode.RESULT_OK;
         }
         this.m_dataDir = dataDir;
         this.m_handler = handler;
+        const readonly = options && options.readonly;
         this.m_blockStorage = new block_1.BlockStorage({
             logger: this.m_logger,
             path: dataDir,
             blockHeaderType: this._getBlockHeaderType(),
-            transactionType: this._getTransactionType()
+            transactionType: this._getTransactionType(),
+            readonly
         });
         await this.m_blockStorage.init();
-        this.m_db = await sqlite.open(dataDir + '/' + Chain.s_dbFile, { mode: sqlite3.OPEN_CREATE | sqlite3.OPEN_READWRITE });
+        let sqliteOptions = {};
+        if (!readonly) {
+            sqliteOptions.mode = sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE;
+        }
+        else {
+            sqliteOptions.mode = sqlite3.OPEN_READONLY;
+        }
+        this.m_db = await sqlite.open(dataDir + '/' + Chain.s_dbFile, sqliteOptions);
         this.m_headerStorage = new block_1.HeaderStorage({
             logger: this.m_logger,
             blockHeaderType: this._getBlockHeaderType(),
@@ -849,7 +858,7 @@ class Chain extends events_1.EventEmitter {
                     hr.headers = hr.headers.slice(1);
                 }
                 this.m_node.broadcast(hr.headers, { filter: (conn) => {
-                        this.m_logger.info(`broadcast to ${conn.getRemote()}: ${!broadcastExcept.has(conn.getRemote())}`);
+                        this.m_logger.debug(`broadcast to ${conn.getRemote()}: ${!broadcastExcept.has(conn.getRemote())}`);
                         return !broadcastExcept.has(conn.getRemote());
                     } });
                 this.m_logger.info(`broadcast tip headers from number: ${hr.headers[0].number} hash: ${hr.headers[0].hash} to number: ${this.m_tip.number} hash: ${this.m_tip.hash}`);

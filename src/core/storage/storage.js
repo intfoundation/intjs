@@ -50,12 +50,22 @@ class Storage extends IReadWritableStorage {
         return this.m_filePath;
     }
     async reset() {
-        await this.remove();
+        const err = await this.remove();
+        if (err) {
+            return err;
+        }
         return await this.init();
     }
     async remove() {
         await this.uninit();
-        fs.removeSync(this.m_filePath);
+        try {
+            fs.removeSync(this.m_filePath);
+        }
+        catch (e) {
+            this.m_logger.error(`remove storage ${this.m_filePath} failed `, e);
+            return error_code_1.ErrorCode.RESULT_EXCEPTION;
+        }
+        return error_code_1.ErrorCode.RESULT_OK;
     }
     async messageDigest() {
         let buf = await fs.readFile(this.m_filePath);

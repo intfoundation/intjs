@@ -84,20 +84,20 @@ class BdtNode extends net_1.INode {
         // 过滤掉自己和种子peer
         let peers = res.peerlist.filter((val) => {
             if (!val.peerid) {
-                this.m_logger.info(`exclude undefined peerid, ${JSON.stringify(val)}`);
+                this.m_logger.debug(`exclude undefined peerid, ${JSON.stringify(val)}`);
                 return false;
             }
             if (this.m_skipList.includes(val.peerid)) {
-                this.m_logger.info(`exclude ${val.peerid} from skipList`);
+                this.m_logger.debug(`exclude ${val.peerid} from skipList`);
                 return false;
             }
             if (excludes.includes(val.peerid)) {
-                this.m_logger.info(`exclude ${val.peerid} from excludesList`);
+                this.m_logger.debug(`exclude ${val.peerid} from excludesList`);
                 return false;
             }
             let ready = val.getAdditionalInfo('ready');
             if (ready !== 1) {
-                this.m_logger.info(`exclude ${val.peerid} not ready`);
+                this.m_logger.debug(`exclude ${val.peerid} not ready`);
                 return false;
             }
             return true;

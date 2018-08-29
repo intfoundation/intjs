@@ -21,8 +21,8 @@ setTimeout(async () => {
     // let addr = await intjs.publicKeyToAddress(pubkey.pubkey);
     // console.log(addr);
 
-    // let block = await intjs.getBlock('1f7771fc4714356d41caaf35ad712b8cf43b1472082d5109ebd7fac482d91a56', true);
-    // console.log(block);
+    let block = await intjs.getBlock('1dbccb8fa6764acfd6244f283ad9f7ce04abdc4d80b6974813971ee913b15297', true);
+    console.log(block);
 
     // let hash = await intjs.transferTo('1C8sQHNV7z16hf4hxamYC3ypynkyG1yzYK', '1000', '10', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
     // console.log(hash);
@@ -63,10 +63,10 @@ setTimeout(async () => {
 // setInterval(async () => {
 //     let hash1 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
 //     console.log(hash1);
-//     let hash2 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', 'c07ad83d2c5627acece18312362271e22d7aeffb6e2a6e0ffe1107371514fdc2');
-//     console.log(hash2);
-//     let hash3 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', '9b55dea11fc216e768bf436d0efe9e734ec7bc9e575a935ae6203e5e99dae5ac');
-//     console.log(hash3);
-//     let hash4 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', 'e109b61f011c9939ac51808fac542b66fcb358f69bf710f5d11eb5d1f3e82bc3');
-//     console.log(hash4);
-// }, 10000);
+    // let hash2 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', 'c07ad83d2c5627acece18312362271e22d7aeffb6e2a6e0ffe1107371514fdc2');
+    // console.log(hash2);
+    // let hash3 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', '9b55dea11fc216e768bf436d0efe9e734ec7bc9e575a935ae6203e5e99dae5ac');
+    // console.log(hash3);
+    // let hash4 = await intjs.transferTo('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '10', '1', 'e109b61f011c9939ac51808fac542b66fcb358f69bf710f5d11eb5d1f3e82bc3');
+    // console.log(hash4);
+// }, 1000);

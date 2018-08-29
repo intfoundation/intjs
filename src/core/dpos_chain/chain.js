@@ -17,19 +17,22 @@ class DposChain extends value_chain_1.ValueChain {
     get _broadcastDepth() {
         return 0;
     }
-    async initComponents(dataDir, handler) {
-        let err = await super.initComponents(dataDir, handler);
+    async initComponents(dataDir, handler, options) {
+        let err = await super.initComponents(dataDir, handler, options);
         if (err) {
             return err;
         }
-        try {
-            await this.m_db.run(initMinersSql);
-            return error_code_1.ErrorCode.RESULT_OK;
+        const readonly = options && options.readonly;
+        if (!readonly) {
+            try {
+                await this.m_db.run(initMinersSql);
+            }
+            catch (e) {
+                this.logger.error(e);
+                return error_code_1.ErrorCode.RESULT_EXCEPTION;
+            }
         }
-        catch (e) {
-            this.logger.error(e);
-            return error_code_1.ErrorCode.RESULT_EXCEPTION;
-        }
+        return error_code_1.ErrorCode.RESULT_OK;
     }
     async newBlockExecutor(block, storage) {
         let kvBalance = (await storage.getKeyValue(value_chain_1.Chain.dbSystem, value_chain_1.ValueChain.kvBalance)).kv;

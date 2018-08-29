@@ -5,6 +5,8 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./storage"));
 __export(require("./dump_snapshot"));
+__export(require("./dump_snapshot_manager"));
+__export(require("./log_snapshot_manager"));
 __export(require("./logger"));
 __export(require("./storage_manager"));
 __export(require("./js_log"));
