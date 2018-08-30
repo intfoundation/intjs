@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const error_code_1 = require("../error_code");
 const net_1 = require("../net");
 const connection_1 = require("./connection");
-const P2P = require('../../../bdt/p2p/p2p');
-const { NetHelper, HashDistance } = require('../../../bdt/base/util.js');
+// const P2P = require('../../../bdt/p2p/p2p');
+// const { NetHelper, HashDistance } = require('../../../bdt/base/util.js');
 class BdtNode extends net_1.INode {
     // 初始化传入tcp port和udp port，传入0就不监听对应协议
     // @param options { 

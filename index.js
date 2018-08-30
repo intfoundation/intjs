@@ -28,7 +28,6 @@
 
 const client = require('./src/client');
 const assert = require('assert');
-const secp256k1 = require('secp256k1');
 const errorCode = require('./src/core/error_code').ErrorCode;
 
 client.initUnhandledRejection();
