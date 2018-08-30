@@ -1,4 +1,4 @@
-[![NPM version][npm-image]][npm-url]
+[![NPM version][https://img.shields.io/npm/v/intjs.svg]][https://www.npmjs.com/package/intjs]
 
 
 # Intjs
