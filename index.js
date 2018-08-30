@@ -145,14 +145,14 @@ class Intjs {
         assert(txhash, 'transaction hash is required');
 
         let tx = {tx: txhash};
-        let {err, block, receipt} = await this.chainClient.getTransactionReceipt(tx);
+        let ret = await this.chainClient.getTransactionReceipt(tx);
 
-        if (err) {
-            console.error(`get transaction failed for ${err}`);
-            return {err: errorCode[err].slice(7)}
+        if (ret.err) {
+            console.error(`get transaction failed for ${ret.err}`);
+            return {err: errorCode[ret.err].slice(7)}
         } else {
-            console.log(`get transaction,the transaction hash: ${receipt.transactionHash}`);
-            return receipt;
+            console.log(`get transaction,the transaction hash: ${ret.receipt.transactionHash}`);
+            return ret;
         }
     }
 

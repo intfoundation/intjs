@@ -127,6 +127,7 @@ class BlockHeader extends serializable_1.SerializableWithHash {
         obj.number = this.number;
         obj.timestamp = this.timestamp;
         obj.preBlock = this.preBlockHash;
+        obj.merkleRoot = this.merkleRoot;
         return obj;
     }
 }

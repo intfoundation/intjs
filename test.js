@@ -21,13 +21,13 @@ setTimeout(async () => {
     // let addr = await intjs.publicKeyToAddress(pubkey.pubkey);
     // console.log(addr);
 
-    let block = await intjs.getBlock('1dbccb8fa6764acfd6244f283ad9f7ce04abdc4d80b6974813971ee913b15297', true);
+    let block = await intjs.getBlock('0d904e48266da643f78117b134fc22c51cb0c0827c58bbe31d638f746cd910b3', true);
     console.log(block);
 
-    // let hash = await intjs.transferTo('1C8sQHNV7z16hf4hxamYC3ypynkyG1yzYK', '1000', '10', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
+    // let hash = await intjs.transferTo('1CHpy1NayZHXxLe21LuzpTMLSs32Xk9D1K', '100000', '0', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
     // console.log(hash);
 
-    // let Receipt = await intjs.getTransactionReceipt('6e19650790fbd9f79c77e500ab905f82e7907dd335a4e7d7cf3e5b8352a2c543');
+    // let Receipt = await intjs.getTransactionReceipt('ee00fb256268b29c83ec16c01c8e71d630e0f89b7c2a9b62121954bdac412d80');
     // console.log(Receipt);
 
     // let morHash = await intjs.mortgage('1000', '10', 'c07ad83d2c5627acece18312362271e22d7aeffb6e2a6e0ffe1107371514fdc2');
@@ -58,6 +58,10 @@ setTimeout(async () => {
 
     // let blindHash = await intjs.blindauction('100', '64d8284297f40dc7475b4e53eb72bc052b41bef62fecbd3d12c5e99b623cfc11');
     // console.log(blindHash);
+
+    // let l = intjs.chainClient.getMinerWageListener();
+    // let wage = await l(2);
+    // console.log(wage);
 },1000);
 
 // setInterval(async () => {
