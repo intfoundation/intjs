@@ -505,31 +505,6 @@ class Intjs {
         console.log(`${ret.value}`);
         return ret.value;
     }
-
-    async blindauction (fee, secret) {
-
-        let address = client.addressFromSecretKey(secret);
-        let tx = new client.ValueTransaction();
-        tx.method = 'blindauction';
-        tx.fee = new client.BigNumber(fee);
-        tx.input = '';
-
-        let {err, nonce} = await this.chainClient.getNonce({address});
-
-        if (err) {
-            return {err: err}
-        }
-        tx.nonce = nonce + 1;
-        tx.sign(secret);
-
-        let sendRet = await this.chainClient.sendTransaction({tx});
-        if (sendRet.err) {
-            return {err: sendRet.err}
-        }
-        this.watchingTx.push(tx.hash);
-        return {hash: tx.hash}
-
-    }
 }
 
 module.exports = Intjs;
