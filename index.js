@@ -505,6 +505,22 @@ class Intjs {
         console.log(`${ret.value}`);
         return ret.value;
     }
+
+    /**
+     * send signed transaction.
+     * @param {String} tx from writer.render()
+     * @returns {Object} {hash: string}
+     */
+    async sendSignedTransaction (tx) {
+        assert(renderStr, 'renderStr is required');
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)};
+        }
+        this.watchingTx.push(sendRet.hash);
+        return {hash: sendRet.hash}
+    }
 }
 
 module.exports = Intjs;
