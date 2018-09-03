@@ -512,7 +512,7 @@ class Intjs {
      * @returns {Object} {hash: string}
      */
     async sendSignedTransaction (tx) {
-        assert(renderStr, 'renderStr is required');
+        assert(tx, 'tx is required');
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx});
         if (sendRet.err) {
