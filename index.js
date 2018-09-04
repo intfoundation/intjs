@@ -136,6 +136,23 @@ class Intjs {
     }
 
     /**
+     * get block number.
+     * @returns {Number} current block number;
+     */
+    async getBlockNumber () {
+        let params = {which: 'latest', transactions: false};
+        let ret = await this.chainClient.getBlock(params);
+
+        if (ret.err) {
+            console.error(`get block failed for ${ret.err}`);
+            return {err: errorCode[ret.err].slice(7)}
+        } else {
+            console.log(`get block,the block hash: ${ret.block.hash}`);
+            return ret.block.number;
+        }
+    }
+
+    /**
      * get transaction receipt.
      * @param {String} txhash
      * @returns {Object} receipt
