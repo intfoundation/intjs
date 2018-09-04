@@ -12,6 +12,54 @@ const encoding_1 = require("./lib/encoding");
 const digest = require("./lib/digest");
 const bignumber_js_1 = require("bignumber.js");
 const util_1 = require("util");
+function MapToObject(input) {
+    if (!(input instanceof Map)) {
+        throw new Error('input MUST be a Map');
+    }
+    let ret = {};
+    for (const [k, v] of input) {
+        if (!util_1.isString(k)) {
+            throw new Error('input Map`s key MUST be string');
+        }
+        ret[k] = v;
+    }
+    return ret;
+}
+exports.MapToObject = MapToObject;
+function SetToArray(input) {
+    if (!(input instanceof Set)) {
+        throw new Error('input MUST be a Set');
+    }
+    let ret = new Array();
+    for (const item of input) {
+        ret.push(item);
+    }
+    return ret;
+}
+exports.SetToArray = SetToArray;
+function SetFromObject(input) {
+    if (!util_1.isObject(input)) {
+        throw new Error('input MUST be a Object');
+    }
+    let ret = new Set();
+    do {
+        const item = input.shift();
+        ret.add(item);
+    } while (input.length > 0);
+    return ret;
+}
+exports.SetFromObject = SetFromObject;
+function MapFromObject(input) {
+    if (!util_1.isObject(input)) {
+        throw new Error('input MUST be a Object');
+    }
+    let ret = new Map();
+    for (const k of Object.keys(input)) {
+        ret.set(k, input[k]);
+    }
+    return ret;
+}
+exports.MapFromObject = MapFromObject;
 function deepCopy(o) {
     if (util_1.isUndefined(o) || util_1.isNull(o)) {
         return o;
@@ -35,17 +83,17 @@ function deepCopy(o) {
         }
         return s;
     }
-    else if (util_1.isObject(o)) {
-        let s = Object.create(null);
-        for (let k of Object.keys(o)) {
-            s[k] = deepCopy(o[k]);
-        }
-        return s;
-    }
     else if (o instanceof Map) {
         let s = new Map();
         for (let k of o.keys()) {
             s.set(k, deepCopy(o.get(k)));
+        }
+        return s;
+    }
+    else if (util_1.isObject(o)) {
+        let s = Object.create(null);
+        for (let k of Object.keys(o)) {
+            s[k] = deepCopy(o[k]);
         }
         return s;
     }
@@ -77,17 +125,16 @@ function toStringifiable(o, parsable = false) {
         }
         return s;
     }
+    else if (o instanceof Map) {
+        throw new Error(`use MapToObject before toStringifiable`);
+    }
+    else if (o instanceof Set) {
+        throw new Error(`use SetToArray before toStringifiable`);
+    }
     else if (util_1.isObject(o)) {
         let s = Object.create(null);
         for (let k of Object.keys(o)) {
             s[k] = toStringifiable(o[k], parsable);
-        }
-        return s;
-    }
-    else if (o instanceof Map) {
-        let s = Object.create(null);
-        for (let k of o.keys()) {
-            s[k] = toStringifiable(o.get(k), parsable);
         }
         return s;
     }

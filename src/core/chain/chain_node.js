@@ -4,7 +4,6 @@ const assert = require("assert");
 const events_1 = require("events");
 const util_1 = require("util");
 const error_code_1 = require("../error_code");
-// const storage_1 = require("../storage");
 const block_1 = require("../block");
 const reader_1 = require("../lib/reader");
 const writer_1 = require("../lib/writer");
@@ -147,6 +146,11 @@ class ChainNode extends events_1.EventEmitter {
                 }
                 else {
                     if (txes.length) {
+                        let hashs = [];
+                        for (let tx of txes) {
+                            hashs.push(tx.hash);
+                        }
+                        this.logger.debug(`receive transaction from ${conn.getRemote()} ${JSON.stringify(hashs)}`);
                         this.emit('transactions', conn, txes);
                     }
                 }

@@ -112,19 +112,16 @@ class PendingTransactions {
         else {
             for (let i = 0; i < this.m_transactions.length; i++) {
                 if (this.m_transactions[i].tx.address === txTime.tx.address && this.m_transactions[i].tx.nonce === txTime.tx.nonce) {
+                    let txOld = this.m_transactions[i].tx;
                     if (this.isTimeout(this.m_transactions[i])) {
-                        this.m_transactions.splice(i, 1);
-                        this.addToQueue(txTime);
-                        // addToQueue会设置txTime的nonce进去，txTime.tx.nonce会小于inPendingNonce,所以需要重新设置回去
-                        this.m_mapNonce.set(txTime.tx.address, nonce);
+                        this.m_transactions.splice(i, 1, txTime);
+                        await this.onReplaceTx(txTime.tx, txOld);
                         return error_code_1.ErrorCode.RESULT_OK;
                     }
                     let _err = await this.checkSmallNonceTx(txTime.tx, this.m_transactions[i].tx);
                     if (_err === error_code_1.ErrorCode.RESULT_OK) {
-                        this.m_transactions.splice(i, 1);
-                        this.addToQueue(txTime);
-                        // addToQueue会设置txTime的nonce进去，txTime.tx.nonce会小于inPendingNonce,所以需要重新设置回去
-                        this.m_mapNonce.set(txTime.tx.address, nonce);
+                        this.m_transactions.splice(i, 1, txTime);
+                        await this.onReplaceTx(txTime.tx, txOld);
                         return error_code_1.ErrorCode.RESULT_OK;
                     }
                     return _err;
@@ -263,6 +260,8 @@ class PendingTransactions {
     addToQueue(txTime) {
         this.m_transactions.push(txTime);
         this.m_mapNonce.set(txTime.tx.address, txTime.tx.nonce);
+    }
+    async onReplaceTx(txNew, txOld) {
     }
 }
 exports.PendingTransactions = PendingTransactions;

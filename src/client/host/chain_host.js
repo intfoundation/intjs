@@ -148,7 +148,7 @@ class ChainHost {
         if (commandOptions.has('forceClean')) {
             fs.removeSync(dataDir);
         }
-        if (fs.pathExistsSync(dataDir)) {
+        if (core_1.Chain.dataDirValid(dataDir)) {
             return dataDir;
         }
         else {

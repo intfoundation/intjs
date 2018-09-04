@@ -69,11 +69,7 @@ class ValuePendingTransactions extends chain_1.PendingTransactions {
     }
     async checkSmallNonceTx(txNew, txOld) {
         if (txNew.fee.gt(txOld.fee)) {
-            let br = await this.getBalance(txNew.address);
-            if (br.err) {
-                return br.err;
-            }
-            return this._updateBalance(txNew.address, br.value.plus(txOld.value).minus(txNew.value).plus(txOld.fee).minus(txNew.fee));
+            return error_code_1.ErrorCode.RESULT_OK;
         }
         return error_code_1.ErrorCode.RESULT_FEE_TOO_SMALL;
     }
@@ -102,6 +98,14 @@ class ValuePendingTransactions extends chain_1.PendingTransactions {
         }
         this.m_transactions.splice(pos, 0, txTime);
         this.m_mapNonce.set(txTime.tx.address, txTime.tx.nonce);
+    }
+    async onReplaceTx(txNew, txOld) {
+        let br = await this.getBalance(txNew.address);
+        if (br.err) {
+            return;
+        }
+        await this._updateBalance(txNew.address, br.value.plus(txOld.value).minus(txNew.value).plus(txOld.fee).minus(txNew.fee));
+        return;
     }
 }
 exports.ValuePendingTransactions = ValuePendingTransactions;

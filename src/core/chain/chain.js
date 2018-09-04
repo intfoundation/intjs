@@ -5,12 +5,11 @@ const events_1 = require("events");
 const path = require("path");
 const sqlite = require("sqlite");
 const sqlite3 = require("sqlite3");
+const fs = require("fs-extra");
 const util_1 = require("util");
 const error_code_1 = require("../error_code");
 const logger_util_1 = require("../lib/logger_util");
 const block_1 = require("../block");
-// const storage_1 = require("../storage");
-// const storage_2 = require("../storage_sqlite/storage");
 const pending_1 = require("./pending");
 const executor_1 = require("../executor");
 const chain_node_1 = require("./chain_node");
@@ -40,6 +39,15 @@ class Chain extends events_1.EventEmitter {
         };
         this.m_connSyncMap = new Map();
         this.m_logger = logger_util_1.initLogger(options);
+    }
+    static dataDirValid(dataDir) {
+        if (!fs.pathExistsSync(dataDir)) {
+            return false;
+        }
+        if (!fs.pathExistsSync(path.join(dataDir, Chain.s_dbFile))) {
+            return false;
+        }
+        return true;
     }
     on(event, listener) {
         return super.on(event, listener);
@@ -420,6 +428,7 @@ class Chain extends events_1.EventEmitter {
         let err = await this.m_pending.addTransaction(tx);
         // TODO: 广播要排除tx的来源 
         if (!err) {
+            this.logger.debug(`broadcast transaction txhash=${tx.hash}, nonce=${tx.hash}, address=${tx.address}`);
             this.m_node.broadcast([tx]);
         }
         return err;

@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const error_code_1 = require("../error_code");
 const net_1 = require("../net");
-// const P2P = require('../../../bdt/p2p/p2p');
 class BdtConnection extends net_1.IConnection {
     constructor(options) {
         super();

@@ -467,8 +467,11 @@ class Intjs {
             console.error(`getVote failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        console.log(`${ret.value}`);
-        return {vote: ret.value.toString()};
+        let vote = client.MapFromObject(ret.value);
+        for (let [k, v] of vote) {
+            console.log(`${k}:${v.toString()}`);
+        }
+        return {vote: vote};
     }
 
     /**

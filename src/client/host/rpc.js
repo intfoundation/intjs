@@ -98,23 +98,24 @@ class ChainServer {
                 await promisify(resp.write.bind(resp)(JSON.stringify({ err: hr.err })));
             }
             else {
+                let l = new core_1.ValueHandler().getMinerWageListener();
+                let wage = await l(hr.header.number);
+                let header = hr.header.stringify();
+                header.reward = wage;
                 // 是否返回 block的transactions内容
                 if (params.transactions) {
                     let block = await this.m_chain.getBlock(hr.header.hash);
-                    let l = this.m_chain.handler.getMinerWageListener();
-                    let wage = await l(hr.header.number);
-                    let header = hr.header.stringify();
-                    header.reward = wage;
                     if (block) {
                         // 处理block content 中的transaction, 然后再响应请求
                         let transactions = block.content.transactions.map((tr) => tr.stringify());
                         if (transactions && transactions.length !== 0) {
                             let totalFee = 0;
-                            transactions.forEach(function(value, index) {
-                                totalFee += value.fee
+                            transactions.forEach(function (value, index) {
+                                totalFee += value.fee;
                             });
-                            header.fee = totalFee
-                        } else {
+                            header.fee = totalFee;
+                        }
+                        else {
                             header.fee = 0;
                         }
                         let res = { err: core_1.ErrorCode.RESULT_OK, block: header, transactions };
@@ -122,7 +123,7 @@ class ChainServer {
                     }
                 }
                 else {
-                    await promisify(resp.write.bind(resp)(JSON.stringify({ err: core_1.ErrorCode.RESULT_OK, block: hr.header.stringify() })));
+                    await promisify(resp.write.bind(resp)(JSON.stringify({ err: core_1.ErrorCode.RESULT_OK, block: header })));
                 }
             }
             await promisify(resp.end.bind(resp))();
