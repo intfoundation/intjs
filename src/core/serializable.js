@@ -102,6 +102,47 @@ function deepCopy(o) {
     }
 }
 exports.deepCopy = deepCopy;
+function toEvalText(o) {
+    if (util_1.isUndefined(o) || util_1.isNull(o)) {
+        return JSON.stringify(o);
+    }
+    else if (util_1.isNumber(o) || util_1.isBoolean(o)) {
+        return JSON.stringify(o);
+    }
+    else if (util_1.isString(o)) {
+        return JSON.stringify(o);
+    }
+    else if (o instanceof bignumber_js_1.BigNumber) {
+        return `new BigNumber('${o.toString()}')`;
+    }
+    else if (util_1.isBuffer(o)) {
+        return `Buffer.from('${o.toString('hex')}', 'hex')`;
+    }
+    else if (util_1.isArray(o) || o instanceof Array) {
+        let s = [];
+        for (let e of o) {
+            s.push(toEvalText(e));
+        }
+        return `[${s.join(',')}]`;
+    }
+    else if (o instanceof Map) {
+        throw new Error(`use MapToObject before toStringifiable`);
+    }
+    else if (o instanceof Set) {
+        throw new Error(`use SetToArray before toStringifiable`);
+    }
+    else if (util_1.isObject(o)) {
+        let s = [];
+        for (let k of Object.keys(o)) {
+            s.push(`'${k}':${toEvalText(o[k])}`);
+        }
+        return `{${s.join(',')}}`;
+    }
+    else {
+        throw new Error('not JSONable');
+    }
+}
+exports.toEvalText = toEvalText;
 function toStringifiable(o, parsable = false) {
     if (util_1.isUndefined(o) || util_1.isNull(o)) {
         return o;

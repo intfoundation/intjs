@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = require("../../core");
+const core_1 = require("../../core/error_code");
+const core_2 = require("../../core/serializable");
 const rpc_client_1 = require("../lib/rpc_client");
 class HostClient {
     constructor(options) {
@@ -61,7 +62,7 @@ class HostClient {
         if (cr.ret !== 200) {
             return { err: core_1.ErrorCode.RESULT_FAILED };
         }
-        return core_1.fromStringifiable(JSON.parse(cr.resp));
+        return core_2.fromStringifiable(JSON.parse(cr.resp));
     }
 }
 exports.HostClient = HostClient;

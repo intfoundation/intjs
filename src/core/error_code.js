@@ -37,6 +37,8 @@ var ErrorCode;
     ErrorCode[ErrorCode["RESULT_VER_NOT_SUPPORT"] = 35] = "RESULT_VER_NOT_SUPPORT";
     ErrorCode[ErrorCode["RESULT_EXECUTE_ERROR"] = 36] = "RESULT_EXECUTE_ERROR";
     ErrorCode[ErrorCode["RESULT_VERIFY_NOT_MATCH"] = 37] = "RESULT_VERIFY_NOT_MATCH";
+    ErrorCode[ErrorCode["RESULT_TX_CHECKER_ERROR"] = 38] = "RESULT_TX_CHECKER_ERROR";
+    ErrorCode[ErrorCode["RESULT_TX_FEE_NOT_ENOUGH"] = 39] = "RESULT_TX_FEE_NOT_ENOUGH";
     ErrorCode[ErrorCode["RESULT_SKIPPED"] = 40] = "RESULT_SKIPPED";
     ErrorCode[ErrorCode["RESULT_FORK_DETECTED"] = 50] = "RESULT_FORK_DETECTED";
 })(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));
