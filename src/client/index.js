@@ -4,6 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./client/client"));
+__export(require('bignumber.js'));
 __export(require("./lib/simple_command"));
 var unhandled_rejection_1 = require("./lib/unhandled_rejection");
 exports.initUnhandledRejection = unhandled_rejection_1.init;
@@ -14,3 +15,4 @@ exports.rejectifyErrorCode = rejectify_1.rejectifyErrorCode;
 __export(require('../core/lib/logger_util'));
 __export(require('../core/address'));
 __export(require('../core/serializable'));
+__export(require('../core/value_chain/transaction'));
