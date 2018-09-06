@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("../../core/error_code");
+const valueTransaction = require("../../core/value_chain/transaction");
 const core_2 = require("../../core/serializable");
 const rpc_client_1 = require("../lib/rpc_client");
 class HostClient {
@@ -30,7 +31,7 @@ class HostClient {
         return JSON.parse(cr.resp);
     }
     async sendTransaction(params) {
-        let writer = new core_1.BufferWriter();
+        let writer = new core_2.BufferWriter();
         let err = params.tx.encode(writer);
         if (err) {
             this.m_logger.error(`send invalid transactoin`, params.tx);
@@ -44,8 +45,8 @@ class HostClient {
         return { err: JSON.parse(cr.resp) };
     }
     async sendSignedTransaction(params) {
-        let vTx = new core_1.ValueTransaction();
-        let err = vTx.decode(new core_1.BufferReader(params.tx));
+        let vTx = new valueTransaction();
+        let err = vTx.decode(new core_2.BufferReader(params.tx));
         if (err) {
             this.m_logger.error(`decode transaction error`, params.tx);
             return { err: core_1.ErrorCode.RESULT_INVALID_FORMAT };
