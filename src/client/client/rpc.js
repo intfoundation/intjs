@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("../../core/error_code");
-const valueTransaction = require("../../core/value_chain/transaction");
+const ValueTransaction = require("../../core/value_chain/transaction");
 const core_2 = require("../../core/serializable");
 const rpc_client_1 = require("../lib/rpc_client");
 class HostClient {
@@ -45,7 +45,7 @@ class HostClient {
         return { err: JSON.parse(cr.resp) };
     }
     async sendSignedTransaction(params) {
-        let vTx = new valueTransaction();
+        let vTx = new ValueTransaction();
         let err = vTx.decode(new core_2.BufferReader(params.tx));
         if (err) {
             this.m_logger.error(`decode transaction error`, params.tx);
