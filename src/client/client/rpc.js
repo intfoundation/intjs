@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("../../core/error_code");
-const ValueTransaction = require("../../core/value_chain/transaction");
+const ValueTransaction = require("../../core/value_chain/transaction").ValueTransaction;
 const core_2 = require("../../core/serializable");
 const rpc_client_1 = require("../lib/rpc_client");
 class HostClient {
