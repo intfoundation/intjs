@@ -13,6 +13,7 @@ exports.rejectifyValue = rejectify_1.rejectifyValue;
 exports.rejectifyErrorCode = rejectify_1.rejectifyErrorCode;
 
 __export(require('../core/lib/logger_util'));
+__export(require('../core/lib/crypt'));
 __export(require('../core/address'));
 __export(require('../core/serializable'));
 __export(require('../core/value_chain/transaction'));

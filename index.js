@@ -85,6 +85,21 @@ class Intjs {
         return {address: address, serect: serect.toString('hex')}
     }
 
+  /**
+   * encrypt a private key to keyStore.
+   * @param {String} privateKey
+   * @param {String} password
+   * @returns {Promise<Promise<*>|{version, id, crypto}|*|PromiseLike<ArrayBuffer>>}
+   */
+    async encrypt (privateKey, password) {
+         assert(privateKey, 'private key is required');
+         assert(password, 'password key is required');
+
+         let keyStore = client.encrypt(privateKey, password);
+
+         return keyStore;
+    }
+
     /**
      * create public key from private key.
      * @param {String} privateKey
