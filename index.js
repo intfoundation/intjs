@@ -76,13 +76,13 @@ class Intjs {
 
     /**
      * create an account with public key and private key.
-     * @returns {Promise<{address: string, serect: string}>}
+     * @returns {Promise<{address: string, secret: string}>}
      */
     async create () {
-        let [key, serect] = client.createKeyPair();
+        let [key, secret] = client.createKeyPair();
         let address = client.addressFromPublicKey(key);
 
-        return {address: address, serect: serect.toString('hex')}
+        return {address: address, secret: secret.toString('hex')}
     }
 
   /**
