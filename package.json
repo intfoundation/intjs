@@ -1,6 +1,6 @@
 {
   "name": "intjs",
-  "version": "1.2.13",
+  "version": "1.2.14",
   "description": "INT JavaScript API",
   "main": "index.js",
   "scripts": {

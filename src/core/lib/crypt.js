@@ -77,7 +77,7 @@ let encrypt = function(privateKey, password, options) {
     return {
         version: 3,
         id: uuid.v4({ random: options.uuid || cryp.randomBytes(16) }),
-        //address: address,
+        address: '',
         crypto: {
             ciphertext: ciphertext.toString('hex'),
             cipherparams: {
