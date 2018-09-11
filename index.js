@@ -76,9 +76,9 @@ class Intjs {
 
     /**
      * create an account with public key and private key.
-     * @returns {Promise<{address: string, secret: string}>}
+     * @returns {address: string, secret: string}
      */
-    async create () {
+    create () {
         let [key, secret] = client.createKeyPair();
         let address = client.addressFromPublicKey(key);
 
@@ -89,9 +89,9 @@ class Intjs {
    * encrypt a private key to keyStore.
    * @param {String} privateKey
    * @param {String} password
-   * @returns {Promise<Promise<*>|{version, id, crypto}|*|PromiseLike<ArrayBuffer>>}
+   * @returns {Object}
    */
-    async encrypt (privateKey, password) {
+    encrypt (privateKey, password) {
          assert(privateKey, 'private key is required');
          assert(password, 'password key is required');
 
@@ -103,9 +103,9 @@ class Intjs {
     /**
      * create public key from private key.
      * @param {String} privateKey
-     * @returns {Promise<{address: string, pubkey: *}>}
+     * @returns {Object}
      */
-    async privateKeyToPublicKey (privateKey) {
+    privateKeyToPublicKey (privateKey) {
         assert(privateKey, 'private key is required.');
 
         let address = client.addressFromSecretKey(privateKey);
@@ -117,9 +117,9 @@ class Intjs {
     /**
      * create address from public key.
      * @param {String} pubkey
-     * @returns {Promise<{address: *}>}
+     * @returns {Object}
      */
-    async publicKeyToAddress (pubkey) {
+    publicKeyToAddress (pubkey) {
         assert(pubkey, 'public key is required.');
 
         let address = client.addressFromPublicKey(pubkey);
