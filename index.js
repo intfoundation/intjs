@@ -100,6 +100,21 @@ class Intjs {
          return keyStore;
     }
 
+  /**
+   * decrypt a keystore to the account.
+   * @param {String} keystore
+   * @param {String} password
+   * @returns {Object}
+   */
+    decrypt (keystore, password) {
+      assert(keystore, 'keystore is required');
+      assert(password, 'password key is required');
+
+      let account = client.decrypt(keystore, password);
+
+      return account;
+    }
+
     /**
      * create public key from private key.
      * @param {String} privateKey
