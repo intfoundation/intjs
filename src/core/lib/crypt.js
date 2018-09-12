@@ -3,6 +3,7 @@ var Hash = require("./hash");
 var uuid = require('uuid');
 var cryp = (typeof global === 'undefined') ? require('crypto-browserify') : require('crypto');
 var scryptsy = require('scrypt.js');
+var Address = require('../address');
 
 let isHexStrict = function(hex) {
     return ((_.isString(hex) || _.isNumber(hex)) && /^(-)?0x[0-9a-f]*$/i.test(hex));
@@ -136,7 +137,8 @@ let decrypt = function(v3Keystore, password, nonStrict) {
     var seed = Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString('hex');
 
     //return this.privateKeyToAccount(seed);
-    return seed;
+    var address = Address.addressFromSecretKey(seed);
+    return {address: address, privateKey: seed};
 };
 
 
