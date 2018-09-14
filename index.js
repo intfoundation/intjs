@@ -157,10 +157,10 @@ class Intjs {
         let ret = await this.chainClient.getBlock(params);
 
         if (ret.err) {
-            console.error(`get block failed for ${ret.err}`);
+            // console.error(`get block failed for ${ret.err}`);
             return {err: errorCode[ret.err].slice(7)}
         } else {
-            console.log(`get block,the block hash: ${ret.block.hash}`);
+            // console.log(`get block,the block hash: ${ret.block.hash}`);
             return ret;
         }
     }
@@ -174,10 +174,10 @@ class Intjs {
         let ret = await this.chainClient.getBlock(params);
 
         if (ret.err) {
-            console.error(`get block failed for ${ret.err}`);
+            // console.error(`get block failed for ${ret.err}`);
             return {err: errorCode[ret.err].slice(7)}
         } else {
-            console.log(`get block,the block hash: ${ret.block.hash}`);
+            // console.log(`get block,the block hash: ${ret.block.hash}`);
             return ret.block.number;
         }
     }
@@ -194,10 +194,10 @@ class Intjs {
         let ret = await this.chainClient.getTransactionReceipt(tx);
 
         if (ret.err) {
-            console.error(`get transaction failed for ${ret.err}`);
+            // console.error(`get transaction failed for ${ret.err}`);
             return {err: errorCode[ret.err].slice(7)}
         } else {
-            console.log(`get transaction,the transaction hash: ${ret.receipt.transactionHash}`);
+            // console.log(`get transaction,the transaction hash: ${ret.receipt.transactionHash}`);
             return ret;
         }
     }
@@ -215,10 +215,10 @@ class Intjs {
             params: { address: _address }
         });
         if (ret.err) {
-            console.error(`get balance failed for ${ret.err};`);
+            // console.error(`get balance failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        console.log(`${_address}\`s Balance: ${ret.value}`);
+        // console.log(`${_address}\`s Balance: ${ret.value}`);
         return {balance: ret.value.toString()};
     }
 
@@ -237,10 +237,10 @@ class Intjs {
             params: { address: _address, tokenid: tokenid }
         });
         if (ret.err) {
-            console.error(`get ${_address}\`s Token ${tokenid} balance failed for ${ret.err};`);
+            // console.error(`get ${_address}\`s Token ${tokenid} balance failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        console.log(`${_address}\`s Token ${tokenid} Balance: ${ret.value}`);
+        // console.log(`${_address}\`s Token ${tokenid} Balance: ${ret.value}`);
         return {balance: ret.value.toString()};
     }
 
@@ -270,17 +270,17 @@ class Intjs {
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            console.error(`createToken getNonce failed for ${err}`);
+            // console.error(`createToken getNonce failed for ${err}`);
             return {err: errorCode[err].slice(7)};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
         let sendRet = await this.chainClient.sendTransaction({ tx });
         if (sendRet.err) {
-            console.error(`createToken sendTransaction failed for ${sendRet.err}`);
+            // console.error(`createToken sendTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
-        console.log(`send createToken tx: ${tx.hash}`);
+        // console.log(`send createToken tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash};
     }
@@ -310,7 +310,7 @@ class Intjs {
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            console.error(`transferTokenTo getNonce failed for ${err}`);
+            // console.error(`transferTokenTo getNonce failed for ${err}`);
             return {err: errorCode[err].slice(7)};
         }
 
@@ -319,11 +319,11 @@ class Intjs {
 
         let sendRet = await this.chainClient.sendTransaction({ tx });
         if (sendRet.err) {
-            console.error(`transferTokenTo sendTransaction failed for ${sendRet.err}`);
+            // console.error(`transferTokenTo sendTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
 
-        console.log(`send transferTokenTo tx: ${tx.hash}`);
+        // console.log(`send transferTokenTo tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash};
     }
@@ -352,17 +352,17 @@ class Intjs {
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            console.error(`transferTo getNonce failed for ${err}`);
+            // console.error(`transferTo getNonce failed for ${err}`);
             return {err: errorCode[err].slice(7)};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
         let sendRet = await this.chainClient.sendTransaction({ tx });
         if (sendRet.err) {
-            console.error(`transferTo sendTransaction failed for ${sendRet.err}`);
+            // console.error(`transferTo sendTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
-        console.log(`send transferTo tx: ${tx.hash}`);
+        // console.log(`send transferTo tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -385,17 +385,17 @@ class Intjs {
         tx.input = candidates;
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            console.error(`vote failed for ${err}`);
+            // console.error(`vote failed for ${err}`);
             return {err: errorCode[err].slice(7)};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
         let sendRet = await this.chainClient.sendTransaction({ tx });
         if (sendRet.err) {
-            console.error(`vote failed for ${sendRet.err}`);
+            // console.error(`vote failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
-        console.log(`send vote tx: ${tx.hash}`);
+        // console.log(`send vote tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -419,17 +419,17 @@ class Intjs {
         tx.input = amount;
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            console.error(`mortgage getNonce failed for ${err}`);
+            // console.error(`mortgage getNonce failed for ${err}`);
             return {err: errorCode[err].slice(7)};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
         let sendRet = await this.chainClient.sendTransaction({ tx });
         if (sendRet.err) {
-            console.error(`mortgage sendTransaction failed for ${sendRet.err}`);
+            // console.error(`mortgage sendTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
-        console.log(`send mortgage tx: ${tx.hash}`);
+        // console.log(`send mortgage tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
