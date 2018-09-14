@@ -443,7 +443,7 @@ class Intjs {
      */
     async unmortgage (amount, fee, secret) {
         assert(amount, 'amount is required');
-        assert(fee, 'fee is requied');
+        assert(fee, 'fee is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
@@ -453,17 +453,17 @@ class Intjs {
         tx.input = amount;
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            console.error(`unmortgage failed for ${err}`);
+            // console.error(`unmortgage failed for ${err}`);
             return {err: errorCode[err].slice(7)};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
         let sendRet = await this.chainClient.sendTransaction({ tx });
         if (sendRet.err) {
-            console.error(`unmortgage failed for ${sendRet.err}`);
+            // console.error(`unmortgage failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
-        console.log(`send unmortgage tx: ${tx.hash}`);
+        // console.log(`send unmortgage tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -485,17 +485,17 @@ class Intjs {
         tx.input = '';
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            console.error(`register failed for ${err}`);
+            // console.error(`register failed for ${err}`);
             return {err: errorCode[err].slice(7)};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
         let sendRet = await this.chainClient.sendTransaction({ tx });
         if (sendRet.err) {
-            console.error(`register failed for ${sendRet.err}`);
+            // console.error(`register failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
-        console.log(`send register tx: ${tx.hash}`);
+        // console.log(`send register tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -504,20 +504,19 @@ class Intjs {
      * get vote.
      * @returns {Object} {vote: string}
      */
-    // TODO: 返回的是 [object Object]
     async getVote () {
         let ret = await this.chainClient.view({
             method: 'getVote',
             params: {}
         });
         if (ret.err) {
-            console.error(`getVote failed for ${ret.err};`);
+            // console.error(`getVote failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
         let vote = client.MapFromObject(ret.value);
-        for (let [k, v] of vote) {
-            console.log(`${k}:${v.toString()}`);
-        }
+        // for (let [k, v] of vote) {
+        //     console.log(`${k}:${v.toString()}`);
+        // }
         return {vote: vote};
     }
 
@@ -532,10 +531,10 @@ class Intjs {
             params: { address: _address }
         });
         if (ret.err) {
-            console.error(`getStoke failed for ${ret.err};`);
+            // console.error(`getStoke failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        console.log(`${ret.value}`);
+        // console.log(`${ret.value}`);
         return {stoke: ret.value.toString()};
     }
 
@@ -552,7 +551,7 @@ class Intjs {
             console.error(`getCandidates failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        console.log(`${ret.value}`);
+        // console.log(`${ret.value}`);
         return ret.value;
     }
 
