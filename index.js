@@ -84,35 +84,36 @@ class Intjs {
 
         return {address: address, secret: secret.toString('hex')}
     }
-
-  /**
-   * encrypt a private key to keyStore.
-   * @param {String} privateKey
-   * @param {String} password
-   * @returns {Object}
-   */
+    /**
+     * encrypt a private key to keyStore.
+     * @param {String} privateKey
+     * @param {String} password
+     * @returns {Object}
+     */
     encrypt (privateKey, password) {
-         assert(privateKey, 'private key is required');
-         assert(password, 'password key is required');
+        assert(privateKey, 'private key is required');
+        assert(password, 'password is required');
 
-         let keyStore = client.encrypt(privateKey, password);
+        let keystore = client.encrypt(privateKey, password);
+        let address = client.addressFromSecretKey(privateKey);
+        keystore.address = address;
 
-         return keyStore;
-    }
+        return keystore;
+     }
 
-  /**
-   * decrypt a keystore to the account.
-   * @param {String} keystore
-   * @param {String} password
-   * @returns {Object}
-   */
+    /**
+     * decrypt a keystore to the account.
+     * @param {String} keystore
+     * @param {String} password
+     * @returns {Object}
+     */
     decrypt (keystore, password) {
-      assert(keystore, 'keystore is required');
-      assert(password, 'password key is required');
+        assert(keystore, 'keystore is required');
+        assert(password, 'password key is required');
 
-      let account = client.decrypt(keystore, password);
+        let account = client.decrypt(keystore, password);
 
-      return account;
+        return account;
     }
 
     /**
@@ -121,12 +122,12 @@ class Intjs {
      * @returns {Object}
      */
     privateKeyToPublicKey (privateKey) {
-        assert(privateKey, 'private key is required.');
+      assert(privateKey, 'private key is required.');
 
-        let address = client.addressFromSecretKey(privateKey);
-        let pubkey = client.publicKeyFromSecretKey(privateKey);
+      let address = client.addressFromSecretKey(privateKey);
+      let pubkey = client.publicKeyFromSecretKey(privateKey);
 
-        return {address: address, pubkey: pubkey.toString('hex')}
+      return {address: address, pubkey: pubkey.toString('hex')}
     }
 
     /**
@@ -135,12 +136,71 @@ class Intjs {
      * @returns {Object}
      */
     publicKeyToAddress (pubkey) {
-        assert(pubkey, 'public key is required.');
+      assert(pubkey, 'public key is required.');
 
-        let address = client.addressFromPublicKey(pubkey);
+      let address = client.addressFromPublicKey(pubkey);
 
-        return {address: address}
+      return {address: address}
     }
+
+    /**
+     * create an account with keystore and address.
+     * @param {String} password
+     * @returns {String} address
+     */
+    async newAccount (password) {
+        assert(password, 'password is required');
+
+        let [key, secret] = client.createKeyPair();
+        let privateKey = secret.toString('hex');
+        let address = client.addressFromPublicKey(key);
+
+        let keystore = this.encrypt(privateKey, password);
+        let jsonKeystore = JSON.stringify(keystore);
+
+        let params = {keystore: jsonKeystore, address: address};
+        let ret = await this.chainClient.newAccount(params);
+
+        if (ret.err) {
+          return {err: errorCode[ret.err].slice(7)}
+        } else {
+          return address;
+        }
+
+      }
+
+    /**
+     * read keystore files.
+     * @returns {Array} array of keystore file name
+     */
+    async readFile () {
+          let ret = await this.chainClient.readFile();
+
+          if (ret.err) {
+              return {err: errorCode[ret.err].slice(7)}
+          } else {
+              return ret.files;
+          }
+      }
+
+    /**
+     * read keystore.
+     * @param {String} address
+     * @returns {JSON} keystore
+     */
+    async readKeystore (address) {
+        assert(address, 'address is required');
+
+        let params = {address: address}
+
+        let ret = await this.chainClient.readKeystore(params);
+
+        if (ret.err) {
+            return {err: errorCode[ret.err].slice(7)}
+        } else {
+          return ret.keystore;
+        }
+      }
 
 
     /**
@@ -167,7 +227,7 @@ class Intjs {
 
     /**
      * get block number.
-     * @returns {Number} current block number;
+     * @returns {Number} current block number
      */
     async getBlockNumber () {
         let params = {which: 'latest', transactions: false};

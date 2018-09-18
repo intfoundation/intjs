@@ -65,5 +65,29 @@ class HostClient {
         }
         return core_2.fromStringifiable(JSON.parse(cr.resp));
     }
+    async newAccount(params) {
+        let cr = await this.m_client.callAsync('newAccount', params);
+        if (cr.ret !== 200) {
+          this.m_logger.error(`create account failed ret `, cr.ret);
+          return { err: core_1.ErrorCode.RESULT_FAILED };
+        }
+        return JSON.parse(cr.resp)
+    }
+    async readFile(params) {
+        let cr = await this.m_client.callAsync('readFile', params);
+        if (cr.ret !== 200) {
+            this.m_logger.error(`read file failed`, cr.ret);
+            return {err: core_1.ErrorCode.RESULT_FAILED};
+        }
+        return JSON.parse(cr.resp)
+    }
+    async readKeystore(params) {
+        let cr = await this.m_client.callAsync('readKeystore', params);
+        if (cr.ret !== 200) {
+            this.m_logger.error(`read keystore failed`, cr.ret);
+            return {err: core_1.ErrorCode.RESULT_FAILED}
+        }
+        return JSON.parse(cr.resp);
+    }
 }
 exports.HostClient = HostClient;
