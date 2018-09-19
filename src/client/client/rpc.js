@@ -6,8 +6,8 @@ const core_2 = require("../../core/serializable");
 const rpc_client_1 = require("../lib/rpc_client");
 class HostClient {
     constructor(options) {
-        this.m_logger = options.logger;
-        this.m_client = new rpc_client_1.RPCClient(options.host, options.port, this.m_logger);
+        // this.m_logger = options.logger;
+        this.m_client = new rpc_client_1.RPCClient(options.host, options.port);
     }
     async getBlock(params) {
         let cr = await this.m_client.callAsync('getBlock', params);
@@ -34,12 +34,12 @@ class HostClient {
         let writer = new core_2.BufferWriter();
         let err = params.tx.encode(writer);
         if (err) {
-            this.m_logger.error(`send invalid transactoin`, params.tx);
+            // this.m_logger.error(`send invalid transactoin`, params.tx);
             return { err };
         }
         let cr = await this.m_client.callAsync('sendTransaction', { tx: writer.render() });
         if (cr.ret !== 200) {
-            this.m_logger.error(`send tx failed ret `, cr.ret);
+            // this.m_logger.error(`send tx failed ret `, cr.ret);
             return { err: core_1.ErrorCode.RESULT_FAILED };
         }
         return { err: JSON.parse(cr.resp) };
@@ -48,12 +48,12 @@ class HostClient {
         let vTx = new ValueTransaction();
         let err = vTx.decode(new core_2.BufferReader(params.tx));
         if (err) {
-            this.m_logger.error(`decode transaction error`, params.tx);
+            // this.m_logger.error(`decode transaction error`, params.tx);
             return { err: core_1.ErrorCode.RESULT_INVALID_FORMAT };
         }
         let cr = await this.m_client.callAsync('sendTransaction', { tx: params.tx });
         if (cr.ret !== 200) {
-            this.m_logger.error(`send tx failed ret `, cr.ret);
+            // this.m_logger.error(`send tx failed ret `, cr.ret);
             return { err: core_1.ErrorCode.RESULT_FAILED, hash: vTx.hash };
         }
         return { err: JSON.parse(cr.resp), hash: vTx.hash };
@@ -68,7 +68,7 @@ class HostClient {
     async newAccount(params) {
         let cr = await this.m_client.callAsync('newAccount', params);
         if (cr.ret !== 200) {
-          this.m_logger.error(`create account failed ret `, cr.ret);
+          // this.m_logger.error(`create account failed ret `, cr.ret);
           return { err: core_1.ErrorCode.RESULT_FAILED };
         }
         return JSON.parse(cr.resp)
@@ -76,7 +76,7 @@ class HostClient {
     async readFile(params) {
         let cr = await this.m_client.callAsync('readFile', params);
         if (cr.ret !== 200) {
-            this.m_logger.error(`read file failed`, cr.ret);
+            // this.m_logger.error(`read file failed`, cr.ret);
             return {err: core_1.ErrorCode.RESULT_FAILED};
         }
         return JSON.parse(cr.resp)
@@ -84,7 +84,7 @@ class HostClient {
     async readKeystore(params) {
         let cr = await this.m_client.callAsync('readKeystore', params);
         if (cr.ret !== 200) {
-            this.m_logger.error(`read keystore failed`, cr.ret);
+            // this.m_logger.error(`read keystore failed`, cr.ret);
             return {err: core_1.ErrorCode.RESULT_FAILED}
         }
         return JSON.parse(cr.resp);

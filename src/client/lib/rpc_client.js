@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 class RPCClient {
-    constructor(serveraddr, port, logger) {
-        this.logger = logger;
+    constructor(serveraddr, port) {
+        // this.logger = logger;
         this.m_url = 'http://' + serveraddr + ':' + port + '/rpc';
     }
     call(funName, funcArgs, onComplete) {
@@ -11,7 +11,7 @@ class RPCClient {
             funName,
             args: funcArgs
         };
-        this.logger.info(`RPCClient send request ${sendObj.funName}, params ${JSON.stringify(sendObj.args)}`);
+        // this.logger.info(`RPCClient send request ${sendObj.funName}, params ${JSON.stringify(sendObj.args)}`);
         const xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = () => {
             if (xmlhttp.readyState === 4) {

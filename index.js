@@ -30,8 +30,6 @@ const client = require('./src/client');
 const assert = require('assert');
 const errorCode = require('./src/core/error_code').ErrorCode;
 
-client.initUnhandledRejection();
-
 class Intjs {
     constructor (host, port) {
         assert(host, 'Host is required.');
@@ -44,7 +42,7 @@ class Intjs {
         this.chainClient = new client.ChainClient({
             host,
             port,
-            logger: client.initLogger({ loggerOptions: { console: true}})
+            // logger: client.initLogger({ loggerOptions: { console: true}})
         });
         this.chainClient.on('tipBlock', async (tipBlock) => {
             // console.log(`client onTipBlock, height ${tipBlock.number}`);
@@ -166,8 +164,7 @@ class Intjs {
         } else {
           return address;
         }
-
-      }
+    }
 
     /**
      * read keystore files.
