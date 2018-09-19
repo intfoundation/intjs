@@ -613,6 +613,42 @@ class Intjs {
     }
 
     /**
+     * send a transaction to the network.
+     * @param {Object} params
+     *
+     * @example
+     *  let params = {
+     *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
+     *      method: 'transferTo',
+     *      value: '1000',
+     *      fee: '10',
+     *      input: {to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79'},
+     *      password: '123456789'
+     *  }
+     * @example
+     *  let params = {
+     *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
+     *      method: 'transferTokenTo',
+     *      value: '0',
+     *      fee: '10',
+     *      input: {tokenid: 'BTC', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
+     *      password: '123456789'
+     *  }
+     *
+     * @returns {Object}
+     */
+    async sendTransaction(params) {
+        assert(params, 'params is required');
+
+        let sendRet = await this.chainClient.sendTransaction(params);
+
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)}
+        }
+        this.watchingTx.push(sendRet.hash);
+        return {hash: sendRet.hash}
+    }
+    /**
      * send signed transaction.
      * @param {String} tx from writer.render()
      * @returns {Object} {hash: string}
