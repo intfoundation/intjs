@@ -332,9 +332,9 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendTransaction({ tx });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
         if (sendRet.err) {
-            // console.error(`createToken sendTransaction failed for ${sendRet.err}`);
+            // console.error(`createToken sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
         // console.log(`send createToken tx: ${tx.hash}`);
@@ -374,9 +374,9 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
 
-        let sendRet = await this.chainClient.sendTransaction({ tx });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
         if (sendRet.err) {
-            // console.error(`transferTokenTo sendTransaction failed for ${sendRet.err}`);
+            // console.error(`transferTokenTo sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
 
@@ -414,9 +414,9 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendTransaction({ tx });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
         if (sendRet.err) {
-            // console.error(`transferTo sendTransaction failed for ${sendRet.err}`);
+            // console.error(`transferTo sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
         // console.log(`send transferTo tx: ${tx.hash}`);
@@ -447,7 +447,7 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendTransaction({ tx });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
         if (sendRet.err) {
             // console.error(`vote failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -481,9 +481,9 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendTransaction({ tx });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
         if (sendRet.err) {
-            // console.error(`mortgage sendTransaction failed for ${sendRet.err}`);
+            // console.error(`mortgage sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
         }
         // console.log(`send mortgage tx: ${tx.hash}`);
@@ -515,7 +515,7 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendTransaction({ tx });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
         if (sendRet.err) {
             // console.error(`unmortgage failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -547,7 +547,7 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendTransaction({ tx });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
         if (sendRet.err) {
             // console.error(`register failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
