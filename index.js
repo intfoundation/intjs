@@ -56,7 +56,7 @@ class Intjs {
                     else {
                         let confirm = tipBlock.number - block.number + 1;
                         if (confirm < 6) {
-                            // console.log(`tx:${tx} ${confirm} confirm`);
+                            console.log(`tx:${tx} ${confirm} confirm`);
                         }
                         else {
                             console.log(`tx:${tx} confirmed`);

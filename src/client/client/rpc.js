@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("../../core/error_code");
-const ValueTransaction = require("../../core/value_chain/transaction").ValueTransaction;
+// const ValueTransaction = require("../../core/value_chain/transaction").ValueTransaction;
 const core_2 = require("../../core/serializable");
 const rpc_client_1 = require("../lib/rpc_client");
 class HostClient {
@@ -44,20 +44,20 @@ class HostClient {
         }
         return { err: JSON.parse(cr.resp) };
     }
-    async sendSignedTransaction(params) {
-        let vTx = new ValueTransaction();
-        let err = vTx.decode(new core_2.BufferReader(params.tx));
-        if (err) {
-            // this.m_logger.error(`decode transaction error`, params.tx);
-            return { err: core_1.ErrorCode.RESULT_INVALID_FORMAT };
-        }
-        let cr = await this.m_client.callAsync('sendTransaction', { tx: params.tx });
-        if (cr.ret !== 200) {
-            // this.m_logger.error(`send tx failed ret `, cr.ret);
-            return { err: core_1.ErrorCode.RESULT_FAILED, hash: vTx.hash };
-        }
-        return { err: JSON.parse(cr.resp), hash: vTx.hash };
-    }
+    // async sendSignedTransaction(params) {
+    //     let vTx = new ValueTransaction();
+    //     let err = vTx.decode(new core_2.BufferReader(params.tx));
+    //     if (err) {
+    //         // this.m_logger.error(`decode transaction error`, params.tx);
+    //         return { err: core_1.ErrorCode.RESULT_INVALID_FORMAT };
+    //     }
+    //     let cr = await this.m_client.callAsync('sendTransaction', { tx: params.tx });
+    //     if (cr.ret !== 200) {
+    //         // this.m_logger.error(`send tx failed ret `, cr.ret);
+    //         return { err: core_1.ErrorCode.RESULT_FAILED, hash: vTx.hash };
+    //     }
+    //     return { err: JSON.parse(cr.resp), hash: vTx.hash };
+    // }
     async sendSignedTransaction(params) {
       let writer = new core_2.BufferWriter();
       let err = params.tx.encode(writer);
@@ -65,7 +65,7 @@ class HostClient {
         // this.m_logger.error(`send invalid transaction`, params.tx);
         return { err };
       }
-      let cr = await this.m_client.callAsync('sendTransaction', { tx: writer.render() });
+      let cr = await this.m_client.callAsync('sendSignedTransaction', { tx: writer.render() });
       if (cr.ret !== 200) {
         // this.m_logger.error(`send tx failed ret `, cr.ret);
         return { err: core_1.ErrorCode.RESULT_FAILED };
