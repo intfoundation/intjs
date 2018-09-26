@@ -303,27 +303,30 @@ class Intjs {
 
     /**
      * Create token.
-     * @param {String} tokenid
      * @param {Array} preBalances [{address: string, amount: string}]
      * @param {String} amount
      * @param {String} fee
      * @param {String} secret
+     * @param {String} name
+     * @param {String} symbol
      * @returns {Object} {hash: string}
      * */
-    async createToken (tokenid, preBalances, amount, fee, secret) {
-        assert(tokenid, 'tokenid is required');
+    async createToken (preBalances, amount, fee, name, symbol, secret) {
         assert(preBalances, 'preBalances is required');
         assert(amount, 'amount is required');
         assert(fee, 'fee is required');
         assert(secret, 'secret is required');
+        assert(name, 'name is required');
+        assert(symbol, 'symbol is required');
 
         let address = client.addressFromSecretKey(secret);
+        let contract = this.create().address;
         let tx = new client.ValueTransaction();
 
         tx.method = 'createToken';
-        tx.value = new client.BigNumber(amount);
+        // tx.value = new client.BigNumber(amount);
         tx.fee = new client.BigNumber(fee);
-        tx.input = { tokenid, preBalances };
+        tx.input = { tokenid: contract, preBalances, amount, name, symbol };
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -333,6 +336,7 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
         let sendRet = await this.chainClient.sendSignedTransaction({ tx });
+        console.log(sendRet);
         if (sendRet.err) {
             // console.error(`createToken sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -383,6 +387,10 @@ class Intjs {
         // console.log(`send transferTokenTo tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash};
+    }
+
+    async transferOwnership () {
+
     }
 
     /**
