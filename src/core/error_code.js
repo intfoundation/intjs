@@ -41,6 +41,10 @@ var ErrorCode;
     ErrorCode[ErrorCode["RESULT_TX_FEE_NOT_ENOUGH"] = 39] = "RESULT_TX_FEE_NOT_ENOUGH";
     ErrorCode[ErrorCode["RESULT_SKIPPED"] = 40] = "RESULT_SKIPPED";
     ErrorCode[ErrorCode["RESULT_FORK_DETECTED"] = 50] = "RESULT_FORK_DETECTED";
+
+    // token 相关
+    ErrorCode[ErrorCode["RESULT_NO_PERMISSIONS"] = 10011] = "RESULT_NO_PERMISSIONS";
+    ErrorCode[ErrorCode["RESULT_IS_FROOZEN"] = 10012] = "RESULT_IS_FROOZEN";
 })(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));
 function stringifyErrorCode(err) {
     if (err === ErrorCode.RESULT_OK) {

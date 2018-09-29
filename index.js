@@ -73,7 +73,7 @@ class Intjs {
     }
 
     /**
-     * create an account with public key and private key.
+     * Create an account with public key and private key.
      * @returns {address: string, secret: string}
      */
     create () {
@@ -83,7 +83,7 @@ class Intjs {
         return {address: address, secret: secret.toString('hex')}
     }
     /**
-     * encrypt a private key to keyStore.
+     * Encrypt a private key to keyStore.
      * @param {String} privateKey
      * @param {String} password
      * @returns {Object}
@@ -100,7 +100,7 @@ class Intjs {
      }
 
     /**
-     * decrypt a keystore to the account.
+     * Decrypt a keystore to the account.
      * @param {String} keystore
      * @param {String} password
      * @returns {Object}
@@ -115,7 +115,7 @@ class Intjs {
     }
 
     /**
-     * create public key from private key.
+     * Create public key from private key.
      * @param {String} privateKey
      * @returns {Object}
      */
@@ -129,7 +129,7 @@ class Intjs {
     }
 
     /**
-     * create address from public key.
+     * Create address from public key.
      * @param {String} pubkey
      * @returns {Object}
      */
@@ -142,7 +142,7 @@ class Intjs {
     }
 
     /**
-     * create an account with keystore and address.
+     * Create an account with keystore and address.
      * @param {String} password
      * @returns {String} address
      */
@@ -167,7 +167,7 @@ class Intjs {
     }
 
     /**
-     * read keystore files.
+     * Read keystore files.
      * @returns {Array} array of keystore file name
      */
     async readFile () {
@@ -181,7 +181,7 @@ class Intjs {
       }
 
     /**
-     * read keystore.
+     * Read keystore.
      * @param {String} address
      * @returns {JSON} keystore
      */
@@ -201,7 +201,7 @@ class Intjs {
 
 
     /**
-     * get a block matching the block hash or block number.
+     * Get a block matching the block hash or block number.
      * @param {String|Number} which
      * @param {Boolean} transactions  default false, only contain txs hashes,if true, the block will contain all txs.
      * @returns {Object}
@@ -223,7 +223,7 @@ class Intjs {
     }
 
     /**
-     * get block number.
+     * Get block number.
      * @returns {Number} current block number
      */
     async getBlockNumber () {
@@ -240,7 +240,7 @@ class Intjs {
     }
 
     /**
-     * get transaction receipt.
+     * Get transaction receipt.
      * @param {String} txhash
      * @returns {Object} receipt
      */
@@ -276,11 +276,11 @@ class Intjs {
             return {err: errorCode[ret.err].slice(7)};
         }
         // console.log(`${_address}\`s Balance: ${ret.value}`);
-        return {balance: ret.value.toString()};
+        return {balance: ret.value.toNumber()};
     }
 
     /**
-     * Get balance for a token.
+     * Get token balance for a address.
      * @param {String} tokenid
      * @param {String} _address
      * @returns {Object} {balance: string}
@@ -298,12 +298,11 @@ class Intjs {
             return {err: errorCode[ret.err].slice(7)};
         }
         // console.log(`${_address}\`s Token ${tokenid} Balance: ${ret.value}`);
-        return {balance: ret.value.toString()};
+        return {balance: ret.value.toNumber()};
     }
 
     /**
      * Create token.
-     * @param {Array} preBalances [{address: string, amount: string}]
      * @param {String} amount
      * @param {String} fee
      * @param {String} secret
@@ -311,8 +310,7 @@ class Intjs {
      * @param {String} symbol
      * @returns {Object} {hash: string}
      * */
-    async createToken (preBalances, amount, fee, name, symbol, secret) {
-        assert(preBalances, 'preBalances is required');
+    async createToken (amount, fee, name, symbol, secret) {
         assert(amount, 'amount is required');
         assert(fee, 'fee is required');
         assert(secret, 'secret is required');
@@ -326,7 +324,7 @@ class Intjs {
         tx.method = 'createToken';
         // tx.value = new client.BigNumber(amount);
         tx.fee = new client.BigNumber(fee);
-        tx.input = { tokenid: contract, preBalances, amount, name, symbol };
+        tx.input = { tokenid: contract, amount, name, symbol };
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -336,7 +334,6 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
         let sendRet = await this.chainClient.sendSignedTransaction({ tx });
-        console.log(sendRet);
         if (sendRet.err) {
             // console.error(`createToken sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -365,7 +362,7 @@ class Intjs {
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
 
-        tx.method = 'transferTokenTo',
+        tx.method = 'transferTokenTo';
         tx.fee = new client.BigNumber(fee);
         tx.input = { tokenid, to, amount };
 
@@ -389,8 +386,251 @@ class Intjs {
         return {hash: tx.hash};
     }
 
-    async transferOwnership () {
+    /**
+     * Get token all balance.
+     * @param {String} tokenid
+     * @returns {Object} {balance: string}
+     */
+    async getTokenTotalSupply (tokenid) {
+        assert(tokenid, 'tokenid is required');
 
+        let ret = await this.chainClient.view({
+            method: 'getTokenTotalSupply',
+            params: {tokenid: tokenid}
+        });
+
+        if (ret.err) {
+            return {err: errorCode[ret.err].slice(7)}
+        }
+
+        return {balance: ret.value.toNumber()}
+    }
+
+    /**
+     * Transfer the ownership to the new owner.
+     * @param {String} tokenid
+     * @param {String} newOwner
+     * @param {String} fee
+     * @param {String} secret
+     * @returns {Object} {hash: string}
+     */
+    async transferOwnership (tokenid, newOwner, fee, secret) {
+        assert(tokenid, 'tokenid is required');
+        assert(newOwner, 'newOwner is required');
+        assert(fee, 'fee is required');
+        assert(secret, 'secret is required');
+
+        let address = client.addressFromSecretKey(secret);
+        let tx = new client.ValueTransaction();
+
+        tx.method = 'transferOwnership';
+        tx.fee = new client.BigNumber(fee);
+        tx.input = {tokenid, newOwner};
+
+        let {err, nonce} = await this.chainClient.getNonce({address});
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        tx.nonce = nonce + 1;
+        tx.sign(secret);
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)}
+        }
+
+        return {hash: tx.hash}
+    }
+
+    /**
+     * Create minted tokens to the creator of the contract.
+     * @param {String} tokenid
+     * @param {String} amount
+     * @param {String} fee
+     * @param {String} secret
+     * @returns {Object} {hash: string}
+     */
+    async mintToken (tokenid, amount, fee, secret) {
+        assert(tokenid, 'tokenid is required');
+        assert(amount, 'amount is required');
+        assert(fee, 'fee is required');
+        assert(secret, 'secret is required');
+
+        let address = client.addressFromSecretKey(secret);
+        let tx = new client.ValueTransaction();
+
+        tx.method = 'mintToken';
+        tx.fee = new client.BigNumber(fee);
+        tx.input = {tokenid, amount};
+
+        let {err, nonce} = await this.chainClient.getNonce({address});
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        tx.nonce = nonce + 1;
+        tx.sign(secret);
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)}
+        }
+
+        return {hash: tx.hash}
+    }
+
+    /**
+     * Destroy tokens.
+     * @param {String} tokenid
+     * @param {String} amount
+     * @param {String} fee
+     * @param {String} secret
+     * @returns {Object} {hash: string}
+     */
+    async burn (tokenid, amount, fee, secret) {
+        assert(tokenid, 'tokenid is required');
+        assert(amount, 'amount is required');
+        assert(fee, 'fee is required');
+        assert(secret, 'secret is required');
+
+        let address = client.addressFromSecretKey(secret);
+        let tx = new client.ValueTransaction();
+
+        tx.method = 'burn';
+        tx.fee = new client.BigNumber(fee);
+        tx.input = {tokenid, amount};
+
+        let {err, nonce} = await this.chainClient.getNonce({address});
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        tx.nonce = nonce + 1;
+        tx.sign(secret);
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)}
+        }
+
+        return {hash: tx.hash}
+    }
+
+    /**
+     * Freeze account.
+     * @param {String} tokenid
+     * @param {String} freezeAddress
+     * @param {Boolean} freeze
+     * @param {String} fee
+     * @param {String} secret
+     * @returns {Object} {hash: string}
+     */
+    async freezeAccount (tokenid, freezeAddress, freeze, fee, secret) {
+        assert(tokenid, 'tokenid is required');
+        assert(freezeAddress, 'freezeAddress is required');
+        assert(typeof freeze === "boolean");
+        assert(fee, 'fee is required');
+        assert(secret, 'secret is required');
+
+        let address = client.addressFromSecretKey(secret);
+        let tx = new client.ValueTransaction();
+
+        tx.method = 'freezeAccount';
+        tx.fee = new client.BigNumber(fee);
+        tx.input = {tokenid, freezeAddress, freeze};
+
+        let {err, nonce} = await this.chainClient.getNonce({address});
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        tx.nonce = nonce + 1;
+        tx.sign(secret);
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)}
+        }
+
+        return {hash: tx.hash}
+    }
+
+    /**
+     * Set allowance for other address.
+     * @param {String} tokenid
+     * @param {String} amount
+     * @param {String} spender
+     * @param {String} fee
+     * @param {String} secret
+     * @returns {Object} {hash: string}
+     */
+    async approve (tokenid, amount, spender, fee, secret) {
+        assert(tokenid, 'tokenid is required');
+        assert(amount, 'amount is required');
+        assert(spender, 'spender is required');
+        assert(fee, 'fee is required');
+        assert(secret, 'secret is required');
+
+        let address = client.addressFromSecretKey(secret);
+        let tx = new client.ValueTransaction();
+
+        tx.method = 'approve';
+        tx.fee = new client.BigNumber(fee);
+        tx.input = {tokenid, amount, spender};
+
+        let {err, nonce} = await this.chainClient.getNonce({address});
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        tx.nonce = nonce + 1;
+        tx.sign(secret);
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)}
+        }
+
+        return {hash: tx.hash}
+    }
+    /**
+     * Transfer tokens from other address.
+     * @param {String} tokenid
+     * @param {String} from
+     * @param {String} to
+     * @param {String} fee
+     * @param {String} secret
+     * @returns {Object} {hash: string}
+     */
+    async transferFrom (tokenid, from, to, amount, fee, secret) {
+        assert(tokenid, 'tokenid is required');
+        assert(from, 'from is required');
+        assert(to, 'to is required');
+        assert(fee, 'fee is required');
+        assert(secret, 'secret is required');
+
+        let address = client.addressFromSecretKey(secret);
+        let tx = new client.ValueTransaction();
+
+        tx.method = 'transferFrom';
+        tx.fee = new client.BigNumber(fee);
+        tx.input = {tokenid, from, to, amount};
+
+        let {err, nonce} = await this.chainClient.getNonce({address});
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        tx.nonce = nonce + 1;
+        tx.sign(secret);
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)}
+        }
+
+        return {hash: tx.hash}
     }
 
     /**
@@ -580,7 +820,7 @@ class Intjs {
         }
         let vote = client.MapFromObject(ret.value);
         // for (let [k, v] of vote) {
-        //     console.log(`${k}:${v.toString()}`);
+        //     console.log(`${k}:${v.toNumber()}`);
         // }
         return {vote: vote};
     }
@@ -600,7 +840,7 @@ class Intjs {
             return {err: errorCode[ret.err].slice(7)};
         }
         // console.log(`${ret.value}`);
-        return {stoke: ret.value.toString()};
+        return {stoke: ret.value.toNumber()};
     }
 
     /**
@@ -613,7 +853,7 @@ class Intjs {
             params: {}
         });
         if (ret.err) {
-            console.error(`getCandidates failed for ${ret.err};`);
+            // console.error(`getCandidates failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
         // console.log(`${ret.value}`);
