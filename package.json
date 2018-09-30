@@ -15,7 +15,10 @@
     "BlockChain",
     "API"
   ],
-  "author": "like",
+  "author": {
+    "name": "like",
+    "email": "likeaixi@gmail.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/intfoundation/intjs.js/issues"
