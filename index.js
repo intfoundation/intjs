@@ -335,9 +335,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
@@ -383,9 +383,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
@@ -449,9 +449,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
@@ -492,9 +492,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
@@ -535,9 +535,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
@@ -580,9 +580,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
@@ -625,9 +625,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
@@ -669,9 +669,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
@@ -713,9 +713,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
@@ -753,9 +753,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
@@ -794,9 +794,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
@@ -835,9 +835,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
@@ -874,9 +874,9 @@ class Intjs {
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
-        let err = tx.encode(writer);
-        if (err) {
-            return {err: errorCode[err].slice(7)}
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
