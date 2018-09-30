@@ -333,7 +333,14 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
+
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
         if (sendRet.err) {
             // console.error(`createToken sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -375,7 +382,13 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
 
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
         if (sendRet.err) {
             // console.error(`transferTokenTo sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -435,7 +448,13 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -472,7 +491,13 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -509,7 +534,13 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -548,7 +579,13 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -587,7 +624,13 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -625,7 +668,13 @@ class Intjs {
         tx.nonce = nonce + 1;
         tx.sign(secret);
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx});
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -662,7 +711,14 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
+
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
         if (sendRet.err) {
             // console.error(`transferTo sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -695,7 +751,14 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
+
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
         if (sendRet.err) {
             // console.error(`vote failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -729,7 +792,14 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
+
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
         if (sendRet.err) {
             // console.error(`mortgage sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -763,7 +833,14 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
+
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
         if (sendRet.err) {
             // console.error(`unmortgage failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -795,7 +872,14 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx });
+
+        let writer = new client.BufferWriter();
+        let err = tx.encode(writer);
+        if (err) {
+            return {err: errorCode[err].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
         if (sendRet.err) {
             // console.error(`register failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -909,8 +993,9 @@ class Intjs {
             return {err: errorCode[sendRet.err].slice(7)};
         }
         this.watchingTx.push(sendRet.hash);
-        return {hash: sendRet.hash}
+        return {hash: sendRet.hash};
     }
+
 }
 
 module.exports = Intjs;
