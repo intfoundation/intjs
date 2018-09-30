@@ -347,7 +347,7 @@ class Intjs {
         }
         // console.log(`send createToken tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
-        return {hash: tx.hash};
+        return {hash: tx.hash, contract: contract};
     }
 
     /**
