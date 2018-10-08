@@ -70,7 +70,7 @@ class HostClient {
         // this.m_logger.error(`send tx failed ret `, cr.ret);
         return { err: core_1.ErrorCode.RESULT_FAILED };
       }
-      return { err: JSON.parse(cr.resp) };
+      return JSON.parse(cr.resp);
     }
     async view(params) {
         let cr = await this.m_client.callAsync('view', params);
