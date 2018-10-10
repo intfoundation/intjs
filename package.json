@@ -1,6 +1,6 @@
 {
   "name": "intjs",
-  "version": "1.4.28",
+  "version": "1.4.29",
   "description": "INT JavaScript API",
   "main": "index.js",
   "scripts": {
@@ -33,9 +33,6 @@
     "msgpack-lite": "^0.1.26",
     "scrypt.js": "^0.2.0",
     "secp256k1": "^3.5.0",
-    "sqlite": "^2.9.2",
-    "sqlite3": "^4.0.0",
-    "sqlite3-transactions": "0.0.5",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2",
     "winston": "^2.4.3",
