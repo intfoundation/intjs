@@ -203,7 +203,7 @@ class Intjs {
     /**
      * Get a block matching the block hash or block number.
      * @param {String|Number} which
-     * @param {Boolean} transactions  default false, only contain txs hashes,if true, the block will contain all txs.
+     * @param {Boolean} transactions  default false,if true, the block will contain all transactions.
      * @returns {Object}
      */
     async getBlock (which, transactions = false) {
@@ -223,7 +223,7 @@ class Intjs {
     }
 
     /**
-     * Get block number.
+     * Get current block number.
      * @returns {Number} current block number
      */
     async getBlockNumber () {
@@ -240,7 +240,7 @@ class Intjs {
     }
 
     /**
-     * Get transaction receipt.
+     * Get transaction receipt by transaction hash.
      * @param {String} txhash
      * @returns {Object} receipt
      */
@@ -347,7 +347,7 @@ class Intjs {
         }
         // console.log(`send createToken tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
-        return {hash: tx.hash, contract: contract};
+        return {hash: tx.hash, tokenid: contract};
     }
 
     /**
@@ -891,7 +891,7 @@ class Intjs {
 
     /**
      * get vote.
-     * @returns {Object} {vote: string}
+     * @returns {Object} {vote: Map}
      */
     async getVote () {
         let ret = await this.chainClient.view({
@@ -910,9 +910,9 @@ class Intjs {
     }
 
     /**
-     * get stoke
+     * get stake
      * @param {String} _address
-     * @returns {String}
+     * @returns {Object}
      */
     async getStoke (_address) {
         let ret = await this.chainClient.view({
@@ -963,7 +963,7 @@ class Intjs {
      *      method: 'transferTokenTo',
      *      value: '0',
      *      fee: '10',
-     *      input: {tokenid: 'BTC', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
+     *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
      *      password: '123456789'
      *  }
      *
@@ -982,7 +982,7 @@ class Intjs {
     }
     /**
      * send signed transaction.
-     * @param {String} tx from writer.render()
+     * @param {Buffer} tx from writer.render()
      * @returns {Object} {hash: string}
      */
     async sendSignedTransaction (tx) {
@@ -994,6 +994,21 @@ class Intjs {
         }
         this.watchingTx.push(sendRet.hash);
         return {hash: sendRet.hash};
+    }
+
+    /**
+     * get address nonce.
+     * @param {String} address
+     * @returns {Object} {nonce: string}
+     */
+    async getNonce (address) {
+        assert(address, 'address is required');
+
+        let sendRet = await this.chainClient.getNonce({address});
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)};
+        }
+        return {nonce: sendRet.nonce}
     }
 
 }
