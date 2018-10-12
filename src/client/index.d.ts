@@ -203,7 +203,7 @@ export type DposEventContext = {
 
 export type DposViewContext = {
     getVote: () => Promise<Map<string, BigNumber> >;
-    getStoke: (address: string) => Promise<BigNumber>;
+    getStake: (address: string) => Promise<BigNumber>;
     getCandidates: () => Promise<string[]>;
 } & ValueViewContext;
 

@@ -914,17 +914,17 @@ class Intjs {
      * @param {String} _address
      * @returns {Object}
      */
-    async getStoke (_address) {
+    async getStake (_address) {
         let ret = await this.chainClient.view({
-            method: 'getStoke',
+            method: 'getStake',
             params: { address: _address }
         });
         if (ret.err) {
-            // console.error(`getStoke failed for ${ret.err};`);
+            // console.error(`getStake failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
         // console.log(`${ret.value}`);
-        return {stoke: ret.value.toNumber()};
+        return {stake: ret.value.toNumber()};
     }
 
     /**
