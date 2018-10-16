@@ -149,20 +149,13 @@ class Intjs {
     async newAccount (password) {
         assert(password, 'password is required');
 
-        let [key, secret] = client.createKeyPair();
-        let privateKey = secret.toString('hex');
-        let address = client.addressFromPublicKey(key);
-
-        let keystore = this.encrypt(privateKey, password);
-        let jsonKeystore = JSON.stringify(keystore);
-
-        let params = {keystore: jsonKeystore, address: address};
+        let params = {password};
         let ret = await this.chainClient.newAccount(params);
 
         if (ret.err) {
           return {err: errorCode[ret.err].slice(7)}
         } else {
-          return address;
+          return ret.address;
         }
     }
 
