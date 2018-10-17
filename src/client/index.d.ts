@@ -79,9 +79,9 @@ export class Transaction {
 
     readonly hash?: string;
 
-    sign(privateKey: Buffer|string): void;
+    // sign(privateKey: Buffer|string): void;
 
-    static fromRaw(raw: string|Buffer, T: new () => Transaction): Transaction|undefined;
+    // static fromRaw(raw: string|Buffer, T: new () => Transaction): Transaction|undefined;
 }
 
 import {BigNumber} from 'bignumber.js';
@@ -289,7 +289,7 @@ export class ValueHandler extends BaseHandler {
 export class ValueIndependDebugSession {
     init(options: {
         height: number, 
-        accounts: Buffer[] | number,
+        // accounts: Buffer[] | number,
         coinbase: number,
         interval: number,
         preBalance?: BigNumber
@@ -297,7 +297,7 @@ export class ValueIndependDebugSession {
 
     updateHeightTo(height: number, coinbase: number, events?: boolean): ErrorCode;
 
-    transaction(options: {caller: number|Buffer, method: string, input: any, value: BigNumber, fee: BigNumber}): Promise<{err: ErrorCode, receipt?: Receipt}>;
+    // transaction(options: {caller: number|Buffer, method: string, input: any, value: BigNumber, fee: BigNumber}): Promise<{err: ErrorCode, receipt?: Receipt}>;
     wage(): Promise<{err: ErrorCode}>;
     view(options: {method: string, params: any}): Promise<{err: ErrorCode, value?: any}>;
     getAccount(index: number): string;
@@ -315,6 +315,6 @@ export const valueChainDebuger: {
     createChainSession(loggerOptions: {console: boolean, file?: {root: string, filename?: string}, level?: string}, dataDir: string, debugerDir: string): Promise<{err: ErrorCode, session?: ValueChainDebugSession}>;
 };
 
-export function addressFromSecretKey(secret: Buffer|string): string|undefined;
+// export function addressFromSecretKey(secret: Buffer|string): string|undefined;
 export function isValidAddress(address: string): boolean;
-export function createKeyPair():[Buffer, Buffer];
+// export function createKeyPair():[Buffer, Buffer];
