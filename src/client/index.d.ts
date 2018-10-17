@@ -47,12 +47,23 @@ export enum ErrorCode {
     RESULT_SKIPPED = 40,
 
     RESULT_FORK_DETECTED = 50,
+    
+    // token 相关
+    RESULT_NO_PERMISSIONS = 10011, // 没有权限
+    RESULT_IS_FROOZEN = 10012, // 帐户已冻结
 }
+
+export type LoggerOptions = {
+    logger?: LoggerInstance;
+    loggerOptions?: {console: boolean, file?: {root: string, filename?: string}, level?: string};
+};
+
+export function initLogger(options: LoggerOptions): LoggerInstance;
 
 export function stringifyErrorCode(err: ErrorCode): string;
 export function stringify(v: any, parsable?:boolean): any;
 export function parseJSON(v: any): any;
-export function rejectifyValue<T>(func: (...args: any[]) => Promise<{err: ErrorCode, value?: T}>, _this: any): (...args: any[]) => Promise<T>;
+export function rejectifyValue<T>(func: (...args: any[]) => Promise<{err: ErrorCode}&any>, _this: any, _name?: string): (...args: any[]) => Promise<T>;
 export function rejectifyErrorCode(func: (...args: any[]) => Promise<ErrorCode>, _this: any): (...args: any[]) => Promise<void>;
 
 export class Transaction {
@@ -66,7 +77,11 @@ export class Transaction {
 
     input: any;
 
+    readonly hash?: string;
+
     sign(privateKey: Buffer|string): void;
+
+    static fromRaw(raw: string|Buffer, T: new () => Transaction): Transaction|undefined;
 }
 
 import {BigNumber} from 'bignumber.js';
@@ -106,7 +121,7 @@ export interface IReadableKeyValue {
     hlen(key: string): Promise<{ err: ErrorCode, value?: number }>;
     hkeys(key: string): Promise<{ err: ErrorCode, value?: string[] }>;
     hvalues(key: string): Promise<{ err: ErrorCode, value?: any[] }>;
-    hgetall(key: string): Promise<{ err: ErrorCode; value?: any[]; }>;
+    hgetall(key: string): Promise<{ err: ErrorCode; value?: {key: string, value: any}[]; }>;
 
     // array
     lindex(key: string, index: number): Promise<{ err: ErrorCode, value?: any }>;
@@ -161,6 +176,7 @@ export type TransactionContext = {
     caller: string;
     storage: IReadWritableDataBase;
     emit: (name: string, param?: any) => void;
+    createAddress: () => string;
 } & ExecutorContext;
 
 export type EventContext = {
@@ -173,6 +189,7 @@ export type ViewContext = {
 
 export type ValueTransactionContext = {
     value: BigNumber;
+    fee: BigNumber;
     getBalance: (address: string) => Promise<BigNumber>;
     transferTo: (address: string, amount: BigNumber) => Promise<ErrorCode>;
     cost: (fee: BigNumber) => ErrorCode;
@@ -206,19 +223,6 @@ export type DposViewContext = {
     getStake: (address: string) => Promise<BigNumber>;
     getCandidates: () => Promise<string[]>;
 } & ValueViewContext;
-
-export function addressFromSecretKey(secret: Buffer|string): string|undefined;
-
-export function isValidAddress(address: string): boolean;
-
-export function toWei(value: string | number | BigNumber): BigNumber;
-
-export function fromWei(value: string | number | BigNumber): BigNumber;
-
-export function toCoin(value: string | number | BigNumber): BigNumber;
-
-export function fromCoin(value: string | number | BigNumber): BigNumber;
-
 
 export class ChainClient {
     constructor(options: {host: string, port: number});
@@ -285,15 +289,15 @@ export class ValueHandler extends BaseHandler {
 export class ValueIndependDebugSession {
     init(options: {
         height: number, 
-        accounts: Buffer[] | number, 
+        accounts: Buffer[] | number,
         coinbase: number,
         interval: number,
-        preBalance?: number
+        preBalance?: BigNumber
     }): Promise<ErrorCode>;
 
-    updateHeightTo(height: number, coinbase: number): ErrorCode;
+    updateHeightTo(height: number, coinbase: number, events?: boolean): ErrorCode;
 
-    transaction(options: {caller: number, method: string, input: any, value: BigNumber}): Promise<{err: ErrorCode, receipt?: Receipt}>;
+    transaction(options: {caller: number|Buffer, method: string, input: any, value: BigNumber, fee: BigNumber}): Promise<{err: ErrorCode, receipt?: Receipt}>;
     wage(): Promise<{err: ErrorCode}>;
     view(options: {method: string, params: any}): Promise<{err: ErrorCode, value?: any}>;
     getAccount(index: number): string;
@@ -311,3 +315,6 @@ export const valueChainDebuger: {
     createChainSession(loggerOptions: {console: boolean, file?: {root: string, filename?: string}, level?: string}, dataDir: string, debugerDir: string): Promise<{err: ErrorCode, session?: ValueChainDebugSession}>;
 };
 
+export function addressFromSecretKey(secret: Buffer|string): string|undefined;
+export function isValidAddress(address: string): boolean;
+export function createKeyPair():[Buffer, Buffer];
