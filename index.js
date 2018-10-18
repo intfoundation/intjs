@@ -1042,6 +1042,26 @@ class Intjs {
         return {nonce: sendRet.nonce}
     }
 
+    /**
+     * get miners list.
+     * @returns {Object} miner list
+     */
+    async getMiners () {
+        let ret = await this.chainClient.view({
+            method: 'getMiners',
+            params: {}
+        });
+        if (ret.err) {
+            // console.error(`getVote failed for ${ret.err};`);
+            return {err: errorCode[ret.err].slice(7)};
+        }
+        let miners = client.MapFromObject(ret.value);
+        // for (let [k, v] of vote) {
+        //     console.log(`${k}:${v.toString()}`);
+        // }
+        return {miners: miners};
+    }
+
 }
 
 module.exports = Intjs;
