@@ -181,7 +181,7 @@ class Intjs {
     async readKeystore (address) {
         assert(address, 'address is required');
 
-        let params = {address: address}
+        let params = {address: address};
 
         let ret = await this.chainClient.readKeystore(params);
 
@@ -297,15 +297,17 @@ class Intjs {
     /**
      * Create token.
      * @param {String} amount
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @param {String} name
      * @param {String} symbol
      * @returns {Object} {hash: string}
      * */
-    async createToken (amount, fee, name, symbol, secret) {
+    async createToken (amount, limit, price, name, symbol, secret) {
         assert(amount, 'amount is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
         assert(name, 'name is required');
         assert(symbol, 'symbol is required');
@@ -316,7 +318,8 @@ class Intjs {
 
         tx.method = 'createToken';
         // tx.value = new client.BigNumber(amount);
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = { tokenid: contract, amount, name, symbol };
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
@@ -348,22 +351,25 @@ class Intjs {
      *  @param {String} tokenid
      *  @param {String} to
      *  @param {String} amount
-     *  @param {String} fee
+     *  @param {String} limit
+     *  @param {String} price
      *  @param {String} secret
      *  @returns {Object} {hash: string}
      * */
-    async transferTokenTo (tokenid, to, amount, fee, secret) {
+    async transferTokenTo (tokenid, to, amount, limit, price, secret) {
         assert(tokenid, 'tokenid is required');
         assert(to, 'to address is required');
         assert(amount, 'amount is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
 
         tx.method = 'transferTokenTo';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = { tokenid, to, amount };
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
@@ -416,21 +422,24 @@ class Intjs {
      * Transfer the ownership to the new owner.
      * @param {String} tokenid
      * @param {String} newOwner
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async transferOwnership (tokenid, newOwner, fee, secret) {
+    async transferOwnership (tokenid, newOwner, limit, price, secret) {
         assert(tokenid, 'tokenid is required');
         assert(newOwner, 'newOwner is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
 
         tx.method = 'transferOwnership';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = {tokenid, newOwner};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
@@ -459,21 +468,24 @@ class Intjs {
      * Create minted tokens to the creator of the contract.
      * @param {String} tokenid
      * @param {String} amount
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
     async mintToken (tokenid, amount, fee, secret) {
         assert(tokenid, 'tokenid is required');
         assert(amount, 'amount is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
 
         tx.method = 'mintToken';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
@@ -502,21 +514,24 @@ class Intjs {
      * Destroy tokens.
      * @param {String} tokenid
      * @param {String} amount
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
     async burn (tokenid, amount, fee, secret) {
         assert(tokenid, 'tokenid is required');
         assert(amount, 'amount is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
 
         tx.method = 'burn';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
@@ -546,7 +561,8 @@ class Intjs {
      * @param {String} tokenid
      * @param {String} freezeAddress
      * @param {Boolean} freeze
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -554,14 +570,16 @@ class Intjs {
         assert(tokenid, 'tokenid is required');
         assert(freezeAddress, 'freezeAddress is required');
         assert(typeof freeze === "boolean");
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
 
         tx.method = 'freezeAccount';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = {tokenid, freezeAddress, freeze};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
@@ -591,22 +609,25 @@ class Intjs {
      * @param {String} tokenid
      * @param {String} amount
      * @param {String} spender
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async approve (tokenid, amount, spender, fee, secret) {
+    async approve (tokenid, amount, spender, limit, price, secret) {
         assert(tokenid, 'tokenid is required');
         assert(amount, 'amount is required');
         assert(spender, 'spender is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
 
         tx.method = 'approve';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount, spender};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
@@ -635,22 +656,25 @@ class Intjs {
      * @param {String} tokenid
      * @param {String} from
      * @param {String} to
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async transferFrom (tokenid, from, to, amount, fee, secret) {
+    async transferFrom (tokenid, from, to, amount, limit, price, secret) {
         assert(tokenid, 'tokenid is required');
         assert(from, 'from is required');
         assert(to, 'to is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
 
         tx.method = 'transferFrom';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = {tokenid, from, to, amount};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
@@ -679,14 +703,16 @@ class Intjs {
      * Transfer INT.
      * @param {String} to
      * @param {String} amount
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      * */
-    async transferTo (to, amount, fee, secret) {
+    async transferTo (to, amount, limit, price, secret) {
         assert(to, 'to address is required');
         assert(amount, 'amount is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
@@ -694,7 +720,8 @@ class Intjs {
 
         tx.method = 'transferTo';
         tx.value = new client.BigNumber(amount);
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = { to };
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
@@ -724,18 +751,21 @@ class Intjs {
     /**
      * Vote for peer.
      * @param {Array} candidates [string]
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @returns {Object} {hash: string}
      * */
-    async vote (candidates, fee, secret) {
+    async vote (candidates, limit, price, secret) {
         assert(candidates, 'candidates is required');
-        assert(fee, 'fee is requied');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
         tx.method = 'vote';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = candidates;
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -764,18 +794,21 @@ class Intjs {
     /**
      * mortgage.
      * @param {String} amount
-     * @Param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @returns {Object} {hash: string}
      * */
-    async mortgage (amount, fee, secret) {
+    async mortgage (amount, limit, price, secret) {
         assert(amount, 'amount is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
         tx.method = 'mortgage';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.value = new client.BigNumber(amount);
         tx.input = amount;
         let { err, nonce } = await this.chainClient.getNonce({ address });
@@ -805,19 +838,22 @@ class Intjs {
     /**
      * unmortgage.
      * @param {String} amount
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async unmortgage (amount, fee, secret) {
+    async unmortgage (amount, limit, price, secret) {
         assert(amount, 'amount is required');
-        assert(fee, 'fee is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
         tx.method = 'unmortgage';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = amount;
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -845,18 +881,21 @@ class Intjs {
 
     /**
      * peer regist as miner
-     * @param {String} fee
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async register (fee, secret) {
-        assert(fee, 'fee is required');
+    async register (limit, price, secret) {
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
         assert(secret, 'secret is required');
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
         tx.method = 'register';
-        tx.fee = new client.BigNumber(fee);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
         tx.input = '';
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -954,7 +993,6 @@ class Intjs {
      *  let params = {
      *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTokenTo',
-     *      value: '0',
      *      fee: '10',
      *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
      *      password: '123456789'
