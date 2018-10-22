@@ -163,8 +163,8 @@ class Intjs {
      * Read keystore files.
      * @returns {Array} array of keystore file name
      */
-    async readFile () {
-          let ret = await this.chainClient.readFile();
+    async accounts () {
+          let ret = await this.chainClient.accounts();
 
           if (ret.err) {
               return {err: errorCode[ret.err].slice(7)}
@@ -269,7 +269,7 @@ class Intjs {
             return {err: errorCode[ret.err].slice(7)};
         }
         // console.log(`${_address}\`s Balance: ${ret.value}`);
-        return {balance: ret.value.toNumber()};
+        return {balance: ret.value.toString()};
     }
 
     /**
@@ -291,7 +291,7 @@ class Intjs {
             return {err: errorCode[ret.err].slice(7)};
         }
         // console.log(`${_address}\`s Token ${tokenid} Balance: ${ret.value}`);
-        return {balance: ret.value.toNumber()};
+        return {balance: ret.value.toString()};
     }
 
     /**
@@ -415,7 +415,7 @@ class Intjs {
             return {err: errorCode[ret.err].slice(7)}
         }
 
-        return {balance: ret.value.toNumber()}
+        return {balance: ret.value.toString()}
     }
 
     /**
@@ -936,7 +936,7 @@ class Intjs {
         }
         let vote = client.MapFromObject(ret.value);
         // for (let [k, v] of vote) {
-        //     console.log(`${k}:${v.toNumber()}`);
+        //     console.log(`${k}:${v.toString()}`);
         // }
         return {vote: vote};
     }
@@ -956,7 +956,7 @@ class Intjs {
             return {err: errorCode[ret.err].slice(7)};
         }
         // console.log(`${ret.value}`);
-        return {stake: ret.value.toNumber()};
+        return {stake: ret.value.toString()};
     }
 
     /**

@@ -87,7 +87,7 @@ class HostClient {
         }
         return JSON.parse(cr.resp)
     }
-    async readFile(params) {
+    async accounts(params) {
         let cr = await this.m_client.callAsync('readFile', params);
         if (cr.ret !== 200) {
             // this.m_logger.error(`read file failed`, cr.ret);
