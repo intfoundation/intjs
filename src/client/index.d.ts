@@ -47,10 +47,18 @@ export enum ErrorCode {
     RESULT_SKIPPED = 40,
 
     RESULT_FORK_DETECTED = 50,
-    
+
     // token 相关
     RESULT_NO_PERMISSIONS = 10011, // 没有权限
     RESULT_IS_FROOZEN = 10012, // 帐户已冻结
+
+    // 交易费用
+    RESULT_LIMIT_NOT_ENOUGH = 10021, // limit不足
+    RESULT_LIMIT_TOO_BIG = 10022, // limit太大
+    RESULT_BLOCK_LIMIT_TOO_BIG = 10023, // limit太大
+    RESULT_PRICE_OUT_OF_RANGE = 10024, // price不在范围内
+    RESULT_ADDRESS_NOT_EXIST = 10025,
+    RESULT_KEYSTORE_ERROR = 10026,
 }
 
 export type LoggerOptions = {
@@ -91,7 +99,8 @@ export class ValueTransaction extends Transaction {
 
     value: BigNumber;
 
-    fee: BigNumber;
+    limit: BigNumber;
+    price: BigNumber;
 }
 
 export class EventLog {
