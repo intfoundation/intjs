@@ -473,7 +473,7 @@ class Intjs {
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async mintToken (tokenid, amount, fee, secret) {
+    async mintToken (tokenid, amount, limit, price, secret) {
         assert(tokenid, 'tokenid is required');
         assert(amount, 'amount is required');
         assert(limit, 'limit is required');
@@ -519,7 +519,7 @@ class Intjs {
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async burn (tokenid, amount, fee, secret) {
+    async burn (tokenid, amount, limit, price, secret) {
         assert(tokenid, 'tokenid is required');
         assert(amount, 'amount is required');
         assert(limit, 'limit is required');
@@ -566,7 +566,7 @@ class Intjs {
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async freezeAccount (tokenid, freezeAddress, freeze, fee, secret) {
+    async freezeAccount (tokenid, freezeAddress, freeze, limit, price, secret) {
         assert(tokenid, 'tokenid is required');
         assert(freezeAddress, 'freezeAddress is required');
         assert(typeof freeze === "boolean");
@@ -985,7 +985,8 @@ class Intjs {
      *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTo',
      *      value: '1000',
-     *      fee: '10',
+     *      limit: '100000',
+     *      price: '30000000000',
      *      input: {to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79'},
      *      password: '123456789'
      *  }
@@ -993,7 +994,8 @@ class Intjs {
      *  let params = {
      *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTokenTo',
-     *      fee: '10',
+     *      limit: '100000',
+     *      price: '30000000000',
      *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
      *      password: '123456789'
      *  }
