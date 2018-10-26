@@ -169,7 +169,7 @@ class Intjs {
           if (ret.err) {
               return {err: errorCode[ret.err].slice(7)}
           } else {
-              return ret.files;
+              return ret.accounts;
           }
       }
 
