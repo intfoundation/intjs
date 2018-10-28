@@ -192,7 +192,42 @@ class Intjs {
         }
       }
 
+    /**
+     * Get current price of latest two blocks.
+     * @returns {Number}
+     */
+    async getPrice () {
+        let cn = 0;
+        let txs = [];
+        let params = {which: 'latest', transactions: true};
+        let br = await this.chainClient.getBlock(params);
 
+        if (br.err) {
+            return {err: errorCode[br.err].slice(7)}
+        } else {
+            cn = br.block.number;
+            txs.push(br.transactions);
+        }
+
+        if (cn && cn >=1) {
+            let nbr = await this.chainClient.getBlock({which: (cn -1), transactions: true});
+            if (nbr.err) {
+                return {err: errorCode[nbr.err].slice(7)}
+            } else {
+                txs.push(nbr.transactions);
+            }
+        }
+
+        if (txs && txs.length >= 20) {
+            let totalPrice = 0;
+            txs.forEach(function (value){
+                totalPrice += Number(value.price);
+            });
+            return totalPrice/txs.length;
+        } else {
+            return 200000000000;
+        }
+    }
     /**
      * Get a block matching the block hash or block number.
      * @param {String|Number} which
