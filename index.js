@@ -163,8 +163,8 @@ class Intjs {
      * Read keystore files.
      * @returns {Array} array of keystore file name
      */
-    async accounts () {
-          let ret = await this.chainClient.accounts();
+    async getAccounts () {
+          let ret = await this.chainClient.getAccounts();
 
           if (ret.err) {
               return {err: errorCode[ret.err].slice(7)}
