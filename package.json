@@ -21,9 +21,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/intfoundation/intjs.js/issues"
+    "url": "https://github.com/intfoundation/intjs/issues"
   },
-  "homepage": "https://github.com/intfoundation/intjs.js#readme",
+  "homepage": "https://github.com/intfoundation/intjs#readme",
   "dependencies": {
     "bignumber.js": "^7.2.1",
     "crypto": "^1.0.1",
