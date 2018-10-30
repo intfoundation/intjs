@@ -52,6 +52,8 @@ var ErrorCode;
     ErrorCode[ErrorCode["RESULT_PRICE_OUT_OF_RANGE"] = 10024] = "RESULT_PRICE_OUT_OF_RANGE";
     ErrorCode[ErrorCode["RESULT_ADDRESS_NOT_EXIST"] = 10025] = "RESULT_ADDRESS_NOT_EXIST";
     ErrorCode[ErrorCode["RESULT_KEYSTORE_ERROR"] = 10026] = "RESULT_KEYSTORE_ERROR";
+    ErrorCode[ErrorCode["RESULT_ADDRESS_NOT_EXIST"] = 10030] = "RESULT_ADDRESS_NOT_EXIST";
+    ErrorCode[ErrorCode["RESULT_KEYSTORE_ERROR"] = 10031] = "RESULT_KEYSTORE_ERROR";
 })(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));
 function stringifyErrorCode(err) {
     if (err === ErrorCode.RESULT_OK) {
