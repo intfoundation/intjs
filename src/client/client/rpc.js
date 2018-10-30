@@ -45,18 +45,11 @@ class HostClient {
         return JSON.parse(cr.resp);
     }
     async sendTransaction(params) {
-        let writer = new core_2.BufferWriter();
-        let err = params.tx.encode(writer);
-        if (err) {
-            // this.m_logger.error(`send invalid transactoin`, params.tx);
-            return { err };
-        }
-        let cr = await this.m_client.callAsync('sendTransaction', { tx: writer.render() });
+        let cr = await this.m_client.callAsync('sendTransaction', params);
         if (cr.ret !== 200) {
-            // this.m_logger.error(`send tx failed ret `, cr.ret);
-            return { err: core_1.ErrorCode.RESULT_FAILED };
+            return { err: core_1.ErrorCode.RESULT_FAILED, hash: "" };
         }
-        return { err: JSON.parse(cr.resp) };
+        return JSON.parse(cr.resp);
     }
     // async sendSignedTransaction(params) {
     //     let vTx = new ValueTransaction();
