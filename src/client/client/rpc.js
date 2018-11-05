@@ -30,6 +30,13 @@ class HostClient {
         }
         return JSON.parse(cr.resp);
     }
+    async getPendingTransactions(params) {
+        let cr = await this.m_client.callAsync('getPendingTransactions', params);
+        if (cr.ret !== 200) {
+            return { err: core_1.ErrorCode.RESULT_FAILED };
+        }
+        return JSON.parse(cr.resp);
+    }
     async getTransactionByAddress(params) {
         let cr = await this.m_client.callAsync('getTransactionByAddress', params);
         if (cr.ret !== 200) {
