@@ -1099,6 +1099,19 @@ class Intjs {
         return {miners: miners};
     }
 
+    /**
+     * get pending transactions.
+     * @param
+     * @returns {Object} {pendingTransactions: object}
+     */
+    async getPendingTransactions() {
+        let sendRet = await this.chainClient.getPendingTransactions();
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)};
+        }
+        return sendRet.pendingTransactions;
+    }
+
 }
 
 module.exports = Intjs;
