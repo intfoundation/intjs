@@ -350,9 +350,10 @@ class Intjs {
         let address = client.addressFromSecretKey(secret);
         let contract = this.create().address;
         let tx = new client.ValueTransaction();
+        let amount = new client.BigNumber(amount);
 
         tx.method = 'createToken';
-        // tx.value = new client.BigNumber(amount);
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = { tokenid: contract, amount, name, symbol };
@@ -401,8 +402,10 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+        let amount = new client.BigNumber(amount);
 
         tx.method = 'transferTokenTo';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = { tokenid, to, amount };
@@ -473,6 +476,7 @@ class Intjs {
         let tx = new client.ValueTransaction();
 
         tx.method = 'transferOwnership';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, newOwner};
@@ -517,8 +521,10 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+        let amount = new client.BigNumber(amount);
 
         tx.method = 'mintToken';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount};
@@ -563,8 +569,10 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+        let amount = new client.BigNumber(amount);
 
         tx.method = 'burn';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount};
@@ -613,6 +621,7 @@ class Intjs {
         let tx = new client.ValueTransaction();
 
         tx.method = 'freezeAccount';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, freezeAddress, freeze};
@@ -659,8 +668,10 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+        let amount = new client.BigNumber(0);
 
         tx.method = 'approve';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount, spender};
@@ -706,8 +717,10 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+        let amount = new client.BigNumber(amount);
 
         tx.method = 'transferFrom';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, from, to, amount};
@@ -798,10 +811,12 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+
         tx.method = 'vote';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = candidates;
+        tx.input = {candidates};
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
             // console.error(`vote failed for ${err}`);
@@ -841,11 +856,13 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+        let amount = new client.BigNumber(amount);
+
         tx.method = 'mortgage';
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.value = new client.BigNumber(amount);
-        tx.input = amount;
+        tx.value = amount;
+        tx.input = {amount};
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
             // console.error(`mortgage getNonce failed for ${err}`);
@@ -886,10 +903,13 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+        let amount = new client.BigNumber(amount);
+
         tx.method = 'unmortgage';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = amount;
+        tx.input = {amount};
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
             // console.error(`unmortgage failed for ${err}`);
@@ -928,10 +948,12 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
+
         tx.method = 'register';
+        tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = '';
+        tx.input = {};
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
             // console.error(`register failed for ${err}`);
@@ -1029,6 +1051,7 @@ class Intjs {
      *  let params = {
      *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTokenTo',
+     *      value: '0',
      *      limit: '100000',
      *      price: '30000000000',
      *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
