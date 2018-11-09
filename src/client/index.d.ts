@@ -51,14 +51,18 @@ export enum ErrorCode {
     // token 相关
     RESULT_NO_PERMISSIONS = 10011, // 没有权限
     RESULT_IS_FROOZEN = 10012, // 帐户已冻结
+    RESULT_INVALID_ADDRESS = 10013, // 地址不合法
 
     // 交易费用
     RESULT_LIMIT_NOT_ENOUGH = 10021, // limit不足
-    RESULT_LIMIT_TOO_BIG = 10022, // limit太大
-    RESULT_BLOCK_LIMIT_TOO_BIG = 10023, // limit太大
-    RESULT_PRICE_OUT_OF_RANGE = 10024, // price不在范围内
-    RESULT_ADDRESS_NOT_EXIST = 10025,
-    RESULT_KEYSTORE_ERROR = 10026,
+    RESULT_LIMIT_TOO_BIG = 10022, // tx limit太大
+    RESULT_LIMIT_TOO_SMALL = 10023, // tx limit太小
+    RESULT_BLOCK_LIMIT_TOO_BIG = 10024, // block limit太大
+    RESULT_PRICE_TOO_BIG = 10025, // price太大
+    RESULT_PRICE_TOO_SMALL = 10026, // price太小
+
+    RESULT_ADDRESS_NOT_EXIST = 10030,
+    RESULT_KEYSTORE_ERROR = 10031,
 }
 
 export type LoggerOptions = {
