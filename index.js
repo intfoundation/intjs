@@ -500,6 +500,7 @@ class Intjs {
             return {err: errorCode[sendRet.err].slice(7)}
         }
 
+        this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
 
@@ -548,6 +549,7 @@ class Intjs {
             return {err: errorCode[sendRet.err].slice(7)}
         }
 
+        this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
 
@@ -596,6 +598,7 @@ class Intjs {
             return {err: errorCode[sendRet.err].slice(7)}
         }
 
+        this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
 
@@ -645,6 +648,7 @@ class Intjs {
             return {err: errorCode[sendRet.err].slice(7)}
         }
 
+        this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
 
@@ -695,6 +699,7 @@ class Intjs {
             return {err: errorCode[sendRet.err].slice(7)}
         }
 
+        this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
     /**
@@ -744,6 +749,7 @@ class Intjs {
             return {err: errorCode[sendRet.err].slice(7)}
         }
 
+        this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
 
