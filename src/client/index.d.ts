@@ -50,16 +50,19 @@ export enum ErrorCode {
 
     // token 相关
     RESULT_NO_PERMISSIONS = 10011, // 没有权限
-    RESULT_IS_FROOZEN = 10012, // 帐户已冻结
+    RESULT_IS_FROZEN = 10012, // 帐户已冻结
     RESULT_INVALID_ADDRESS = 10013, // 地址不合法
 
-    // 交易费用
+    // 交易
     RESULT_LIMIT_NOT_ENOUGH = 10021, // limit不足
     RESULT_LIMIT_TOO_BIG = 10022, // tx limit太大
     RESULT_LIMIT_TOO_SMALL = 10023, // tx limit太小
     RESULT_BLOCK_LIMIT_TOO_BIG = 10024, // block limit太大
     RESULT_PRICE_TOO_BIG = 10025, // price太大
     RESULT_PRICE_TOO_SMALL = 10026, // price太小
+    RESULT_NOT_BIGNUMBER = 10027, // 不是 bignumber
+    RESULT_CANT_BE_LESS_THAN_ZERO = 10028, // 不能小于 0
+    RESULT_CANT_BE_DECIMAL = 10029, // 不能为小数
 
     RESULT_ADDRESS_NOT_EXIST = 10030,
     RESULT_KEYSTORE_ERROR = 10031,
@@ -91,9 +94,9 @@ export class Transaction {
 
     readonly hash?: string;
 
-    // sign(privateKey: Buffer|string): void;
+    sign(privateKey: Buffer|string): void;
 
-    // static fromRaw(raw: string|Buffer, T: new () => Transaction): Transaction|undefined;
+    static fromRaw(raw: string|Buffer, T: new () => Transaction): Transaction|undefined;
 }
 
 import {BigNumber} from 'bignumber.js';
@@ -103,8 +106,7 @@ export class ValueTransaction extends Transaction {
 
     value: BigNumber;
 
-    limit: BigNumber;
-    price: BigNumber;
+    fee: BigNumber;
 }
 
 export class EventLog {
@@ -302,7 +304,7 @@ export class ValueHandler extends BaseHandler {
 export class ValueIndependDebugSession {
     init(options: {
         height: number, 
-        // accounts: Buffer[] | number,
+        accounts: Buffer[] | number, 
         coinbase: number,
         interval: number,
         preBalance?: BigNumber
@@ -310,7 +312,7 @@ export class ValueIndependDebugSession {
 
     updateHeightTo(height: number, coinbase: number, events?: boolean): ErrorCode;
 
-    // transaction(options: {caller: number|Buffer, method: string, input: any, value: BigNumber, fee: BigNumber}): Promise<{err: ErrorCode, receipt?: Receipt}>;
+    transaction(options: {caller: number|Buffer, method: string, input: any, value: BigNumber, fee: BigNumber, nonce?: number}): Promise<{err: ErrorCode, receipt?: Receipt}>;
     wage(): Promise<{err: ErrorCode}>;
     view(options: {method: string, params: any}): Promise<{err: ErrorCode, value?: any}>;
     getAccount(index: number): string;
@@ -328,6 +330,11 @@ export const valueChainDebuger: {
     createChainSession(loggerOptions: {console: boolean, file?: {root: string, filename?: string}, level?: string}, dataDir: string, debugerDir: string): Promise<{err: ErrorCode, session?: ValueChainDebugSession}>;
 };
 
-// export function addressFromSecretKey(secret: Buffer|string): string|undefined;
+export function addressFromSecretKey(secret: Buffer|string): string|undefined;
 export function isValidAddress(address: string): boolean;
-// export function createKeyPair():[Buffer, Buffer];
+export function createKeyPair():[Buffer, Buffer];
+
+export function toWei(value: string | number | BigNumber): BigNumber;
+export function fromWei(value: string | number | BigNumber): BigNumber;
+export function toCoin(value: string | number | BigNumber): BigNumber;
+export function fromCoin(value: string | number | BigNumber): BigNumber;

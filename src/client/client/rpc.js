@@ -109,70 +109,62 @@ class HostClient {
         }
         return JSON.parse(cr.resp)
     }
-    async readKeystore(params) {
-        let cr = await this.m_client.callAsync('readKeystore', params);
-        if (cr.ret !== 200) {
-            // this.m_logger.error(`read keystore failed`, cr.ret);
-            return {err: core_1.ErrorCode.RESULT_FAILED}
-        }
-        return JSON.parse(cr.resp);
-    }
+
     getTransactionLimit(method, input) {
         let txTotalLimit = this.calcTxLimit(method, input);
         return { limit: txTotalLimit };
     }
-    // 计算单笔tx的 limit
+    // 计算执行tx的 limit
     calcTxLimit(method, input) {
         let txTotalLimit = new bignumber_js_1.BigNumber(0);
-        let txInputBytes = new bignumber_js_1.BigNumber(this.objectToBuffer(input).length);
         switch (method) {
             case 'transferTo':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(2))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(2))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 2, 2, false);
                 break;
             case 'createToken':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(6))).plus(this.m_createLimit).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 6, 0, true);
                 break;
             case 'transferTokenTo':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(2))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(4))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 2, 4, false);
                 break;
             case 'transferFrom':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(3))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(6))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 3, 6, false);
                 break;
             case 'approve':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(2))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(2))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 2, 2, false);
                 break;
             case 'freezeAccount':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(1))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(1))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 1, 1, false);
                 break;
             case 'burn':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(2))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(2))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 2, 2, false);
                 break;
             case 'mintToken':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(2))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(3))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 2, 3, false);
                 break;
             case 'transferOwnership':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(1))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(1))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 1, 1, false);
                 break;
             case 'vote':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(2))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(5))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 2, 5, false);
                 break;
             case 'mortgage':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(2))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(2))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 2, 2, false);
                 break;
             case 'unmortgage':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(3))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(2))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 3, 2, false);
                 break;
             case 'register':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(1))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(1))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 1, 1, false);
                 break;
             case 'publish':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(3))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(1))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 3, 1, false);
                 break;
             case 'bid':
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(1))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(1))).plus(txInputBytes.times(this.m_inputLimit)).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 1, 1, false);
                 break;
             default:
-                txTotalLimit = txTotalLimit.plus(this.m_baseLimit).times(this.m_coefficient);
+                txTotalLimit = this.calcLimit(input, 0, 0, false);
                 break;
         }
         return txTotalLimit;
@@ -180,12 +172,22 @@ class HostClient {
     objectToBuffer(input) {
         let inputString;
         if (input) {
-            inputString = JSON.stringify(core_2.toStringifiable(input, true));
+            inputString = JSON.stringify(serializable_1.toStringifiable(input, true));
         }
         else {
             inputString = JSON.stringify({});
         }
         return Buffer.from(inputString);
+    }
+    calcLimit(input, setN, getN, create) {
+        let txTotalLimit = new bignumber_js_1.BigNumber(0);
+        let txInputBytes = new bignumber_js_1.BigNumber(this.objectToBuffer(input).length);
+        txTotalLimit = txTotalLimit.plus(this.m_baseLimit).plus(this.m_setLimit.times(new bignumber_js_1.BigNumber(setN))).plus(this.m_getLimit.times(new bignumber_js_1.BigNumber(getN))).plus(txInputBytes.times(this.m_inputLimit));
+        if (create) {
+            txTotalLimit = txTotalLimit.plus(this.m_createLimit);
+        }
+        txTotalLimit = txTotalLimit.times(this.m_coefficient);
+        return txTotalLimit;
     }
 
 }

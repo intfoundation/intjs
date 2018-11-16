@@ -40,19 +40,23 @@ var ErrorCode;
     ErrorCode[ErrorCode["RESULT_TX_CHECKER_ERROR"] = 38] = "RESULT_TX_CHECKER_ERROR";
     ErrorCode[ErrorCode["RESULT_TX_FEE_NOT_ENOUGH"] = 39] = "RESULT_TX_FEE_NOT_ENOUGH";
     ErrorCode[ErrorCode["RESULT_SKIPPED"] = 40] = "RESULT_SKIPPED";
+    ErrorCode[ErrorCode["RESULT_TX_ADD_TOO_FREQUENTLY"] = 41] = "RESULT_TX_ADD_TOO_FREQUENTLY";
     ErrorCode[ErrorCode["RESULT_FORK_DETECTED"] = 50] = "RESULT_FORK_DETECTED";
-
+    ErrorCode[ErrorCode["RESULT_USER_DEFINE"] = 10000] = "RESULT_USER_DEFINE";
     // token 相关
     ErrorCode[ErrorCode["RESULT_NO_PERMISSIONS"] = 10011] = "RESULT_NO_PERMISSIONS";
-    ErrorCode[ErrorCode["RESULT_IS_FROOZEN"] = 10012] = "RESULT_IS_FROOZEN";
+    ErrorCode[ErrorCode["RESULT_IS_FROZEN"] = 10012] = "RESULT_IS_FROZEN";
     ErrorCode[ErrorCode["RESULT_INVALID_ADDRESS"] = 10013] = "RESULT_INVALID_ADDRESS";
-    // 交易费用
+    // 交易
     ErrorCode[ErrorCode["RESULT_LIMIT_NOT_ENOUGH"] = 10021] = "RESULT_LIMIT_NOT_ENOUGH";
     ErrorCode[ErrorCode["RESULT_LIMIT_TOO_BIG"] = 10022] = "RESULT_LIMIT_TOO_BIG";
     ErrorCode[ErrorCode["RESULT_LIMIT_TOO_SMALL"] = 10023] = "RESULT_LIMIT_TOO_SMALL";
     ErrorCode[ErrorCode["RESULT_BLOCK_LIMIT_TOO_BIG"] = 10024] = "RESULT_BLOCK_LIMIT_TOO_BIG";
     ErrorCode[ErrorCode["RESULT_PRICE_TOO_BIG"] = 10025] = "RESULT_PRICE_TOO_BIG";
     ErrorCode[ErrorCode["RESULT_PRICE_TOO_SMALL"] = 10026] = "RESULT_PRICE_TOO_SMALL";
+    ErrorCode[ErrorCode["RESULT_NOT_BIGNUMBER"] = 10027] = "RESULT_NOT_BIGNUMBER";
+    ErrorCode[ErrorCode["RESULT_CANT_BE_LESS_THAN_ZERO"] = 10028] = "RESULT_CANT_BE_LESS_THAN_ZERO";
+    ErrorCode[ErrorCode["RESULT_CANT_BE_DECIMAL"] = 10029] = "RESULT_CANT_BE_DECIMAL";
     ErrorCode[ErrorCode["RESULT_ADDRESS_NOT_EXIST"] = 10030] = "RESULT_ADDRESS_NOT_EXIST";
     ErrorCode[ErrorCode["RESULT_KEYSTORE_ERROR"] = 10031] = "RESULT_KEYSTORE_ERROR";
 })(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));
@@ -167,6 +171,45 @@ function stringifyErrorCode(err) {
     }
     else if (err === ErrorCode.RESULT_FORK_DETECTED) {
         return 'fork detected';
+    }
+    else if (err === ErrorCode.RESULT_TX_ADD_TOO_FREQUENTLY) {
+        return 'add tx too frequently';
+    }
+    else if (err === ErrorCode.RESULT_NO_PERMISSIONS) {
+        return 'have no permissions';
+    }
+    else if (err === ErrorCode.RESULT_IS_FROZEN) {
+        return 'address is frozen';
+    }
+    else if (err === ErrorCode.RESULT_INVALID_ADDRESS) {
+        return 'invalid address';
+    }
+    else if (err === ErrorCode.RESULT_LIMIT_NOT_ENOUGH) {
+        return 'limit not enough';
+    }
+    else if (err === ErrorCode.RESULT_LIMIT_TOO_BIG) {
+        return 'limit too big';
+    }
+    else if (err === ErrorCode.RESULT_LIMIT_TOO_SMALL) {
+        return 'limit too small';
+    }
+    else if (err === ErrorCode.RESULT_BLOCK_LIMIT_TOO_BIG) {
+        return 'block limit too big';
+    }
+    else if (err === ErrorCode.RESULT_PRICE_TOO_BIG) {
+        return 'price too big';
+    }
+    else if (err === ErrorCode.RESULT_PRICE_TOO_SMALL) {
+        return 'price too samll';
+    }
+    else if (err === ErrorCode.RESULT_ADDRESS_NOT_EXIST) {
+        return 'address not exist';
+    }
+    else if (err === ErrorCode.RESULT_KEYSTORE_ERROR) {
+        return 'keystore error';
+    }
+    else if (err > ErrorCode.RESULT_USER_DEFINE) {
+        return `user defined errorcode ${err}`;
     }
     else {
         return 'unknown';
