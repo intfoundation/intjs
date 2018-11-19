@@ -51,10 +51,10 @@ class Intjs {
                 if (!err) {
                     let confirm = tipBlock.number - block.number + 1;
                     if (confirm < 6) {
-                        console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode} ${confirm} confirm`);
+                        console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode}, ${confirm} confirm`);
                     }
                     else {
-                        console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode} confirmed`);
+                        console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode}, confirmed`);
                         this.watchingTx.splice(this.watchingTx.indexOf(transaction), 1);
                     }
                 } else {
