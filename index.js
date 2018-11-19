@@ -947,7 +947,8 @@ class Intjs {
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
-    async register (limit, price, secret) {
+    async register (coinbase, limit, price, secret) {
+        assert(coinbase, 'coinbase is required');
         assert(limit, 'limit is required');
         assert(price, 'price is required');
         assert(secret, 'secret is required');
@@ -959,7 +960,7 @@ class Intjs {
         tx.value = new client.BigNumber(0);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = {};
+        tx.input = {coinbase};
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
             // console.error(`register failed for ${err}`);
