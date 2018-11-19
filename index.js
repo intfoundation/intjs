@@ -46,23 +46,20 @@ class Intjs {
         });
         this.chainClient.on('tipBlock', async (tipBlock) => {
             // console.log(`client onTipBlock, height ${tipBlock.number}`);
-            for (let tx of this.watchingTx.slice()) {
-                let { err, block, receipt } = await this.chainClient.getTransactionReceipt({ tx });
+            for (let transaction of this.watchingTx.slice()) {
+                let { err, block, tx, receipt } = await this.chainClient.getTransactionReceipt({ tx:transaction });
                 if (!err) {
-                    if (receipt.returnCode !== 0) {
-                        console.error(`tx:${tx} failed for ${errorCode[receipt.returnCode].slice(7)}`);
-                        this.watchingTx.splice(this.watchingTx.indexOf(tx), 1);
+                    let confirm = tipBlock.number - block.number + 1;
+                    if (confirm < 6) {
+                        console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode} ${confirm} confirm`);
                     }
                     else {
-                        let confirm = tipBlock.number - block.number + 1;
-                        if (confirm < 6) {
-                            console.log(`tx:${tx} ${confirm} confirm`);
-                        }
-                        else {
-                            console.log(`tx:${tx} confirmed`);
-                            this.watchingTx.splice(this.watchingTx.indexOf(tx), 1);
-                        }
+                        console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode} confirmed`);
+                        this.watchingTx.splice(this.watchingTx.indexOf(transaction), 1);
                     }
+                } else {
+                    console.error(`tx:${transaction} failed for ${errorCode[err].slice(7)}`);
+                    this.watchingTx.splice(this.watchingTx.indexOf(transaction), 1);
                 }
             }
         });
