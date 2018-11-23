@@ -20,3 +20,13 @@ npm install intjs
 let Intjs = require('intjs');
 let intjs = new Intjs(rpcHost, rpcPort);
 ```
+
+## Dependencies
+
+* Node.js
+* npm
+
+
+## License
+
+MIT License
