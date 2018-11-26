@@ -286,51 +286,51 @@ class Intjs {
 
     /**
      * Get balance for a address.
-     * @param {String} _address
+     * @param {String} address
      * @returns {Object} {balance: string}
      * */
-    async getBalance(_address) {
-        assert(_address, 'address required');
+    async getBalance(address) {
+        assert(address, 'address required');
 
         let ret = await this.chainClient.view({
             method: 'getBalance',
-            params: { address: _address }
+            params: { address: address }
         });
         if (ret.err) {
             // console.error(`get balance failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        // console.log(`${_address}\`s Balance: ${ret.value}`);
+        // console.log(`${address}\`s Balance: ${ret.value}`);
         return {balance: ret.value.toString()};
     }
 
     /**
      * Get token balance for a address.
      * @param {String} tokenid
-     * @param {String} _address
+     * @param {String} address
      * @returns {Object} {balance: string}
      * */
-    async getTokenBalance (tokenid, _address) {
+    async getTokenBalance (tokenid, address) {
         assert(tokenid,'tokenid is required');
-        assert(_address,'address is required');
+        assert(address,'address is required');
 
         let ret = await this.chainClient.view({
             method: 'getTokenBalance',
-            params: { address: _address, tokenid: tokenid }
+            params: { address: address, tokenid: tokenid }
         });
         if (ret.err) {
-            // console.error(`get ${_address}\`s Token ${tokenid} balance failed for ${ret.err};`);
+            // console.error(`get ${address}\`s Token ${tokenid} balance failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        // console.log(`${_address}\`s Token ${tokenid} Balance: ${ret.value}`);
+        // console.log(`${address}\`s Token ${tokenid} Balance: ${ret.value}`);
         return {balance: ret.value.toString()};
     }
 
     /**
      * Create token.
      * @param {String} amount
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @param {String} name
      * @param {String} symbol
@@ -369,7 +369,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
             // console.error(`createToken sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -384,8 +384,8 @@ class Intjs {
      *  @param {String} tokenid
      *  @param {String} to
      *  @param {String} amount
-     *  @param {String} limit
-     *  @param {String} price
+     *  @param {Number} limit
+     *  @param {Number} price
      *  @param {String} secret
      *  @returns {Object} {hash: string}
      * */
@@ -422,7 +422,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
             // console.error(`transferTokenTo sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -457,8 +457,8 @@ class Intjs {
      * Transfer the ownership to the new owner.
      * @param {String} tokenid
      * @param {String} newOwner
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -492,7 +492,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -504,9 +504,9 @@ class Intjs {
     /**
      * Create minted tokens to the creator of the contract.
      * @param {String} tokenid
-     * @param {String} amount
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} amount
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -541,7 +541,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -553,9 +553,9 @@ class Intjs {
     /**
      * Destroy tokens.
      * @param {String} tokenid
-     * @param {String} amount
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} amount
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -590,7 +590,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -604,8 +604,8 @@ class Intjs {
      * @param {String} tokenid
      * @param {String} freezeAddress
      * @param {Boolean} freeze
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -640,7 +640,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -652,10 +652,10 @@ class Intjs {
     /**
      * Set allowance for other address.
      * @param {String} tokenid
-     * @param {String} amount
+     * @param {Number} amount
      * @param {String} spender
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -691,7 +691,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -704,8 +704,8 @@ class Intjs {
      * @param {String} tokenid
      * @param {String} from
      * @param {String} to
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -741,7 +741,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render()});
+        let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
             return {err: errorCode[sendRet.err].slice(7)}
         }
@@ -753,9 +753,9 @@ class Intjs {
     /**
      * Transfer INT.
      * @param {String} to
-     * @param {String} amount
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} amount
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      * */
@@ -789,7 +789,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
             // console.error(`transferTo sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -802,8 +802,8 @@ class Intjs {
     /**
      * Vote for peer.
      * @param {Array} candidates [string]
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} limit
+     * @param {Number} price
      * @returns {Object} {hash: string}
      * */
     async vote (candidates, limit, price, secret) {
@@ -834,7 +834,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
             // console.error(`vote failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -846,9 +846,9 @@ class Intjs {
 
     /**
      * mortgage.
-     * @param {String} amount
-     * @param {String} limit
-     * @param {String} price
+     * @param {Number} amount
+     * @param {Number} limit
+     * @param {Number} price
      * @returns {Object} {hash: string}
      * */
     async mortgage (amount, limit, price, secret) {
@@ -880,7 +880,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
             // console.error(`mortgage sendSignedTransaction failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -891,10 +891,10 @@ class Intjs {
     }
 
     /**
-     * unmortgage.
-     * @param {String} amount
-     * @param {String} limit
-     * @param {String} price
+     * Unmortgage.
+     * @param {Number} amount
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -927,7 +927,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
             // console.error(`unmortgage failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -938,9 +938,9 @@ class Intjs {
     }
 
     /**
-     * peer regist as miner
-     * @param {String} limit
-     * @param {String} price
+     * Peer regist as miner
+     * @param {Number} limit
+     * @param {Number} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -972,7 +972,7 @@ class Intjs {
             return {err: errorCode[errTx].slice(7)}
         }
 
-        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render() });
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
             // console.error(`register failed for ${sendRet.err}`);
             return {err: errorCode[sendRet.err].slice(7)};
@@ -983,7 +983,7 @@ class Intjs {
     }
 
     /**
-     * get vote.
+     * Get vote.
      * @returns {Object} {vote: Map}
      */
     async getVote () {
@@ -1003,14 +1003,14 @@ class Intjs {
     }
 
     /**
-     * get stake
-     * @param {String} _address
+     * Get stake
+     * @param {String} address
      * @returns {Object}
      */
-    async getStake (_address) {
+    async getStake (address) {
         let ret = await this.chainClient.view({
             method: 'getStake',
-            params: { address: _address }
+            params: { address: address }
         });
         if (ret.err) {
             // console.error(`getStake failed for ${ret.err};`);
@@ -1021,7 +1021,7 @@ class Intjs {
     }
 
     /**
-     * get all candidates.
+     * Get all candidates.
      * @returns {Array}
      */
     async getCandidates () {
@@ -1038,16 +1038,16 @@ class Intjs {
     }
 
     /**
-     * send a transaction to the network.
+     * Create an new transaction.
      * @param {Object} params
      *
      * @example
      *  let params = {
      *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTo',
-     *      value: '1000',
-     *      limit: '100000',
-     *      price: '30000000000',
+     *      value: 1000,
+     *      limit: 100000,
+     *      price: 30000000000,
      *      input: {to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79'},
      *      password: '123456789'
      *  }
@@ -1055,10 +1055,10 @@ class Intjs {
      *  let params = {
      *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTokenTo',
-     *      value: '0',
-     *      limit: '100000',
-     *      price: '30000000000',
-     *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
+     *      value: 0,
+     *      limit: 100000,
+     *      price: 30000000000,
+     *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: 1000},
      *      password: '123456789'
      *  }
      *
@@ -1076,8 +1076,8 @@ class Intjs {
         return {hash: sendRet.hash}
     }
     /**
-     * send signed transaction.
-     * @param {Buffer} tx from writer.render()
+     * Create an new transaction with signed data.
+     * @param {String} tx from writer.render().toString('hex)
      * @returns {Object} {hash: string}
      */
     async sendSignedTransaction (tx) {
@@ -1092,7 +1092,7 @@ class Intjs {
     }
 
     /**
-     * get address nonce.
+     * Get the number of transactions sent from an address.
      * @param {String} address
      * @returns {Object} {nonce: string}
      */
@@ -1107,7 +1107,7 @@ class Intjs {
     }
 
     /**
-     * get miners list.
+     * Get miners list.
      * @returns {Object} miner list
      */
     async getMiners () {
@@ -1127,7 +1127,7 @@ class Intjs {
     }
 
     /**
-     * get pending transactions.
+     * Get pending transactions.
      * @param
      * @returns {Object} {pendingTransactions: object}
      */
