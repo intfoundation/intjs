@@ -328,7 +328,7 @@ class Intjs {
 
     /**
      * Create token.
-     * @param {String} amount
+     * @param {Number} amount
      * @param {Number} limit
      * @param {Number} price
      * @param {String} secret
