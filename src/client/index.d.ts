@@ -53,7 +53,7 @@ export enum ErrorCode {
     RESULT_IS_FROZEN = 10012, // 帐户已冻结
     RESULT_INVALID_ADDRESS = 10013, // 地址不合法
 
-    // 交易
+    // 交易费用
     RESULT_LIMIT_NOT_ENOUGH = 10021, // limit不足
     RESULT_LIMIT_TOO_BIG = 10022, // tx limit太大
     RESULT_LIMIT_TOO_SMALL = 10023, // tx limit太小
@@ -63,9 +63,10 @@ export enum ErrorCode {
     RESULT_NOT_BIGNUMBER = 10027, // 不是 bignumber
     RESULT_CANT_BE_LESS_THAN_ZERO = 10028, // 不能小于 0
     RESULT_CANT_BE_DECIMAL = 10029, // 不能为小数
+    RESULT_NOT_INTEGER = 10030, // 不是整数
 
-    RESULT_ADDRESS_NOT_EXIST = 10030,
-    RESULT_KEYSTORE_ERROR = 10031,
+    RESULT_ADDRESS_NOT_EXIST = 10040,
+    RESULT_KEYSTORE_ERROR = 10041,
 }
 
 export type LoggerOptions = {
