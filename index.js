@@ -328,9 +328,9 @@ class Intjs {
 
     /**
      * Create token.
-     * @param {Number} amount
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} amount
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @param {String} name
      * @param {String} symbol
@@ -384,8 +384,8 @@ class Intjs {
      *  @param {String} tokenid
      *  @param {String} to
      *  @param {String} amount
-     *  @param {Number} limit
-     *  @param {Number} price
+     *  @param {String} limit
+     *  @param {String} price
      *  @param {String} secret
      *  @returns {Object} {hash: string}
      * */
@@ -457,8 +457,8 @@ class Intjs {
      * Transfer the ownership to the new owner.
      * @param {String} tokenid
      * @param {String} newOwner
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -504,9 +504,9 @@ class Intjs {
     /**
      * Create minted tokens to the creator of the contract.
      * @param {String} tokenid
-     * @param {Number} amount
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} amount
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -553,9 +553,9 @@ class Intjs {
     /**
      * Destroy tokens.
      * @param {String} tokenid
-     * @param {Number} amount
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} amount
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -604,8 +604,8 @@ class Intjs {
      * @param {String} tokenid
      * @param {String} freezeAddress
      * @param {Boolean} freeze
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -652,10 +652,10 @@ class Intjs {
     /**
      * Set allowance for other address.
      * @param {String} tokenid
-     * @param {Number} amount
+     * @param {String} amount
      * @param {String} spender
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -704,8 +704,8 @@ class Intjs {
      * @param {String} tokenid
      * @param {String} from
      * @param {String} to
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -753,9 +753,9 @@ class Intjs {
     /**
      * Transfer INT.
      * @param {String} to
-     * @param {Number} amount
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} amount
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      * */
@@ -802,8 +802,8 @@ class Intjs {
     /**
      * Vote for peer.
      * @param {Array} candidates [string]
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} limit
+     * @param {String} price
      * @returns {Object} {hash: string}
      * */
     async vote (candidates, limit, price, secret) {
@@ -846,9 +846,9 @@ class Intjs {
 
     /**
      * mortgage.
-     * @param {Number} amount
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} amount
+     * @param {String} limit
+     * @param {String} price
      * @returns {Object} {hash: string}
      * */
     async mortgage (amount, limit, price, secret) {
@@ -892,9 +892,9 @@ class Intjs {
 
     /**
      * Unmortgage.
-     * @param {Number} amount
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} amount
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -939,8 +939,8 @@ class Intjs {
 
     /**
      * Peer regist as miner
-     * @param {Number} limit
-     * @param {Number} price
+     * @param {String} limit
+     * @param {String} price
      * @param {String} secret
      * @returns {Object} {hash: string}
      */
@@ -1045,9 +1045,9 @@ class Intjs {
      *  let params = {
      *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTo',
-     *      value: 1000,
-     *      limit: 100000,
-     *      price: 30000000000,
+     *      value: '1000',
+     *      limit: '100000',
+     *      price: '30000000000',
      *      input: {to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79'},
      *      password: '123456789'
      *  }
@@ -1055,10 +1055,10 @@ class Intjs {
      *  let params = {
      *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTokenTo',
-     *      value: 0,
-     *      limit: 100000,
-     *      price: 30000000000,
-     *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: 1000},
+     *      value: '0',
+     *      limit: '100000',
+     *      price: '30000000000',
+     *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
      *      password: '123456789'
      *  }
      *
@@ -1128,7 +1128,6 @@ class Intjs {
 
     /**
      * Get pending transactions.
-     * @param
      * @returns {Object} {pendingTransactions: object}
      */
     async getPendingTransactions() {
