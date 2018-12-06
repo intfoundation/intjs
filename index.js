@@ -350,7 +350,7 @@ class Intjs {
         let newAmount = new client.BigNumber(amount);
 
         tx.method = 'createToken';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = { tokenid: contract, amount: newAmount, name, symbol };
@@ -402,7 +402,7 @@ class Intjs {
         let newAmount = new client.BigNumber(amount);
 
         tx.method = 'transferTokenTo';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = { tokenid, to, amount: newAmount };
@@ -473,7 +473,7 @@ class Intjs {
         let tx = new client.ValueTransaction();
 
         tx.method = 'transferOwnership';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, newOwner};
@@ -522,7 +522,7 @@ class Intjs {
         let newAmount = new client.BigNumber(amount);
 
         tx.method = 'mintToken';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount: newAmount};
@@ -571,7 +571,7 @@ class Intjs {
         let newAmount = new client.BigNumber(amount);
 
         tx.method = 'burn';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount: newAmount};
@@ -621,7 +621,7 @@ class Intjs {
         let tx = new client.ValueTransaction();
 
         tx.method = 'freezeAccount';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, freezeAddress, freeze};
@@ -672,7 +672,7 @@ class Intjs {
         let newAmount = new client.BigNumber(amount);
 
         tx.method = 'approve';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount: newAmount, spender};
@@ -722,7 +722,7 @@ class Intjs {
         let newAmount = new client.BigNumber(amount);
 
         tx.method = 'transferFrom';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, from, to, amount: newAmount};
@@ -816,7 +816,7 @@ class Intjs {
         let tx = new client.ValueTransaction();
 
         tx.method = 'vote';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {candidates};
@@ -909,7 +909,7 @@ class Intjs {
         let newAmount = new client.BigNumber(amount);
 
         tx.method = 'unmortgage';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {amount: newAmount};
@@ -954,7 +954,7 @@ class Intjs {
         let tx = new client.ValueTransaction();
 
         tx.method = 'register';
-        tx.value = new client.BigNumber(0);
+        tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {coinbase};
