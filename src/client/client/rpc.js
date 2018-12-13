@@ -172,7 +172,7 @@ class HostClient {
     objectToBuffer(input) {
         let inputString;
         if (input) {
-            inputString = JSON.stringify(serializable_1.toStringifiable(input, true));
+            inputString = JSON.stringify(core_2.toStringifiable(input, true));
         }
         else {
             inputString = JSON.stringify({});
