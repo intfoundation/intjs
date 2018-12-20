@@ -1,6 +1,6 @@
 export {BigNumber} from 'bignumber.js';
 import {LoggerInstance} from 'winston';
-
+export {LoggerInstance} from 'winston';
 export enum ErrorCode {
     RESULT_OK = 0,
     RESULT_FAILED = 1,
@@ -64,6 +64,7 @@ export enum ErrorCode {
     RESULT_CANT_BE_LESS_THAN_ZERO = 10028, // 不能小于 0
     RESULT_CANT_BE_DECIMAL = 10029, // 不能为小数
     RESULT_NOT_INTEGER = 10030, // 不是整数
+    RESULT_OUT_OF_RANGE = 10031, // 超过最大值
 
     RESULT_ADDRESS_NOT_EXIST = 10040,
     RESULT_KEYSTORE_ERROR = 10041,
@@ -240,8 +241,31 @@ export type DposViewContext = {
     getCandidates: () => Promise<string[]>;
 } & ValueViewContext;
 
+export type DbftTransactionContext = {
+    register: (caller: string) => Promise<ErrorCode>;
+    // unregister: (caller: string, address: string) => Promise<ErrorCode>;
+    mortgage: (from: string, amount: BigNumber) => Promise<ErrorCode>;
+    unmortgage: (from: string, amount: BigNumber) => Promise<ErrorCode>;
+    vote: (from: string, candiates: string[]) => Promise<ErrorCode>;
+} & ValueTransactionContext;
+
+export type DbftEventContext = {
+    register: (caller: string) => Promise<ErrorCode>;
+    // unregister: (caller: string, address: string) => Promise<ErrorCode>;
+    mortgage: (from: string, amount: BigNumber) => Promise<ErrorCode>;
+    unmortgage: (from: string, amount: BigNumber) => Promise<ErrorCode>;
+    vote: (from: string, candiates: string[]) => Promise<ErrorCode>;
+} & ValueEventContext;
+
+export type DbftViewContext = {
+    getMiners: () => Promise<string[]>;
+    getVote: () => Promise<Array<{address: string, vote: BigNumber}>>;
+    getStake: (address: string) => Promise<BigNumber>;
+    getCandidates: () => Promise<string[]>;
+} & ValueViewContext;
+
 export class ChainClient {
-    constructor(options: {host: string, port: number});
+    constructor(options: {host: string, port: number, logger: LoggerInstance});
 
     getBlock(params: {which: string|number|'lastest', transactions?: boolean}): Promise<{err: ErrorCode, block?: any}>;
 
@@ -327,8 +351,8 @@ export class ValueChainDebugSession {
 }
 
 export const valueChainDebuger: {
-    createIndependSession(loggerOptions: {console: boolean, file?: {root: string, filename?: string}, level?: string}, dataDir: string): Promise<{err: ErrorCode, session?: ValueIndependDebugSession}>;
-    createChainSession(loggerOptions: {console: boolean, file?: {root: string, filename?: string}, level?: string}, dataDir: string, debugerDir: string): Promise<{err: ErrorCode, session?: ValueChainDebugSession}>;
+    createIndependSession(loggerOptions: {logger?: LoggerInstance, loggerOptions?: {console: boolean, file?: {root: string, filename?: string}}, level?: string}, dataDir: string): Promise<{err: ErrorCode, session?: ValueIndependDebugSession}>;
+    createChainSession(loggerOptions: {logger?: LoggerInstance, loggerOptions: {console: boolean, file?: {root: string, filename?: string}}, level?: string}, dataDir: string, debugerDir: string): Promise<{err: ErrorCode, session?: ValueChainDebugSession}>;
 };
 
 export function addressFromSecretKey(secret: Buffer|string): string|undefined;
