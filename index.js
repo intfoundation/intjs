@@ -141,12 +141,10 @@ class Intjs {
     /**
      * Create an account with keystore and address.
      * @param {String} password
-     * @param {String} privateKey
      * @returns {String} address
      */
     async newAccount (password, privateKey) {
         assert(password, 'password is required');
-        assert(privateKey, 'privateKey is required');
 
         let params = {password, privateKey};
         let ret = await this.chainClient.newAccount(params);
