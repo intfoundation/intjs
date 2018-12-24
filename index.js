@@ -104,7 +104,7 @@ class Intjs {
      */
     decrypt (keystore, password) {
         assert(keystore, 'keystore is required');
-        assert(password, 'password key is required');
+        assert(password, 'password is required');
 
         let account = client.decrypt(keystore, password);
 
