@@ -44,25 +44,25 @@ class Intjs {
             port,
             // logger: client.initLogger({ loggerOptions: { console: true}})
         });
-        this.chainClient.on('tipBlock', async (tipBlock) => {
-            // console.log(`client onTipBlock, height ${tipBlock.number}`);
-            for (let transaction of this.watchingTx.slice()) {
-                let { err, block, tx, receipt } = await this.chainClient.getTransactionReceipt({ tx:transaction });
-                if (!err) {
-                    let confirm = tipBlock.number - block.number + 1;
-                    if (confirm < 6) {
-                        console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode}, ${confirm} confirm`);
-                    }
-                    else {
-                        console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode}, confirmed`);
-                        this.watchingTx.splice(this.watchingTx.indexOf(transaction), 1);
-                    }
-                } else {
-                    console.error(`tx:${transaction} failed for ${errorCode[err].slice(7)}`);
-                    this.watchingTx.splice(this.watchingTx.indexOf(transaction), 1);
-                }
-            }
-        });
+        // this.chainClient.on('tipBlock', async (tipBlock) => {
+        //     // console.log(`client onTipBlock, height ${tipBlock.number}`);
+        //     for (let transaction of this.watchingTx.slice()) {
+        //         let { err, block, tx, receipt } = await this.chainClient.getTransactionReceipt({ tx:transaction });
+        //         if (!err) {
+        //             let confirm = tipBlock.number - block.number + 1;
+        //             if (confirm < 6) {
+        //                 console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode}, ${confirm} confirm`);
+        //             }
+        //             else {
+        //                 console.log(`tx:${transaction} receipt returnCode:${receipt.returnCode}, confirmed`);
+        //                 this.watchingTx.splice(this.watchingTx.indexOf(transaction), 1);
+        //             }
+        //         } else {
+        //             console.error(`tx:${transaction} failed for ${errorCode[err].slice(7)}`);
+        //             this.watchingTx.splice(this.watchingTx.indexOf(transaction), 1);
+        //         }
+        //     }
+        // });
     }
 
     async getAddress() {
