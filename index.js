@@ -139,6 +139,17 @@ class Intjs {
     }
 
     /**
+     * Check INT address is valid or not.
+     * @param {String} address
+     * @returns {Boolean}
+     */
+    isValidAddress (address) {
+        assert(address, 'address is required.');
+
+        return client.isValidAddress(address);
+    }
+
+    /**
      * Create an account with keystore and address.
      * @param {String} password
      * @returns {String} address
