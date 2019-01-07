@@ -355,8 +355,6 @@ class Intjs {
         assert(name, 'name is required');
         assert(symbol, 'symbol is required');
 
-        let address = client.addressFromSecretKey(secret);
-        let contract = this.create().address;
         let tx = new client.ValueTransaction();
         let newAmount = new client.BigNumber(amount);
 
@@ -364,7 +362,7 @@ class Intjs {
         tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = { tokenid: contract, amount: newAmount, name, symbol };
+        tx.input = { tokenid: '', amount: newAmount, name, symbol };
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -372,6 +370,10 @@ class Intjs {
             return {err: errorCode[err].slice(7)};
         }
         tx.nonce = nonce + 1;
+
+        let hash = client.encodeAddressAndNonce(client.addressFromSecretKey(secret), tx.nonce);
+        tx.input.tokenid = client.addressFromPublicKey(hash);
+
         tx.sign(secret);
 
         let writer = new client.BufferWriter();
