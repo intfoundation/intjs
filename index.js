@@ -1005,13 +1005,12 @@ class Intjs {
             params: {}
         });
         if (ret.err) {
-            // console.error(`getVote failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        // let vote = client.MapFromObject(ret.value);
-        // for (let [k, v] of vote) {
-        //     console.log(`${k}:${v.toString()}`);
-        // }
+        for (let i=0; i<ret.value.length; i++) {
+            ret.value[i].vote = ret.value[i].vote.toString();
+        }
+
         return ret.value;
     }
 
@@ -1129,13 +1128,9 @@ class Intjs {
             params: {}
         });
         if (ret.err) {
-            // console.error(`getVote failed for ${ret.err};`);
             return {err: errorCode[ret.err].slice(7)};
         }
-        // let miners = client.MapFromObject(ret.value);
-        // for (let [k, v] of vote) {
-        //     console.log(`${k}:${v.toString()}`);
-        // }
+
         return {miners: ret.value};
     }
 
