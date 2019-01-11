@@ -201,41 +201,40 @@ class Intjs {
       }
 
     /**
-     * Get current price of latest two blocks.
-     * @returns {Number}
+     * Get current price of the latest two blocks.
+     * @returns {String}
      */
     async getPrice () {
-        let cn = 0;
-        let txs = [];
-        let params = {which: 'latest', transactions: true};
-        let br = await this.chainClient.getBlock(params);
+        let ret = await this.chainClient.getPrice();
 
-        if (br.err) {
-            return {err: errorCode[br.err].slice(7)}
-        } else {
-            cn = br.block.number;
-            txs.push(br.transactions);
+        if (ret.err) {
+            return {err: errorCode[ret.err].slice(7)}
         }
 
-        if (cn && cn >=1) {
-            let nbr = await this.chainClient.getBlock({which: (cn -1), transactions: true});
-            if (nbr.err) {
-                return {err: errorCode[nbr.err].slice(7)}
-            } else {
-                txs.push(nbr.transactions);
-            }
-        }
-
-        if (txs && txs.length >= 20) {
-            let totalPrice = 0;
-            txs.forEach(function (value){
-                totalPrice += Number(value.price);
-            });
-            return totalPrice/txs.length;
-        } else {
-            return 200000000000;
-        }
+        return ret.price.toString();
     }
+
+    /**
+     * Get transaction limit with the transaction method name and input.
+     * @param {String} method
+     * @param {Object} input
+     * @returns {String}
+     */
+    async getTransactionLimit (method, input) {
+        assert(method, 'method is required');
+        assert(input, 'input is required');
+
+        let params = {method, input};
+
+        let ret = await this.chainClient.getTransactionLimit(params);
+
+        if (ret.err) {
+            return {err: errorCode[ret.err].slice(7)}
+        }
+
+        return ret.limit.toString();
+    }
+
     /**
      * Get a block matching the block hash or block number.
      * @param {String|Number} which
@@ -252,10 +251,9 @@ class Intjs {
         if (ret.err) {
             // console.error(`get block failed for ${ret.err}`);
             return {err: errorCode[ret.err].slice(7)}
-        } else {
-            // console.log(`get block,the block hash: ${ret.block.hash}`);
-            return ret;
         }
+
+        return ret;
     }
 
     /**
@@ -355,6 +353,7 @@ class Intjs {
         assert(name, 'name is required');
         assert(symbol, 'symbol is required');
 
+        let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
         let newAmount = new client.BigNumber(amount);
 
@@ -371,8 +370,9 @@ class Intjs {
         }
         tx.nonce = nonce + 1;
 
-        let hash = client.encodeAddressAndNonce(client.addressFromSecretKey(secret), tx.nonce);
-        tx.input.tokenid = client.addressFromPublicKey(hash);
+        let hash = client.encodeAddressAndNonce(address, tx.nonce);
+        let tokenid = client.addressFromPublicKey(hash);
+        tx.input.tokenid = tokenid;
 
         tx.sign(secret);
 
@@ -389,7 +389,7 @@ class Intjs {
         }
         // console.log(`send createToken tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
-        return {hash: tx.hash, tokenid: contract};
+        return {hash: tx.hash, tokenid: tokenid};
     }
 
     /**
@@ -449,7 +449,7 @@ class Intjs {
     /**
      * Get token all balance.
      * @param {String} tokenid
-     * @returns {Object} {balance: string}
+     * @returns {Object} {supply: string}
      */
     async getTokenTotalSupply (tokenid) {
         assert(tokenid, 'tokenid is required');
@@ -463,7 +463,7 @@ class Intjs {
             return {err: errorCode[ret.err].slice(7)}
         }
 
-        return {balance: ret.value.toString()}
+        return {supply: ret.value.toString()}
     }
 
     /**
@@ -1149,6 +1149,104 @@ class Intjs {
             return {err: errorCode[sendRet.err].slice(7)};
         }
         return sendRet.pendingTransactions;
+    }
+
+    /**
+     * Lock some INT in the contract.
+     * @param {String} amount
+     * @param {String} lockaddress
+     * @param {Array} schedule [ { time: number(timestamp) , value: string }, ..., { time: number(timestamp) , value: string }]
+     * @param {String} limit
+     * @param {String} price
+     * @param {String} secret
+     * @returns {Object} {hash: string, contractid: string}
+     * */
+    async lockAccount (amount, lockaddress, schedule, limit, price, secret) {
+        assert(amount, 'amount is required');
+        assert(lockaddress, 'lockaddress is required');
+        assert(schedule, 'schedule is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
+        assert(secret, 'secret is required');
+
+        let address = client.addressFromSecretKey(secret);
+        let tx = new client.ValueTransaction();
+
+        tx.method = 'lockAccount';
+        tx.value = new client.BigNumber(amount);
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
+        tx.input = {contractid: '', lockaddress, schedule};
+
+        let { err, nonce } = await this.chainClient.getNonce({ address });
+        if (err) {
+            return {err: errorCode[err].slice(7)};
+        }
+        tx.nonce = nonce + 1;
+
+        let hash = client.encodeAddressAndNonce(address, tx.nonce);
+        let contract = client.addressFromPublicKey(hash);
+        tx.input.contractid = contract;
+
+        tx.sign(secret);
+
+        let writer = new client.BufferWriter();
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)};
+        }
+        this.watchingTx.push(tx.hash);
+        return {hash: tx.hash, contractid: contract};
+    }
+
+
+    /**
+     * Transfer INT from a locked contract.
+     * @param {String} contractid
+     * @param {String} limit
+     * @param {String} price
+     * @param {String} secret
+     * @returns {Object} {hash: string}
+     * */
+    async transferFromLockAccount (contractid, limit, price, secret) {
+        assert(contractid, 'contractid is required');
+        assert(limit, 'limit is required');
+        assert(price, 'price is required');
+        assert(secret, 'secret is required');
+
+        let address = client.addressFromSecretKey(secret);
+        let tx = new client.ValueTransaction();
+
+        tx.method = 'transferFromLockAccount';
+        tx.value = new client.BigNumber('0');
+        tx.limit = new client.BigNumber(limit);
+        tx.price = new client.BigNumber(price);
+        tx.input = {contractid};
+
+        let { err, nonce } = await this.chainClient.getNonce({ address });
+        if (err) {
+            return {err: errorCode[err].slice(7)};
+        }
+        tx.nonce = nonce + 1;
+        tx.sign(secret);
+
+        let writer = new client.BufferWriter();
+        let errTx = tx.encode(writer);
+        if (errTx) {
+            return {err: errorCode[errTx].slice(7)}
+        }
+
+        let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
+        if (sendRet.err) {
+            return {err: errorCode[sendRet.err].slice(7)};
+        }
+        this.watchingTx.push(tx.hash);
+        return {hash: tx.hash };
     }
 
 }
