@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("../../core/error_code");
+// const ValueTransaction = require("../../core/value_chain/transaction").ValueTransaction;
+const core_2 = require("../../core/serializable");
+const bignumber_js_1 = require("bignumber.js");
 const rpc_client_1 = require("../lib/rpc_client");
 class HostClient {
     constructor(options) {
@@ -74,7 +77,7 @@ class HostClient {
         if (cr.ret !== 200) {
             return { err: core_1.ErrorCode.RESULT_FAILED };
         }
-        return core_1.fromStringifiable(JSON.parse(cr.resp));
+        return core_2.fromStringifiable(JSON.parse(cr.resp));
     }
     async getPeers() {
         let cr = await this.m_client.callAsync('getPeers', {});
