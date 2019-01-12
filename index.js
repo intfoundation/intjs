@@ -65,10 +65,6 @@ class Intjs {
         // });
     }
 
-    async getAddress() {
-
-    }
-
     /**
      * Create an account with public key and private key.
      * @returns {address: string, secret: string}
@@ -161,7 +157,7 @@ class Intjs {
         let ret = await this.chainClient.newAccount(params);
 
         if (ret.err) {
-          return {err: errorCode[ret.err].slice(7)}
+          return {err: ret.err}
         } else {
           return ret.address;
         }
@@ -175,7 +171,7 @@ class Intjs {
           let ret = await this.chainClient.getAccounts();
 
           if (ret.err) {
-              return {err: errorCode[ret.err].slice(7)}
+              return {err: ret.err}
           } else {
               return ret.accounts;
           }
@@ -194,7 +190,7 @@ class Intjs {
         let ret = await this.chainClient.readKeystore(params);
 
         if (ret.err) {
-            return {err: errorCode[ret.err].slice(7)}
+            return {err: ret.err}
         } else {
           return ret.keystore;
         }
@@ -208,7 +204,7 @@ class Intjs {
         let ret = await this.chainClient.getPrice();
 
         if (ret.err) {
-            return {err: errorCode[ret.err].slice(7)}
+            return {err: ret.err}
         }
 
         return ret.price.toString();
@@ -229,7 +225,7 @@ class Intjs {
         let ret = await this.chainClient.getTransactionLimit(params);
 
         if (ret.err) {
-            return {err: errorCode[ret.err].slice(7)}
+            return {err: ret.err}
         }
 
         return ret.limit.toString();
@@ -249,8 +245,7 @@ class Intjs {
         let ret = await this.chainClient.getBlock(params);
 
         if (ret.err) {
-            // console.error(`get block failed for ${ret.err}`);
-            return {err: errorCode[ret.err].slice(7)}
+            return {err: ret.err}
         }
 
         return ret;
@@ -265,10 +260,8 @@ class Intjs {
         let ret = await this.chainClient.getBlock(params);
 
         if (ret.err) {
-            // console.error(`get block failed for ${ret.err}`);
-            return {err: errorCode[ret.err].slice(7)}
+            return {err: ret.err}
         } else {
-            // console.log(`get block,the block hash: ${ret.block.hash}`);
             return ret.block.number;
         }
     }
@@ -285,12 +278,11 @@ class Intjs {
         let ret = await this.chainClient.getTransactionReceipt(tx);
 
         if (ret.err) {
-            // console.error(`get transaction failed for ${ret.err}`);
-            return {err: errorCode[ret.err].slice(7)}
-        } else {
-            // console.log(`get transaction,the transaction hash: ${ret.receipt.transactionHash}`);
-            return ret;
+            return {err: ret.err}
         }
+
+        return ret;
+
     }
 
     /**
@@ -306,10 +298,8 @@ class Intjs {
             params: { address: address }
         });
         if (ret.err) {
-            // console.error(`get balance failed for ${ret.err};`);
-            return {err: errorCode[ret.err].slice(7)};
+            return {err: ret.err};
         }
-        // console.log(`${address}\`s Balance: ${ret.value}`);
         return {balance: ret.value.toString()};
     }
 
@@ -328,10 +318,8 @@ class Intjs {
             params: { address: address, tokenid: tokenid }
         });
         if (ret.err) {
-            // console.error(`get ${address}\`s Token ${tokenid} balance failed for ${ret.err};`);
-            return {err: errorCode[ret.err].slice(7)};
+            return {err: ret.err};
         }
-        // console.log(`${address}\`s Token ${tokenid} Balance: ${ret.value}`);
         return {balance: ret.value.toString()};
     }
 
@@ -355,7 +343,6 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
-        let newAmount = new client.BigNumber(amount);
 
         tx.method = 'createToken';
         tx.value = new client.BigNumber('0');
@@ -365,8 +352,7 @@ class Intjs {
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            // console.error(`createToken getNonce failed for ${err}`);
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
         tx.nonce = nonce + 1;
 
@@ -379,15 +365,13 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            // console.error(`createToken sendSignedTransaction failed for ${sendRet.err}`);
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
-        // console.log(`send createToken tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash, tokenid: tokenid};
     }
@@ -412,7 +396,6 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
-        let newAmount = new client.BigNumber(amount);
 
         tx.method = 'transferTokenTo';
         tx.value = new client.BigNumber('0');
@@ -422,8 +405,7 @@ class Intjs {
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            // console.error(`transferTokenTo getNonce failed for ${err}`);
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
 
         tx.nonce = nonce + 1;
@@ -432,16 +414,14 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            // console.error(`transferTokenTo sendSignedTransaction failed for ${sendRet.err}`);
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
 
-        // console.log(`send transferTokenTo tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash};
     }
@@ -460,7 +440,7 @@ class Intjs {
         });
 
         if (ret.err) {
-            return {err: errorCode[ret.err].slice(7)}
+            return {err: ret.err}
         }
 
         return {supply: ret.value.toString()}
@@ -493,7 +473,7 @@ class Intjs {
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
-            return {err: errorCode[err].slice(7)}
+            return {err: err}
         }
 
         tx.nonce = nonce + 1;
@@ -502,12 +482,12 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)}
+            return {err: sendRet.err}
         }
 
         this.watchingTx.push(tx.hash);
@@ -532,7 +512,6 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
-        let newAmount = new client.BigNumber(amount);
 
         tx.method = 'mintToken';
         tx.value = new client.BigNumber('0');
@@ -542,7 +521,7 @@ class Intjs {
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
-            return {err: errorCode[err].slice(7)}
+            return {err: err}
         }
 
         tx.nonce = nonce + 1;
@@ -551,12 +530,12 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)}
+            return {err: sendRet.err}
         }
 
         this.watchingTx.push(tx.hash);
@@ -581,7 +560,6 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
-        let newAmount = new client.BigNumber(amount);
 
         tx.method = 'burn';
         tx.value = new client.BigNumber('0');
@@ -591,7 +569,7 @@ class Intjs {
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
-            return {err: errorCode[err].slice(7)}
+            return {err: err}
         }
 
         tx.nonce = nonce + 1;
@@ -600,12 +578,12 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)}
+            return {err: sendRet.err}
         }
 
         this.watchingTx.push(tx.hash);
@@ -641,7 +619,7 @@ class Intjs {
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
-            return {err: errorCode[err].slice(7)}
+            return {err: err}
         }
 
         tx.nonce = nonce + 1;
@@ -650,12 +628,12 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)}
+            return {err: sendRet.err}
         }
 
         this.watchingTx.push(tx.hash);
@@ -682,7 +660,6 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
-        let newAmount = new client.BigNumber(amount);
 
         tx.method = 'approve';
         tx.value = new client.BigNumber('0');
@@ -692,7 +669,7 @@ class Intjs {
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
-            return {err: errorCode[err].slice(7)}
+            return {err: err}
         }
 
         tx.nonce = nonce + 1;
@@ -701,12 +678,12 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)}
+            return {err: sendRet.err}
         }
 
         this.watchingTx.push(tx.hash);
@@ -732,7 +709,6 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
-        let newAmount = new client.BigNumber(amount);
 
         tx.method = 'transferFrom';
         tx.value = new client.BigNumber('0');
@@ -742,7 +718,7 @@ class Intjs {
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
-            return {err: errorCode[err].slice(7)}
+            return {err: err}
         }
 
         tx.nonce = nonce + 1;
@@ -751,12 +727,12 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx: writer.render().toString('hex')});
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)}
+            return {err: sendRet.err}
         }
 
         this.watchingTx.push(tx.hash);
@@ -790,8 +766,7 @@ class Intjs {
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            // console.error(`transferTo getNonce failed for ${err}`);
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
@@ -799,15 +774,13 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            // console.error(`transferTo sendSignedTransaction failed for ${sendRet.err}`);
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
-        // console.log(`send transferTo tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -833,10 +806,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {candidates};
+
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            // console.error(`vote failed for ${err}`);
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
@@ -844,15 +817,13 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            // console.error(`vote failed for ${sendRet.err}`);
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
-        // console.log(`send vote tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -872,17 +843,15 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
-        let newAmount = new client.BigNumber(amount);
 
         tx.method = 'mortgage';
+        tx.value = new client.BigNumber(amount);
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.value = newAmount;
         tx.input = {amount: amount};
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            // console.error(`mortgage getNonce failed for ${err}`);
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
@@ -890,15 +859,14 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            // console.error(`mortgage sendSignedTransaction failed for ${sendRet.err}`);
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
-        // console.log(`send mortgage tx: ${tx.hash}`);
+
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -919,17 +887,16 @@ class Intjs {
 
         let address = client.addressFromSecretKey(secret);
         let tx = new client.ValueTransaction();
-        let newAmount = new client.BigNumber(amount);
+
 
         tx.method = 'unmortgage';
         tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = {amount: newAmount};
+        tx.input = {amount: amount};
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            // console.error(`unmortgage failed for ${err}`);
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
@@ -937,15 +904,13 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            // console.error(`unmortgage failed for ${sendRet.err}`);
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
-        // console.log(`send unmortgage tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -971,10 +936,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {coinbase};
+
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            // console.error(`register failed for ${err}`);
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
@@ -982,15 +947,13 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            // console.error(`register failed for ${sendRet.err}`);
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
-        // console.log(`send register tx: ${tx.hash}`);
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash}
     }
@@ -1005,7 +968,7 @@ class Intjs {
             params: {}
         });
         if (ret.err) {
-            return {err: errorCode[ret.err].slice(7)};
+            return {err: ret.err};
         }
         for (let i=0; i<ret.value.length; i++) {
             ret.value[i].vote = ret.value[i].vote.toString();
@@ -1025,10 +988,8 @@ class Intjs {
             params: { address: address }
         });
         if (ret.err) {
-            // console.error(`getStake failed for ${ret.err};`);
-            return {err: errorCode[ret.err].slice(7)};
+            return {err: ret.err};
         }
-        // console.log(`${ret.value}`);
         return {stake: ret.value.toString()};
     }
 
@@ -1042,10 +1003,8 @@ class Intjs {
             params: {}
         });
         if (ret.err) {
-            // console.error(`getCandidates failed for ${ret.err};`);
-            return {err: errorCode[ret.err].slice(7)};
+            return {err: ret.err};
         }
-        // console.log(`${ret.value}`);
         return ret.value;
     }
 
@@ -1082,7 +1041,7 @@ class Intjs {
         let sendRet = await this.chainClient.sendTransaction(params);
 
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)}
+            return {err: sendRet.err}
         }
         this.watchingTx.push(sendRet.hash);
         return {hash: sendRet.hash}
@@ -1097,7 +1056,7 @@ class Intjs {
 
         let sendRet = await this.chainClient.sendSignedTransaction({tx});
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
         this.watchingTx.push(sendRet.hash);
         return {hash: sendRet.hash};
@@ -1113,7 +1072,7 @@ class Intjs {
 
         let sendRet = await this.chainClient.getNonce({address});
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
         return {nonce: sendRet.nonce}
     }
@@ -1128,7 +1087,7 @@ class Intjs {
             params: {}
         });
         if (ret.err) {
-            return {err: errorCode[ret.err].slice(7)};
+            return {err: ret.err};
         }
 
         return {miners: ret.value};
@@ -1141,7 +1100,7 @@ class Intjs {
     async getPendingTransactions() {
         let sendRet = await this.chainClient.getPendingTransactions();
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
         return sendRet.pendingTransactions;
     }
@@ -1175,7 +1134,7 @@ class Intjs {
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
         tx.nonce = nonce + 1;
 
@@ -1188,12 +1147,12 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash, contractid: contract};
@@ -1225,7 +1184,7 @@ class Intjs {
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
-            return {err: errorCode[err].slice(7)};
+            return {err: err};
         }
         tx.nonce = nonce + 1;
         tx.sign(secret);
@@ -1233,12 +1192,12 @@ class Intjs {
         let writer = new client.BufferWriter();
         let errTx = tx.encode(writer);
         if (errTx) {
-            return {err: errorCode[errTx].slice(7)}
+            return {err: errTx}
         }
 
         let sendRet = await this.chainClient.sendSignedTransaction({ tx: writer.render().toString('hex') });
         if (sendRet.err) {
-            return {err: errorCode[sendRet.err].slice(7)};
+            return {err: sendRet.err};
         }
         this.watchingTx.push(tx.hash);
         return {hash: tx.hash };
