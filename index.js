@@ -28,7 +28,7 @@
 
 const client = require('./src/client');
 const assert = require('assert');
-const errorCode = require('./src/core/error_code').ErrorCode;
+const util = require('util');
 
 class Intjs {
     constructor (host, port) {
@@ -331,9 +331,10 @@ class Intjs {
      * @param {String} secret
      * @param {String} name
      * @param {String} symbol
+     * @param {Object} data
      * @returns {Object} {hash: string}
      * */
-    async createToken (amount, limit, price, name, symbol, secret) {
+    async createToken (amount, limit, price, name, symbol, secret, data) {
         assert(amount, 'amount is required');
         assert(limit, 'limit is required');
         assert(price, 'price is required');
@@ -349,6 +350,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = { tokenid: '', amount: amount, name, symbol };
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -384,9 +389,10 @@ class Intjs {
      *  @param {String} limit
      *  @param {String} price
      *  @param {String} secret
+     *  @param {Object} data
      *  @returns {Object} {hash: string}
      * */
-    async transferTokenTo (tokenid, to, amount, limit, price, secret) {
+    async transferTokenTo (tokenid, to, amount, limit, price, secret, data) {
         assert(tokenid, 'tokenid is required');
         assert(to, 'to address is required');
         assert(amount, 'amount is required');
@@ -402,6 +408,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = { tokenid, to, amount: amount };
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -453,9 +463,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      */
-    async transferOwnership (tokenid, newOwner, limit, price, secret) {
+    async transferOwnership (tokenid, newOwner, limit, price, secret, data) {
         assert(tokenid, 'tokenid is required');
         assert(newOwner, 'newOwner is required');
         assert(limit, 'limit is required');
@@ -470,6 +481,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, newOwner};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -501,9 +516,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      */
-    async mintToken (tokenid, amount, limit, price, secret) {
+    async mintToken (tokenid, amount, limit, price, secret, data) {
         assert(tokenid, 'tokenid is required');
         assert(amount, 'amount is required');
         assert(limit, 'limit is required');
@@ -518,6 +534,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount: amount};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -549,9 +569,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      */
-    async burn (tokenid, amount, limit, price, secret) {
+    async burn (tokenid, amount, limit, price, secret, data) {
         assert(tokenid, 'tokenid is required');
         assert(amount, 'amount is required');
         assert(limit, 'limit is required');
@@ -566,6 +587,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount: amount};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -598,9 +623,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      */
-    async freezeAccount (tokenid, freezeAddress, freeze, limit, price, secret) {
+    async freezeAccount (tokenid, freezeAddress, freeze, limit, price, secret, data) {
         assert(tokenid, 'tokenid is required');
         assert(freezeAddress, 'freezeAddress is required');
         assert(typeof freeze === "boolean");
@@ -616,6 +642,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, freezeAddress, freeze};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -648,9 +678,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      */
-    async approve (tokenid, amount, spender, limit, price, secret) {
+    async approve (tokenid, amount, spender, limit, price, secret, data) {
         assert(tokenid, 'tokenid is required');
         assert(amount, 'amount is required');
         assert(spender, 'spender is required');
@@ -666,6 +697,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, amount: amount, spender};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -697,9 +732,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      */
-    async transferFrom (tokenid, from, to, amount, limit, price, secret) {
+    async transferFrom (tokenid, from, to, amount, limit, price, secret, data) {
         assert(tokenid, 'tokenid is required');
         assert(from, 'from is required');
         assert(to, 'to is required');
@@ -715,6 +751,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {tokenid, from, to, amount: amount};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -746,9 +786,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      * */
-    async transferTo (to, amount, limit, price, secret) {
+    async transferTo (to, amount, limit, price, secret, data) {
         assert(to, 'to address is required');
         assert(amount, 'amount is required');
         assert(limit, 'limit is required');
@@ -763,6 +804,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = { to };
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -790,9 +835,10 @@ class Intjs {
      * @param {Array} candidates [string]
      * @param {String} limit
      * @param {String} price
+     * @param {Object} data
      * @returns {Object} {hash: string}
      * */
-    async vote (candidates, limit, price, secret) {
+    async vote (candidates, limit, price, secret, data) {
         assert(candidates, 'candidates is required');
         assert(limit, 'limit is required');
         assert(price, 'price is required');
@@ -806,6 +852,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {candidates};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -833,9 +883,10 @@ class Intjs {
      * @param {String} amount
      * @param {String} limit
      * @param {String} price
+     * @param {Object} data
      * @returns {Object} {hash: string}
      * */
-    async mortgage (amount, limit, price, secret) {
+    async mortgage (amount, limit, price, secret, data) {
         assert(amount, 'amount is required');
         assert(limit, 'limit is required');
         assert(price, 'price is required');
@@ -849,6 +900,11 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {amount: amount};
+
+        if (data) {
+            tx.input.data = data;
+        }
+
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
             return {err: err};
@@ -877,9 +933,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      */
-    async unmortgage (amount, limit, price, secret) {
+    async unmortgage (amount, limit, price, secret, data) {
         assert(amount, 'amount is required');
         assert(limit, 'limit is required');
         assert(price, 'price is required');
@@ -894,6 +951,11 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {amount: amount};
+
+        if (data) {
+            tx.input.data = data;
+        }
+
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
             return {err: err};
@@ -920,9 +982,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      */
-    async register (coinbase, limit, price, secret) {
+    async register (coinbase, limit, price, secret, data) {
         assert(coinbase, 'coinbase is required');
         assert(limit, 'limit is required');
         assert(price, 'price is required');
@@ -936,6 +999,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {coinbase};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -1020,7 +1087,8 @@ class Intjs {
      *      limit: '100000',
      *      price: '30000000000',
      *      input: {to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79'},
-     *      password: '123456789'
+     *      password: '123456789',
+     *      data: {...}
      *  }
      * @example
      *  let params = {
@@ -1030,7 +1098,8 @@ class Intjs {
      *      limit: '100000',
      *      price: '30000000000',
      *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
-     *      password: '123456789'
+     *      password: '123456789',
+     *      data: {...}
      *  }
      *
      * @returns {Object}
@@ -1113,9 +1182,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string, contractid: string}
      * */
-    async lockAccount (amount, lockaddress, schedule, limit, price, secret) {
+    async lockAccount (amount, lockaddress, schedule, limit, price, secret, data) {
         assert(amount, 'amount is required');
         assert(lockaddress, 'lockaddress is required');
         assert(schedule, 'schedule is required');
@@ -1131,6 +1201,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {contractid: '', lockaddress, schedule};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -1165,9 +1239,10 @@ class Intjs {
      * @param {String} limit
      * @param {String} price
      * @param {String} secret
+     * @param {Object} data
      * @returns {Object} {hash: string}
      * */
-    async transferFromLockAccount (contractid, limit, price, secret) {
+    async transferFromLockAccount (contractid, limit, price, secret, data) {
         assert(contractid, 'contractid is required');
         assert(limit, 'limit is required');
         assert(price, 'price is required');
@@ -1181,6 +1256,10 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.input = {contractid};
+
+        if (data) {
+            tx.input.data = data;
+        }
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {

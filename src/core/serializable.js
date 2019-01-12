@@ -217,25 +217,7 @@ function fromStringifiable(o) {
     return __convertValue(o);
 }
 exports.fromStringifiable = fromStringifiable;
-function hasDecimals(o) {
-    let s = o.toString();
-    if (s.indexOf('.') > -1) {
-        if (s.indexOf('e') === -1) {
-            return true;
-        }
-        else {
-            let pointIndex = s.indexOf('.');
-            let eIndex = s.indexOf('e');
-            let str = s.substring(pointIndex + 1, eIndex);
-            let n = s.substring(eIndex + 2);
-            if (str.length > Number(n)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-exports.hasDecimals = hasDecimals;
+
 function encodeAddressAndNonce(address, nonce) {
     let bw = new writer_1.BufferWriter();
     bw.writeVarString(address);
