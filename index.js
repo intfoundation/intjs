@@ -361,7 +361,7 @@ class Intjs {
         tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = { tokenid: '', amount: newAmount, name, symbol };
+        tx.input = { tokenid: '', amount: amount, name, symbol };
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -418,7 +418,7 @@ class Intjs {
         tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = { tokenid, to, amount: newAmount };
+        tx.input = { tokenid, to, amount: amount };
 
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
@@ -538,7 +538,7 @@ class Intjs {
         tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = {tokenid, amount: newAmount};
+        tx.input = {tokenid, amount: amount};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -587,7 +587,7 @@ class Intjs {
         tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = {tokenid, amount: newAmount};
+        tx.input = {tokenid, amount: amount};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -688,7 +688,7 @@ class Intjs {
         tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = {tokenid, amount: newAmount, spender};
+        tx.input = {tokenid, amount: amount, spender};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -738,7 +738,7 @@ class Intjs {
         tx.value = new client.BigNumber('0');
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
-        tx.input = {tokenid, from, to, amount: newAmount};
+        tx.input = {tokenid, from, to, amount: amount};
 
         let {err, nonce} = await this.chainClient.getNonce({address});
         if (err) {
@@ -878,7 +878,7 @@ class Intjs {
         tx.limit = new client.BigNumber(limit);
         tx.price = new client.BigNumber(price);
         tx.value = newAmount;
-        tx.input = {amount: newAmount};
+        tx.input = {amount: amount};
         let { err, nonce } = await this.chainClient.getNonce({ address });
         if (err) {
             // console.error(`mortgage getNonce failed for ${err}`);
