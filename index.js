@@ -178,25 +178,6 @@ class Intjs {
       }
 
     /**
-     * Read keystore.
-     * @param {String} address
-     * @returns {JSON} keystore
-     */
-    async readKeystore (address) {
-        assert(address, 'address is required');
-
-        let params = {address: address};
-
-        let ret = await this.chainClient.readKeystore(params);
-
-        if (ret.err) {
-            return {err: ret.err}
-        } else {
-          return ret.keystore;
-        }
-      }
-
-    /**
      * Get current price of the latest two blocks.
      * @returns {String}
      */
