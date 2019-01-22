@@ -1062,23 +1062,23 @@ class Intjs {
      *
      * @example
      *  let params = {
-     *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
+     *      from: 'INT12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTo',
      *      value: '1000',
      *      limit: '100000',
      *      price: '30000000000',
-     *      input: {to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79'},
+     *      input: {to: 'INT1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79'},
      *      password: '123456789',
      *      data: {...}
      *  }
      * @example
      *  let params = {
-     *      from: '12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
+     *      from: 'INT12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ',
      *      method: 'transferTokenTo',
      *      value: '0',
      *      limit: '100000',
      *      price: '30000000000',
-     *      input: {tokenid: '17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: '1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
+     *      input: {tokenid: 'INT17YsGmQ8FcqPy9C99McgebWrs5UrYxXY2Z', to: 'INT1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', amount: '1000'},
      *      password: '123456789',
      *      data: {...}
      *  }
