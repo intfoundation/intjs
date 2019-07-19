@@ -42,7 +42,6 @@ class Intjs {
         this.chainClient = new client.ChainClient({
             host,
             port,
-            // logger: client.initLogger({ loggerOptions: { console: true}})
         });
         // this.chainClient.on('tipBlock', async (tipBlock) => {
         //     // console.log(`client onTipBlock, height ${tipBlock.number}`);
