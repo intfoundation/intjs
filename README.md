@@ -1,4 +1,4 @@
-[![NPM Version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
+[![NPM Version][npm-image]][npm-url] [![NPM Downloads][downloads-image]][downloads-url]
 
 
 # Intjs
@@ -33,5 +33,5 @@ MIT License
 
 [npm-image]: https://img.shields.io/npm/v/intjs.svg
 [npm-url]: https://www.npmjs.org/package/intjs
-[travis-image]: https://travis-ci.org/intfoundation/intjs.svg
-[travis-url]: https://travis-ci.org/intfoundation/intjs
+[downloads-image]: https://img.shields.io/npm/dm/intjs.svg
+[downloads-url]: https://www.npmjs.org/package/intjs
