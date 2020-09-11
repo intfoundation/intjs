@@ -7,7 +7,7 @@ const bignumber_js_1 = require("bignumber.js");
 const rpc_client_1 = require("../lib/rpc_client");
 class HostClient {
     constructor(options) {
-        this.m_client = new rpc_client_1.RPCClient(options.host, options.port);
+        this.m_client = new rpc_client_1.RPCClient(options.host, options.port, options.url);
     }
     async getBlock(params) {
         let cr = await this.m_client.callAsync('getBlock', params);

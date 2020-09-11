@@ -31,17 +31,16 @@ const assert = require('assert');
 const util = require('util');
 
 class Intjs {
-    constructor (host, port) {
-        assert(host, 'Host is required.');
-        assert(port, 'Port is required.');
-
+    constructor (host, port, url) {
         this.m_addr = host;
         this.m_port = port;
+        this.m_url = url;
         this.watchingTx = [];
 
         this.chainClient = new client.ChainClient({
             host,
             port,
+            url
         });
         // this.chainClient.on('tipBlock', async (tipBlock) => {
         //     // console.log(`client onTipBlock, height ${tipBlock.number}`);

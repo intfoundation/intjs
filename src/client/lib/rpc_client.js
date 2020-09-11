@@ -2,9 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 class RPCClient {
-    constructor(serveraddr, port) {
+    constructor(serveraddr, port, url) {
         // this.logger = logger;
-        this.m_url = 'http://' + serveraddr + ':' + port + '/rpc';
+        if (url !== undefined) {
+            this.m_url = url
+        } else {
+            this.m_url = 'http://' + serveraddr + ':' + port + '/rpc';
+        }
+
     }
     call(funName, funcArgs, onComplete) {
         let sendObj = {
