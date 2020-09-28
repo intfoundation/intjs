@@ -1053,7 +1053,7 @@ class Intjs {
         if (ret.err) {
             return {err: ret.err};
         }
-        return {stake: ret};
+        return ret.value;
     }
 
     /**
