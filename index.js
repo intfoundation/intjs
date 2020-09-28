@@ -1039,6 +1039,23 @@ class Intjs {
         return {stake: ret.value.toString()};
     }
 
+
+    /**
+     * Get vote result
+     * @param {String} address
+     * @returns {Object}
+     */
+    async getVoteResult (address) {
+        let ret = await this.chainClient.view({
+            method: 'getVoteResult',
+            params: { address: address }
+        });
+        if (ret.err) {
+            return {err: ret.err};
+        }
+        return {stake: ret};
+    }
+
     /**
      * Get all candidates.
      * @returns {Array}
